@@ -4,9 +4,22 @@ import { cn } from "@/lib/utils";
 // Icons
 import WarningIcon from "@/public/icons/warning.svg";
 import CheckCircleIcon from "@/public/icons/check_circle.svg";
+import ArrowRightIcon from "@/public/icons/arrow_right.svg";
+
+// Components
+import { Button } from "@/components/ui/button";
+import { FormLabel } from "@/components/ui/form";
+
+// Types
+import type { UseFormReturn } from "react-hook-form";
+
+export interface FormProps {
+	form: UseFormReturn<any>;
+}
 
 interface FormSectionProps {
 	title: string;
+	form: FormProps["form"];
 	fields: {
 		name: string;
 		value?: boolean;
@@ -16,7 +29,12 @@ interface FormSectionProps {
 	children?: React.ReactNode;
 }
 
-function FormSection({ children, isSelected, ...rest }: FormSectionProps) {
+function FormSection({
+	children,
+	form,
+	isSelected,
+	...rest
+}: FormSectionProps) {
 	const router = useRouter();
 
 	return (
@@ -34,6 +52,10 @@ function FormSection({ children, isSelected, ...rest }: FormSectionProps) {
 				className="flex flex-col justify-start items-start gap-6 p-9 w-full rounded-2xl border border-background-100 relative"
 				onClick={() => {
 					if (!isSelected) {
+						// Atualizamos o valor do formulário para o valor da seção atual
+						form.setValue("formType", `section${rest.section}`);
+
+						// Scrollamos para a seção atual
 						router.replace(`?section=${rest.section}`, {
 							scroll: false,
 						});
@@ -42,16 +64,7 @@ function FormSection({ children, isSelected, ...rest }: FormSectionProps) {
 							?.scrollIntoView({
 								behavior: "smooth",
 							});
-					} /* else {
-						router.replace(`?section=${rest.section + 1}`, {
-							scroll: false,
-						});
-						document
-							.getElementById(`section${rest.section + 1}`)
-							?.scrollIntoView({
-								behavior: "smooth",
-							});
-					} */
+					}
 				}}
 			>
 				{children}
@@ -60,16 +73,11 @@ function FormSection({ children, isSelected, ...rest }: FormSectionProps) {
 	);
 }
 
-/* 
-fields={Object.entries(schema.shape)
-.flatMap((props) => {
-    const [key, value] = props as [string, z.ZodAny];
-    return value.description || key;
-})
-.reduce((acc, key) => ({ ...acc, [key]: false }), {})}
-*/
-
-function FormProgress({ title, section, fields }: FormSectionProps) {
+function FormProgress({
+	title,
+	section,
+	fields,
+}: Omit<FormSectionProps, "form">) {
 	return (
 		<div className="flex flex-col w-full lg:sticky top-4 left-0 lg:w-2/5 bg-background-600 rounded-2xl border border-primary-100">
 			<div className="flex flex-row items-center justify-start px-6 py-[18px] bg-primary-100 rounded-tl-2xl rounded-tr-2xl">
@@ -139,4 +147,46 @@ function Panel({ className, type = "info", children, ...rest }: PanelProps) {
 	);
 }
 
-export { FormSection, FormProgress, Panel };
+function NextSectionButton({
+	isFinalSection = false,
+}: {
+	isFinalSection?: boolean;
+}) {
+	return (
+		<div className="flex flex-row items-center justify-end w-full">
+			<Button
+				className="px-9 h-12 text-white font-extrabold bg-primary-200"
+				type="submit"
+			>
+				{isFinalSection ? (
+					"Concluir"
+				) : (
+					<>
+						Continuar
+						<ArrowRightIcon />
+					</>
+				)}
+			</Button>
+		</div>
+	);
+}
+
+function ResearchHeader({
+	index,
+	children,
+}: {
+	index: number;
+	children: React.ReactNode;
+}) {
+	return (
+		<div className="flex flex-col items-start justify-start gap-2">
+			<div className="flex flex-row items-center justify-between w-full">
+				<FormLabel>Pergunta {index}</FormLabel>
+				<p className="text-xs lg:text-sm text-muted/80">Opcional</p>
+			</div>
+			<FormLabel className="font-bold">{children}</FormLabel>
+		</div>
+	);
+}
+
+export { FormSection, FormProgress, Panel, NextSectionButton, ResearchHeader };
