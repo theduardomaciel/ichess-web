@@ -21,6 +21,7 @@ export default function Home() {
 				/>
 				<Image
 					src={`/hero.png`}
+					priority
 					width={823}
 					height={717}
 					className="hidden lg:flex absolute right-0 bottom-0 h-full w-1/2 object-cover select-none pointer-events-none z-0"

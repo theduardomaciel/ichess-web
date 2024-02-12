@@ -11,8 +11,12 @@ import {
 } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
+
 import { Label } from "@/components/ui/label";
 import { Panel, PanelProps } from "../forms";
+
+// Icons
+import ExclamationIcon from "@/public/icons/exclamation.svg";
 
 const Form = FormProvider;
 
@@ -96,12 +100,15 @@ const FormLabel = React.forwardRef<
 	const { error, formItemId } = useFormField();
 
 	return (
-		<Label
-			ref={ref}
-			className={cn(error && "text-destructive", className)}
-			htmlFor={formItemId}
-			{...props}
-		/>
+		<div className="flex flex-row items-center justify-start gap-2">
+			<Label
+				ref={ref}
+				className={cn(/* error && "text-destructive", */ className)}
+				htmlFor={formItemId}
+				{...props}
+			/>
+			{error && <ExclamationIcon className="text-destructive" />}
+		</div>
 	);
 });
 FormLabel.displayName = "FormLabel";

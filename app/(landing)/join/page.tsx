@@ -16,6 +16,7 @@ export default function JoinPage() {
 				</h2>
 				<Image
 					src={`/board.png`}
+					priority
 					width={2048}
 					height={1024}
 					className="opacity-5 absolute top-0 left-0 w-full h-full object-cover select-none pointer-events-none z-20"

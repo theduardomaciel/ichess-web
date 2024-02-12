@@ -1,5 +1,8 @@
 "use client";
 
+import { useCallback, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UseFormReturn, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -14,8 +17,9 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { FormSection, Panel } from ".";
+
+import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import {
 	Select,
@@ -25,7 +29,10 @@ import {
 	SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-import { useCallback, useEffect } from "react";
+
+// Icons
+import ArrowRightIcon from "@/public/icons/arrow_right.svg";
+import Link from "next/link";
 
 const formSchema = z.object({
 	// 1. Dados Básicos
@@ -114,8 +121,11 @@ const formTitles = {
 };
 
 function isValid(key: keyof FormSchema, form: UseFormReturn<FormSchema>) {
+	/// Important: Make sure to provide defaultValues at the useForm, so hook form can have a single source of truth to compare each field's dirtiness - from the docs
 	return form.formState.dirtyFields[key] && !form.formState.errors[key];
 }
+
+const REVISION_STRING = "revision";
 
 export default function JoinForm() {
 	// 1. Define your form.
@@ -133,7 +143,9 @@ export default function JoinForm() {
 			discoveryOther: "",
 		},
 	});
-	/// "Important: Make sure to provide defaultValues at the useForm, so hook form can have a single source of truth to compare each field's dirtiness."
+
+	const router = useRouter();
+	const currentSection = useSearchParams().get("section");
 
 	const otherIsSelected = form.watch("discovery") === "other";
 
@@ -155,8 +167,6 @@ export default function JoinForm() {
 		return {
 			name: formTitles[key],
 			value: isValid(key, form),
-			/* value:
-				form.formState.dirtyFields[key] && !form.formState.errors[key], */
 		};
 	});
 
@@ -173,7 +183,16 @@ export default function JoinForm() {
 				onSubmit={form.handleSubmit(onSubmit)}
 				className="flex flex-col items-center justify-start w-full gap-9 px-wrapper py-12 lg:py-24"
 			>
-				<FormSection title="1. Dados Pessoais" fields={section1}>
+				<FormSection
+					section={1}
+					isSelected={
+						!currentSection ||
+						currentSection === "1" ||
+						currentSection === REVISION_STRING
+					}
+					title="Dados Pessoais"
+					fields={section1}
+				>
 					<FormField
 						control={form.control}
 						name="name"
@@ -308,9 +327,22 @@ export default function JoinForm() {
 							</FormItem>
 						)}
 					/>
+					<NextSectionButton
+						section={1}
+						currentSection={
+							currentSection && !isNaN(Number(currentSection))
+								? Number(currentSection)
+								: 1
+						}
+					/>
 				</FormSection>
 				<FormSection
-					title="2. Experiência com Xadrez"
+					section={2}
+					isSelected={
+						currentSection === "2" ||
+						currentSection === REVISION_STRING
+					}
+					title="Experiência com Xadrez"
 					fields={section2}
 				>
 					<FormField
@@ -378,8 +410,24 @@ export default function JoinForm() {
 							</FormItem>
 						)}
 					/>
+					<NextSectionButton
+						section={2}
+						currentSection={
+							currentSection && !isNaN(Number(currentSection))
+								? Number(currentSection)
+								: 2
+						}
+					/>
 				</FormSection>
-				<FormSection title="3. Pesquisa" fields={section3}>
+				<FormSection
+					section={3}
+					isSelected={
+						currentSection === "3" ||
+						currentSection === REVISION_STRING
+					}
+					title="Pesquisa"
+					fields={section3}
+				>
 					<FormField
 						control={form.control}
 						name="reason"
@@ -449,10 +497,60 @@ export default function JoinForm() {
 							/>
 						)}
 					</div>
+					<div className="flex flex-row items-center justify-end w-full">
+						<Button
+							className="px-9 h-12 text-white font-extrabold bg-primary-200"
+							type="submit"
+							onClick={() =>
+								router.push(`?section=revision`, {
+									scroll: false,
+								})
+							}
+							disabled={
+								currentSection !== "3" &&
+								currentSection !== REVISION_STRING
+							}
+						>
+							Concluir
+						</Button>
+					</div>
 				</FormSection>
-				<Button type="submit">Submit</Button>
 			</form>
 		</Form>
+	);
+}
+
+function NextSectionButton({
+	section,
+	currentSection,
+}: {
+	section: number;
+	currentSection: number;
+}) {
+	const router = useRouter();
+	const newSection = (currentSection % 3) + 1;
+
+	return (
+		<div className="flex flex-row items-center justify-end w-full">
+			<Button
+				id={`section${section}Button`}
+				className="px-9 h-12 text-white font-extrabold bg-primary-200"
+				type="button"
+				onClick={() => {
+					router.replace(`?section=${newSection}`, {
+						scroll: false,
+					});
+					document
+						.getElementById(`section${newSection}`)
+						?.scrollIntoView({
+							behavior: "smooth",
+						});
+				}}
+			>
+				Continuar
+				<ArrowRightIcon />
+			</Button>
+		</div>
 	);
 }
 
