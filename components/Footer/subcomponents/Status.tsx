@@ -38,7 +38,7 @@ export default async function Status({ className }: StatusProps) {
 		"https://theduardomaciel.vercel.app/api/status",
 		{
 			mode: "no-cors",
-		}
+		},
 	)
 		.then((res) => res.json())
 		.catch(() => null);
@@ -46,7 +46,7 @@ export default async function Status({ className }: StatusProps) {
 	if (!projects) return null;
 
 	const ichess = projects.find(
-		(project: Project) => project.name === "ichess-web"
+		(project: Project) => project.name === "ichess-web",
 	);
 
 	const status =
@@ -60,7 +60,7 @@ export default async function Status({ className }: StatusProps) {
 			target="_blank"
 			className={cn(
 				"flex flex-row items-center justify-center gap-x-3 px-3 py-2 transition w-full sm:w-fit outline outline-[0.75px] outline-transparent hover:bg-background-200 rounded-md font-medium",
-				className
+				className,
 			)}
 			title="Verifique o status de nossos serviços"
 		>

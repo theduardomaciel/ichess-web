@@ -26,7 +26,7 @@ export default function ThemePicker() {
 		(theme: string) => {
 			setTheme(theme);
 		},
-		[setTheme]
+		[setTheme],
 	);
 
 	// useEffect only runs on the client, so now we can safely show the UI

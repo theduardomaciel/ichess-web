@@ -36,7 +36,7 @@ export default function RootLayout({
 				className={cn(
 					"min-h-screen bg-background-600 font-sans antialiased relative",
 					fontSans.variable,
-					titleFont.variable
+					titleFont.variable,
 				)}
 			>
 				<ThemeProvider

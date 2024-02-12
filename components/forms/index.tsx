@@ -3,19 +3,16 @@ import { z } from "zod";
 
 interface FormSectionProps {
 	title: string;
-	fields: z.ZodObject<any>;
+	fields: {
+		[x: string]: boolean;
+	}[];
 	children?: React.ReactNode;
 }
 
 function FormSection({ title, fields, children }: FormSectionProps) {
 	return (
 		<div className="flex flex-col items-start justify-start gap-9 w-full">
-			<FormProgress
-				title={title}
-				fields={Object.fromEntries(
-					Object.keys(fields.shape).map((field) => [field, false])
-				)}
-			/>
+			<FormProgress title={title} fields={fields} />
 			<div className="flex flex-col justify-start items-start gap-6 p-9 w-full rounded-2xl border border-background-100">
 				{children}
 			</div>
@@ -23,11 +20,20 @@ function FormSection({ title, fields, children }: FormSectionProps) {
 	);
 }
 
+/* 
+fields={Object.entries(schema.shape)
+.flatMap((props) => {
+    const [key, value] = props as [string, z.ZodAny];
+    return value.description || key;
+})
+.reduce((acc, key) => ({ ...acc, [key]: false }), {})}
+*/
+
 interface FormProgressProps {
 	title: FormSectionProps["title"];
 	fields: {
 		[key: string]: boolean;
-	};
+	}[];
 }
 
 function FormProgress({ title, fields }: FormProgressProps) {
@@ -37,13 +43,15 @@ function FormProgress({ title, fields }: FormProgressProps) {
 				<h6 className="font-extrabold text-lg">{title}</h6>
 			</div>
 			<ul className="flex flex-col items-start justify-start px-9 py-[18px] gap-4">
-				{Object.entries(fields).map(([field, completed]) => (
+				{Object.entries(fields).map(([key, value]) => (
 					<li
-						key={field}
+						key={key}
 						className="flex flex-row items-center justify-start gap-2"
 					>
-						<span className="font-semibold">{field}</span>
-						{completed ? (
+						<span className="font-semibold">
+							{Object.keys(value)}
+						</span>
+						{Object.values(value)[0] === true ? (
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								className="h-5 w-5 text-primary-100"
@@ -95,7 +103,7 @@ function Panel({ type = "info", children }: PanelProps) {
 				}
 			)}
 		>
-			<p className="grow shrink basis-0 text-white text-sm font-medium">
+			<p className="grow shrink basis-0 text-white change_later font-medium">
 				{children}
 			</p>
 		</div>

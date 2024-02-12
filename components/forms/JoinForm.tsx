@@ -44,6 +44,18 @@ const formSchema = z.object({
 	discovery: z.string().optional(),
 });
 
+const formTitles = {
+	name: "Nome completo",
+	email: "E-mail",
+	course: "Curso",
+	registrationId: "Matrícula",
+	period: "Período",
+	experience: "Experiência com Xadrez",
+	username: "Nome de usuário",
+	reason: "Motivo",
+	discovery: "Como descobriu o IChess?",
+};
+
 export default function JoinForm() {
 	// 1. Define your form.
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -60,24 +72,32 @@ export default function JoinForm() {
 		console.log(values);
 	}
 
+	const section1 = Object.keys(
+		formSchema.pick({
+			name: true,
+			email: true,
+			course: true,
+			registrationId: true,
+		}).shape
+	).map((key) => {
+		return {
+			[formTitles[key as keyof typeof formTitles]]: false,
+		};
+	});
+
 	return (
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
 				className="flex flex-col items-center justify-start w-full gap-9 px-wrapper py-12"
 			>
-				<FormSection
-					title="1. Dados Pessoais"
-					fields={formSchema.pick({
-						name: true,
-					})}
-				>
+				<FormSection title="1. Dados Pessoais" fields={section1}>
 					<FormField
 						control={form.control}
 						name="name"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Nome completo</FormLabel>
+								<FormLabel>{formTitles.name}</FormLabel>
 								<FormControl>
 									<Input
 										placeholder="Fulano da Silva"
@@ -93,7 +113,7 @@ export default function JoinForm() {
 						name="email"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>E-mail</FormLabel>
+								<FormLabel>{formTitles.email}</FormLabel>
 								<FormControl>
 									<Input
 										type="email"
@@ -110,7 +130,7 @@ export default function JoinForm() {
 						name="course"
 						render={({ field }) => (
 							<FormItem className="space-y-3">
-								<FormLabel>Curso</FormLabel>
+								<FormLabel>{formTitles.course}</FormLabel>
 								<FormControl>
 									<RadioGroup
 										onValueChange={field.onChange}
