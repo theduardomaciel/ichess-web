@@ -7,7 +7,7 @@ interface FormSectionProps {
 	title: string;
 	fields: {
 		name: string;
-		value: boolean;
+		value?: boolean;
 	}[];
 	children?: React.ReactNode;
 }

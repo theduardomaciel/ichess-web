@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { UseFormReturn, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ import {
 	SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
+import { useCallback, useEffect } from "react";
 
 const formSchema = z.object({
 	// 1. Dados Básicos
@@ -69,8 +70,35 @@ const formSchema = z.object({
 		.string()
 		.max(250, { message: "O limite de caracteres é 250 :(" })
 		.optional(),
-	discovery: z.string().optional(),
+	discovery: z.enum(["social_media", "friends", "other"]).optional(),
+	discoveryOther: z.string().max(50).optional(),
 });
+
+type FormSchema = z.infer<typeof formSchema>;
+
+const section1Keys = Object.keys(
+	formSchema.pick({
+		name: true,
+		email: true,
+		course: true,
+		registrationId: true,
+		period: true,
+	}).shape
+) as (keyof FormSchema)[];
+
+const section2Keys = Object.keys(
+	formSchema.pick({
+		experience: true,
+		username: true,
+	}).shape
+) as (keyof FormSchema)[];
+
+const section3Keys = Object.keys(
+	formSchema.pick({
+		reason: true,
+		discovery: true,
+	}).shape
+) as (keyof FormSchema)[];
 
 const formTitles = {
 	name: "Nome completo",
@@ -82,7 +110,12 @@ const formTitles = {
 	username: "Nick no Chess.com",
 	reason: "Pergunta 1",
 	discovery: "Pergunta 2",
+	discoveryOther: "Outro",
 };
+
+function isValid(key: keyof FormSchema, form: UseFormReturn<FormSchema>) {
+	return form.formState.dirtyFields[key] && !form.formState.errors[key];
+}
 
 export default function JoinForm() {
 	// 1. Define your form.
@@ -90,8 +123,19 @@ export default function JoinForm() {
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: "",
+			email: "",
+			//course: "",
+			registrationId: "",
+			//period: "",
+			//experience: "",
+			username: "",
+			reason: "",
+			discoveryOther: "",
 		},
 	});
+	/// "Important: Make sure to provide defaultValues at the useForm, so hook form can have a single source of truth to compare each field's dirtiness."
+
+	const otherIsSelected = form.watch("discovery") === "other";
 
 	// 2. Define a submit handler.
 	function onSubmit(values: z.infer<typeof formSchema>) {
@@ -100,42 +144,26 @@ export default function JoinForm() {
 		console.log(values);
 	}
 
-	const section1 = Object.keys(
-		formSchema.pick({
-			name: true,
-			email: true,
-			course: true,
-			registrationId: true,
-			period: true,
-		}).shape
-	).map((key) => {
+	const section1 = section1Keys.map((key) => {
 		return {
-			name: formTitles[key as keyof typeof formTitles],
-			value: false,
+			name: formTitles[key],
+			value: isValid(key, form),
 		};
 	});
 
-	const section2 = Object.keys(
-		formSchema.pick({
-			experience: true,
-			username: true,
-		}).shape
-	).map((key) => {
+	const section2 = section2Keys.map((key) => {
 		return {
-			name: formTitles[key as keyof typeof formTitles],
-			value: false,
+			name: formTitles[key],
+			value: isValid(key, form),
+			/* value:
+				form.formState.dirtyFields[key] && !form.formState.errors[key], */
 		};
 	});
 
-	const section3 = Object.keys(
-		formSchema.pick({
-			reason: true,
-			discovery: true,
-		}).shape
-	).map((key) => {
+	const section3 = section3Keys.map((key) => {
 		return {
-			name: formTitles[key as keyof typeof formTitles],
-			value: false,
+			name: formTitles[key],
+			value: isValid(key, form),
 		};
 	});
 
@@ -357,12 +385,9 @@ export default function JoinForm() {
 						name="reason"
 						render={({ field }) => (
 							<FormItem>
-								<div className="flex flex-col items-start justify-start gap-2">
-									<FormLabel>Pergunta 1</FormLabel>
-									<FormLabel className="font-bold">
-										“O que fez você se inscrever no IChess?”
-									</FormLabel>
-								</div>
+								<ResearchHeader index={2}>
+									“O que fez você se inscrever no IChess?”
+								</ResearchHeader>
 								<FormControl>
 									<Textarea
 										placeholder=""
@@ -374,42 +399,77 @@ export default function JoinForm() {
 							</FormItem>
 						)}
 					/>
-					<FormField
-						control={form.control}
-						name="discovery"
-						render={({ field }) => (
-							<FormItem>
-								<div className="flex flex-col items-start justify-start gap-2">
-									<FormLabel>Pergunta 2</FormLabel>
-									<FormLabel className="font-bold">
+					<div className="flex flex-col items-start justify-start gap-2 w-full">
+						<FormField
+							control={form.control}
+							name="discovery"
+							render={({ field }) => (
+								<FormItem>
+									<ResearchHeader index={2}>
 										“Por onde você descobriu o IChess?”
-									</FormLabel>
-								</div>
-								<Select
-									onValueChange={field.onChange}
-									defaultValue={field.value}
-								>
-									<FormControl>
-										<SelectTrigger>
-											<SelectValue placeholder="Escolha uma opção" />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent>
-										<SelectItem value="social_media">
-											Redes sociais
-										</SelectItem>
-										<SelectItem value="friends">
-											Amigos
-										</SelectItem>
-									</SelectContent>
-								</Select>
-								<FormMessage />
-							</FormItem>
+									</ResearchHeader>
+									<Select
+										onValueChange={field.onChange}
+										defaultValue={field.value}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue placeholder="Escolha uma opção" />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectItem value="social_media">
+												Redes sociais
+											</SelectItem>
+											<SelectItem value="friends">
+												Amigos
+											</SelectItem>
+											<SelectItem value="other">
+												Outro
+											</SelectItem>
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{otherIsSelected && (
+							<FormField
+								control={form.control}
+								name="discoveryOther"
+								render={({ field }) => (
+									<FormItem>
+										<Input
+											placeholder="Outro meio"
+											{...field}
+										/>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 						)}
-					/>
+					</div>
 				</FormSection>
 				<Button type="submit">Submit</Button>
 			</form>
 		</Form>
+	);
+}
+
+function ResearchHeader({
+	index,
+	children,
+}: {
+	index: number;
+	children: React.ReactNode;
+}) {
+	return (
+		<div className="flex flex-col items-start justify-start gap-2">
+			<div className="flex flex-row items-center justify-between w-full">
+				<FormLabel>Pergunta {index}</FormLabel>
+				<p className="text-xs lg:text-sm text-muted/80">Opcional</p>
+			</div>
+			<FormLabel className="font-bold">{children}</FormLabel>
+		</div>
 	);
 }
