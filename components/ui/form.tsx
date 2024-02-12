@@ -12,23 +12,24 @@ import {
 
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import { Panel, PanelProps } from "../forms";
 
 const Form = FormProvider;
 
 type FormFieldContextValue<
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 > = {
 	name: TName;
 };
 
 const FormFieldContext = React.createContext<FormFieldContextValue>(
-	{} as FormFieldContextValue,
+	{} as FormFieldContextValue
 );
 
 const FormField = <
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 >({
 	...props
 }: ControllerProps<TFieldValues, TName>) => {
@@ -67,7 +68,7 @@ type FormItemContextValue = {
 };
 
 const FormItemContext = React.createContext<FormItemContextValue>(
-	{} as FormItemContextValue,
+	{} as FormItemContextValue
 );
 
 const FormItem = React.forwardRef<
@@ -138,38 +139,52 @@ const FormDescription = React.forwardRef<
 		<p
 			ref={ref}
 			id={formDescriptionId}
-			className={cn("change_later text-muted-foreground", className)}
+			className={cn(
+				"text-sm lg:text-base change_later text-muted-foreground",
+				className
+			)}
 			{...props}
 		/>
 	);
 });
 FormDescription.displayName = "FormDescription";
 
-const FormMessage = React.forwardRef<
-	HTMLParagraphElement,
-	React.HTMLAttributes<HTMLParagraphElement>
->(({ className, children, ...props }, ref) => {
-	const { error, formMessageId } = useFormField();
-	const body = error ? String(error?.message) : children;
+interface FormMessageProps extends React.HTMLAttributes<HTMLParagraphElement> {
+	type?: PanelProps["type"];
+}
 
-	if (!body) {
-		return null;
+const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
+	({ className, children, type, ...props }, ref) => {
+		const { error, formMessageId } = useFormField();
+		const body = error ? String(error?.message) : children;
+
+		if (!body) {
+			return null;
+		}
+
+		if (error?.type === "custom" && type) {
+			return (
+				<Panel type={type} className={className} {...props}>
+					{body}
+				</Panel>
+			);
+		}
+
+		return (
+			<p
+				ref={ref}
+				id={formMessageId}
+				className={cn(
+					"text-sm lg:text-base change_later font-medium text-destructive",
+					className
+				)}
+				{...props}
+			>
+				{body}
+			</p>
+		);
 	}
-
-	return (
-		<p
-			ref={ref}
-			id={formMessageId}
-			className={cn(
-				"change_later font-medium text-destructive",
-				className,
-			)}
-			{...props}
-		>
-			{body}
-		</p>
-	);
-});
+);
 FormMessage.displayName = "FormMessage";
 
 export {

@@ -26,7 +26,7 @@ export default function ThemePicker() {
 		(theme: string) => {
 			setTheme(theme);
 		},
-		[setTheme],
+		[setTheme]
 	);
 
 	// useEffect only runs on the client, so now we can safely show the UI
@@ -46,11 +46,13 @@ export default function ThemePicker() {
 
 	return (
 		<Select value={theme} onValueChange={changeTheme}>
-			<SelectTrigger className="w-[125px] border-black dark:border-muted relative py-1.5 pl-9">
-				<span className="absolute left-3 flex items-center justify-center">
-					{ICONS[theme as keyof typeof ICONS]}
-				</span>
-				<SelectValue />
+			<SelectTrigger className="w-[135px] border-black dark:border-muted relative">
+				<div className="flex flex-row items-center justify-start gap-2">
+					<span className="flex items-center justify-center">
+						{ICONS[theme as keyof typeof ICONS]}
+					</span>
+					<SelectValue />
+				</div>
 			</SelectTrigger>
 			<SelectContent>
 				<SelectItem value="light">Claro</SelectItem>
