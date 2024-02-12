@@ -6,6 +6,9 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
+// Components
+import Footer from "@/components/Footer/Footer";
+
 export const fontSans = FontSans({
 	subsets: ["latin"],
 	variable: "--font-sans",
@@ -28,7 +31,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<body
 				className={cn(
 					"min-h-screen bg-background-600 font-sans antialiased relative",
@@ -43,6 +46,7 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					{children}
+					<Footer />
 				</ThemeProvider>
 			</body>
 		</html>

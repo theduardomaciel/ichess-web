@@ -59,7 +59,7 @@ export default async function Status({ className }: StatusProps) {
 			href={"https://theduardomaciel.vercel.app/status?utm_source=ichess"}
 			target="_blank"
 			className={cn(
-				"flex flex-row items-center justify-center gap-x-3 px-3 py-2 transition w-full lg:w-fit outline outline-[0.75px] outline-transparent hover:bg-background-200 rounded-md font-medium",
+				"flex flex-row items-center justify-center gap-x-3 px-3 py-2 transition w-full sm:w-fit outline outline-[0.75px] outline-transparent hover:bg-background-200 rounded-md font-medium",
 				className
 			)}
 			title="Verifique o status de nossos serviços"
@@ -71,7 +71,7 @@ export default async function Status({ className }: StatusProps) {
 				}}
 			/>
 			<p>{status.text}</p>
-			<ExternalLinkIcon width={12} height={12} className="text-white" />
+			<ExternalLinkIcon width={12} height={12} className="text-neutral" />
 		</a>
 	);
 }

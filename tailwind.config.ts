@@ -25,11 +25,11 @@ const config = {
 			},
 			colors: {
 				neutral: "hsl(var(--neutral))",
-				border: "hsl(var(--border))",
-				input: "hsl(var(--input))",
-				ring: "hsl(var(--ring))",
+				border: "hsl(var(--background-100))",
+				input: "hsl(var(--background-100))",
+				ring: "hsl(var(--primary-200))",
 				background: {
-					DEFAULT: "hsl(var(--background))",
+					DEFAULT: "hsl(var(--background-200))",
 					100: "hsl(var(--background-100))",
 					200: "hsl(var(--background-200))",
 					300: "hsl(var(--background-300))",
@@ -37,14 +37,14 @@ const config = {
 				},
 				foreground: "hsl(var(--foreground))",
 				primary: {
-					DEFAULT: "hsl(var(--primary))",
-					foreground: "hsl(var(--primary-foreground))",
+					DEFAULT: "hsl(var(--primary-100))",
+					foreground: "hsl(0 0% 100%)",
 					100: "hsl(var(--primary-100))",
 					200: "hsl(var(--primary-200))",
 				},
 				secondary: {
 					DEFAULT: "hsl(var(--secondary))",
-					foreground: "hsl(var(--secondary-foreground))",
+					foreground: "hsl(0 0% 100%)",
 					100: "hsl(var(--secondary-100))",
 					200: "hsl(var(--secondary-200))",
 				},
@@ -57,24 +57,24 @@ const config = {
 					200: "hsl(var(--info-200))",
 				},
 				destructive: {
-					DEFAULT: "hsl(var(--destructive))",
-					foreground: "hsl(var(--destructive-foreground))",
+					DEFAULT: "hsl(var(--tertiary-200))",
+					foreground: "hsl(0 0% 100%)",
 				},
 				muted: {
-					DEFAULT: "hsl(var(--muted))",
-					foreground: "hsl(var(--muted-foreground))",
+					DEFAULT: "hsl(var(--font-light))",
+					foreground: "hsl(var(--font-light) / 0.5)",
 				},
 				accent: {
-					DEFAULT: "hsl(var(--accent))",
+					DEFAULT: "hsl(var(--primary-100))",
 					foreground: "hsl(var(--accent-foreground))",
 				},
 				popover: {
-					DEFAULT: "hsl(var(--popover))",
-					foreground: "hsl(var(--popover-foreground))",
+					DEFAULT: "hsl(var(--background-200))",
+					foreground: "hsl(var(--neutral))",
 				},
 				card: {
-					DEFAULT: "hsl(var(--card))",
-					foreground: "hsl(var(--card-foreground))",
+					DEFAULT: "hsl(var(--background-300))",
+					foreground: "hsl(0 0% 100%)",
 				},
 			},
 			borderRadius: {

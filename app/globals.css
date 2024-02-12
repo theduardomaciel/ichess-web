@@ -11,7 +11,7 @@
 	}
 
 	:root {
-		--neutral: 0 0% 100%;
+		--neutral: 0 0% 0%;
 		--font-light: 0 0% 85.49%;
 
 		--primary-100: 90 39% 51%;
@@ -23,15 +23,15 @@
 		--tertiary-100: 19 58% 52%;
 		--tertiary-200: 19 64% 43%;
 
-		--help-100: 216 58% 52%;
-		--help-200: 216 67% 44%;
+		--info-100: 216 58% 52%;
+		--info-200: 216 67% 44%;
 
-		--background-100: 40 12% 20%;
-		--background-200: 38 12% 18%;
-		--background-300: 40 8% 15%;
-		--background-600: 30 4% 9%;
+		--background-100: 240 100% 98.43%;
+		--background-200: 20 14.29% 95.88%;
+		--background-300: 0 0% 88.24%;
+		--background-600: 0 0% 80.39%;
 
-		--background: 0 0% 100%;
+		/* --background: 0 0% 100%;
 		--foreground: 222.2 47.4% 11.2%;
 
 		--muted: 210 40% 96.1%;
@@ -58,14 +58,22 @@
 		--destructive: 0 100% 50%;
 		--destructive-foreground: 210 40% 98%;
 
-		--ring: 215 20.2% 65.1%;
+		--ring: 215 20.2% 65.1%; */
 
-		--wrapper: 7.68rem;
+		--wrapper: 2.4rem;
 		--radius: 0.5rem;
 	}
 
 	.dark {
-		--background: 224 71% 4%;
+		--neutral: 0 0% 100%;
+		--font-light: 0 0% 85.49%;
+
+		--background-100: 40 12% 20%;
+		--background-200: 38 12% 18%;
+		--background-300: 40 8% 15%;
+		--background-600: 30 4% 9%;
+
+		/* --background: 224 71% 4%;
 		--foreground: 213 31% 91%;
 
 		--muted: 223 47% 11%;
@@ -92,9 +100,15 @@
 		--destructive: 0 63% 31%;
 		--destructive-foreground: 210 40% 98%;
 
-		--ring: 216 34% 17%;
+		--ring: 216 34% 17%; */
 
 		--radius: 0.5rem;
+	}
+}
+
+@media (min-width: 1024px) {
+	:root {
+		--wrapper: 7.68rem;
 	}
 }
 

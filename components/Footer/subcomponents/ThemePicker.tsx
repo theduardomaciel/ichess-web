@@ -1,40 +1,62 @@
 "use client";
 
-import * as React from "react";
-import { Moon, Sun } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+import { Moon, Sun, Computer } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+const ICONS = {
+	light: <Sun className="h-3.5 w-3.5" />,
+	dark: <Moon className="h-3.5 w-3.5" />,
+	system: <Computer className="h-3.5 w-3.5" />,
+};
+
 import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 
 export default function ThemePicker() {
-	const { setTheme } = useTheme();
+	const [mounted, setMounted] = useState(false);
+	const { setTheme, theme } = useTheme();
+
+	const changeTheme = React.useCallback(
+		(theme: string) => {
+			setTheme(theme);
+		},
+		[setTheme]
+	);
+
+	// useEffect only runs on the client, so now we can safely show the UI
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!mounted) {
+		return (
+			<Select>
+				<SelectTrigger className="w-[125px] border-black dark:border-muted relative py-1.5 pl-9">
+					<SelectValue />
+				</SelectTrigger>
+			</Select>
+		);
+	}
 
 	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="icon">
-					<Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-					<Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-					<span className="sr-only">Alternar tema</span>
-				</Button>
-			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end">
-				<DropdownMenuItem onClick={() => setTheme("light")}>
-					Claro
-				</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => setTheme("dark")}>
-					Escuro
-				</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => setTheme("system")}>
-					Sistema
-				</DropdownMenuItem>
-			</DropdownMenuContent>
-		</DropdownMenu>
+		<Select value={theme} onValueChange={changeTheme}>
+			<SelectTrigger className="w-[125px] border-black dark:border-muted relative py-1.5 pl-9">
+				<span className="absolute left-3 flex items-center justify-center">
+					{ICONS[theme as keyof typeof ICONS]}
+				</span>
+				<SelectValue />
+			</SelectTrigger>
+			<SelectContent>
+				<SelectItem value="light">Claro</SelectItem>
+				<SelectItem value="dark">Escuro</SelectItem>
+				<SelectItem value="system">Sistema</SelectItem>
+			</SelectContent>
+		</Select>
 	);
 }

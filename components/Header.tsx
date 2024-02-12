@@ -7,7 +7,7 @@ export default function Header() {
 			<Link href={`/`}>
 				<Logo />
 			</Link>
-			<ul className="flex flex-row items-center justify-end gap-12">
+			<ul className="hidden md:flex flex-row items-center justify-end gap-12">
 				<Link href={`/`} className="font-medium">
 					Home
 				</Link>

@@ -10,7 +10,6 @@ export default function LandingLayout({
 		<>
 			<Header />
 			{children}
-			<Footer />
 		</>
 	);
 }
