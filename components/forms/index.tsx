@@ -19,9 +19,10 @@ export interface FormProps {
 
 interface FormSectionProps {
 	title: string;
+	canSelect?: boolean;
 	form: FormProps["form"];
 	fields: {
-		name: string;
+		name?: string;
 		value?: boolean;
 	}[];
 	section: number;
@@ -31,6 +32,7 @@ interface FormSectionProps {
 
 function FormSection({
 	children,
+	canSelect,
 	form,
 	isSelected,
 	...rest
@@ -44,6 +46,7 @@ function FormSection({
 				"flex flex-col lg:flex-row items-start justify-start gap-9 lg:gap-16 w-full transition-opacity duration-300 ease-in-out pt-4 -mt-4",
 				{
 					"opacity-50 select-none": !isSelected,
+					"pointer-events-none": !canSelect && !isSelected,
 				}
 			)}
 		>
@@ -51,7 +54,7 @@ function FormSection({
 			<div
 				className="flex flex-col justify-start items-start gap-6 p-9 w-full rounded-2xl border border-background-100 relative"
 				onClick={() => {
-					if (!isSelected) {
+					if (!isSelected && canSelect) {
 						// Atualizamos o valor do formulário para o valor da seção atual
 						form.setValue("formType", `section${rest.section}`);
 
@@ -86,20 +89,24 @@ function FormProgress({
 				</h6>
 			</div>
 			<ul className="flex flex-col items-start justify-start px-9 py-[18px] gap-4">
-				{fields.map((field, key) => (
-					<li
-						key={key}
-						className={cn(
-							"flex flex-row items-center justify-start gap-2 text-sm lg:text-base text-neutral select-none",
-							{
-								"opacity-50 text-primary-200": field.value,
-							}
-						)}
-					>
-						{field.value && <CheckCircleIcon />}
-						<span className="font-semibold">{field.name}</span>
-					</li>
-				))}
+				{fields.map((field, key) => {
+					if (!field.name) return null;
+
+					return (
+						<li
+							key={key}
+							className={cn(
+								"flex flex-row items-center justify-start gap-2 text-sm lg:text-base text-neutral select-none",
+								{
+									"opacity-50 text-primary-200": field.value,
+								}
+							)}
+						>
+							{field.value && <CheckCircleIcon />}
+							<span className="font-semibold">{field.name}</span>
+						</li>
+					);
+				})}
 			</ul>
 		</div>
 	);
@@ -155,7 +162,7 @@ function NextSectionButton({
 	return (
 		<div className="flex flex-row items-center justify-end w-full">
 			<Button
-				className="px-9 h-12 text-white font-extrabold bg-primary-200"
+				className="px-9 h-12 text-white font-extrabold bg-primary-200 w-full md:w-fit"
 				type="submit"
 			>
 				{isFinalSection ? (

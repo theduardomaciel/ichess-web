@@ -4,7 +4,12 @@ import { useSearchParams } from "next/navigation";
 import { UseFormReturn } from "react-hook-form";
 
 // Components
-import { type FormProps, FormSection, NextSectionButton, Panel } from "@/components/forms";
+import {
+	type FormProps,
+	FormSection,
+	NextSectionButton,
+	Panel,
+} from "@/components/forms";
 import {
 	FormControl,
 	FormField,
@@ -50,6 +55,9 @@ export default function JoinForm2({ form }: FormProps) {
 	return (
 		<FormSection
 			form={form}
+			canSelect={
+				!isNaN(Number(currentSection)) && Number(currentSection) > 1
+			}
 			section={2}
 			isSelected={currentSection === "2"}
 			title="Experiência com Xadrez"

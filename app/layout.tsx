@@ -4,6 +4,8 @@ import { Manrope as FontSans, Inknut_Antiqua } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 import "./globals.css";
+import "@dotlottie/react-player/dist/index.css";
+
 import { cn } from "@/lib/utils";
 
 // Components
@@ -36,7 +38,7 @@ export default function RootLayout({
 				className={cn(
 					"min-h-screen bg-background-600 font-sans antialiased relative",
 					fontSans.variable,
-					titleFont.variable,
+					titleFont.variable
 				)}
 			>
 				<ThemeProvider

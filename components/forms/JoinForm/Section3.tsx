@@ -42,14 +42,12 @@ const section3Keys = Object.keys(
 const formTitles = {
 	reason: "Pergunta 1",
 	discovery: "Pergunta 2",
-	discoveryOther: "Outro",
+	discoveryOther: undefined,
 };
 
 export default function JoinForm3({ form }: FormProps) {
-	const router = useRouter();
-
 	const currentSection = useSearchParams().get("section");
-	const otherIsSelected = form.watch("discovery") === "other";
+	const otherIsSelected = form.watch("section3.discovery") === "other";
 
 	const section3 = section3Keys.map((key) => {
 		return {

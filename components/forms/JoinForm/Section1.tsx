@@ -58,6 +58,7 @@ export default function JoinForm1({ form }: FormProps) {
 		<FormSection
 			section={1}
 			form={form}
+			canSelect={true}
 			isSelected={!currentSection || currentSection === "1"}
 			title="Dados Pessoais"
 			fields={section1}

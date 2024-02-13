@@ -10,7 +10,7 @@ export default function JoinPage() {
 				<h1 className="font-title font-extrabold text-4xl lg:text-5xl lg:max-w-[50%] text-center">
 					Formulário de Inscrição
 				</h1>
-				<h2 className="text-center font-semibold max-w-[35%]">
+				<h2 className="text-center font-semibold lg:max-w-[35%]">
 					O projeto de extensão IChess está aberto e gostaríamos de
 					saber um pouco mais sobre você!
 				</h2>

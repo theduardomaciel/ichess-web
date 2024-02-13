@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { set, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 
 // Components
 import { Form } from "@/components/ui/form";
+import { LoadingDialog, SuccessDialog } from "@/components/forms/dialogs";
 
 // Sections
 import JoinForm1 from "./Section1";
@@ -18,10 +21,14 @@ import {
 	joinFormSchema,
 } from "@/validations/JoinForm";
 import { goToNextSection } from "@/validations";
-import { useRouter } from "next/navigation";
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default function JoinForm() {
 	const router = useRouter();
+	const [currentState, setCurrentState] = useState<
+		false | "submitting" | "submitted"
+	>(false);
 
 	// 1. Define your form.
 	const form = useForm<JoinFormSchema>({
@@ -54,7 +61,7 @@ export default function JoinForm() {
 	}
 
 	// 2. Define a submit handler.
-	function handleNextFormType() {
+	async function handleNextFormType() {
 		// 3. Switch between form sections.
 		switch (formType) {
 			case "section1":
@@ -71,6 +78,12 @@ export default function JoinForm() {
 				const values = form.getValues();
 				console.log(values);
 
+				setCurrentState("submitting");
+
+				await wait(2000);
+
+				setCurrentState("submitted");
+
 				break;
 		}
 	}
@@ -85,6 +98,8 @@ export default function JoinForm() {
 				<JoinForm2 form={form} />
 				<JoinForm3 form={form} />
 			</form>
+			<LoadingDialog isOpen={currentState === "submitting"} />
+			<SuccessDialog isOpen={currentState === "submitted"} />
 		</Form>
 	);
 }

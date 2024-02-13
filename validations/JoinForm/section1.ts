@@ -1,9 +1,14 @@
 import { z } from "zod";
 
 export const joinFormSection1Schema = z.object({
-	name: z.string({ required_error: "Obrigatório" }).min(2, {
-		message: "Um nome deve conter no mínimo 2 caracteres.",
-	}),
+	name: z
+		.string({ required_error: "Obrigatório" })
+		.min(2, {
+			message: "Um nome deve conter no mínimo 2 caracteres.",
+		})
+		.refine((value) => value.split(" ").length >= 2, {
+			message: `Um nome completo deve conter pelo menos um sobrenome.`,
+		}),
 	email: z
 		.string({ required_error: "Obrigatório" })
 		.email({ message: "E-mail inválido." })
