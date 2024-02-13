@@ -117,6 +117,7 @@ export default function JoinForm2({ form }: FormProps) {
 							Não tem uma conta no Chess.com? Crie uma em
 							<a
 								className="underline ml-1 break-all"
+								rel="noreferrer noopener"
 								href="https://www.chess.com/pt-BR/register"
 								target="_blank"
 							>

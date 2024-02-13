@@ -1,6 +1,6 @@
-import Header from "@/components/Header";
+import Header from "@/components/dashboard/Header";
 
-export default function LandingLayout({
+export default function DashboardLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
