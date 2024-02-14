@@ -25,20 +25,12 @@ export default function AddEventForm() {
 		false | "submitting" | "submitted"
 	>(false);
 
-	const currentDate = new Date();
-	const nextHourDate = new Date();
-	nextHourDate.setHours(currentDate.getHours() + 1);
-
 	// 1. Define your form.
 	const form = useForm<AddEventFormSchema>({
 		resolver: zodResolver(addEventFormSchema),
 		defaultValues: {
-			name: "",
-			description: "",
 			responsible: [],
-			dateFrom: currentDate,
-			dateTo: nextHourDate,
-			ace: undefined,
+			dateFrom: new Date(),
 		},
 	});
 

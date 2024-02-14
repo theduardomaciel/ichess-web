@@ -1,15 +1,14 @@
 "use client";
 
+import { useState } from "react";
+
 import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown } from "lucide-react";
 
 // Components
-import { Button } from "@/components/ui/button";
 import {
 	Command,
 	CommandEmpty,
 	CommandGroup,
-	CommandInput,
 	CommandItem,
 } from "@/components/ui/command";
 import { FormControl } from "@/components/ui/form";
@@ -23,8 +22,6 @@ import { Command as CommandPrimitive } from "cmdk";
 
 // Types
 import type { UseFormReturn } from "react-hook-form";
-import { Input } from "./ui/input";
-import { useState } from "react";
 
 const times = [
 	"00:00",
@@ -129,32 +126,63 @@ interface Props {
 	form: UseFormReturn<any>;
 	field: {
 		name: string;
-		value: Date;
+		value: string;
 	};
+	placeholder?: string;
 }
 
-/* const validHHMMString = (string: string) =>
-	/^([0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(string); */
+/* function checkTime(str: string) {
+    // Verifica se a string está no formato HH:MM
+    if (!/^\d{2}:\d{2}$/.test(str)) {
+        return false;
+    }
 
-const setDate = (dateString: string, form: Props["form"]) => {
-	const newDate = new Date(form.getValues("dateFrom"));
-	const newHours = parseInt(dateString.slice(0, 2));
-	const newMinutes = parseInt(dateString.slice(3, 5));
+    // Divide a string em partes usando os dois pontos
+    const timeParts = str.split(":");
 
-	newDate.setHours(newHours);
-	newDate.setMinutes(newMinutes);
+    // Extrai as horas e os minutos
+    const hours = parseInt(timeParts[0], 10);
+    const minutes = parseInt(timeParts[1], 10);
 
-	form.setValue("dateFrom", newDate);
-	console.log(`Data inicial: ${form.getValues("dateFrom")}`);
-};
+    // Verifica se as horas estão no intervalo de 0 a 23
+    if (hours < 0 || hours > 23) {
+        return false;
+    }
 
-export function TimePicker({ form, field }: Props) {
+    // Verifica se os minutos estão no intervalo de 0 a 59
+    if (minutes < 0 || minutes > 59) {
+        return false;
+    }
+
+    // Se passou por todas as verificações, a string está no formato correto
+    return true;
+} */
+
+function checkDiscrepancy(form: Props["form"]) {
+	const dateFrom = form.getValues("dateFrom");
+	const dateTo = form.getValues("dateTo") ?? dateFrom;
+
+	const timeFrom = form.getValues("timeFrom");
+	const timeTo = form.getValues("timeTo");
+
+	const timeFromDate = new Date(
+		`${dateFrom.toISOString().slice(0, 10)}T${timeFrom}:00`
+	);
+	const timeToDate = new Date(
+		`${dateTo.toISOString().slice(0, 10)}T${timeTo}:00`
+	);
+
+	if (timeToDate <= timeFromDate) {
+		const formattedTime = `${((parseInt(timeFrom.slice(0, 2)) + 1) % 24)
+			.toString()
+			.padStart(2, "0")}:${timeFrom.slice(3)}`;
+
+		form.setValue("timeTo", formattedTime);
+	}
+}
+
+export function TimePicker({ form, field, placeholder }: Props) {
 	const [open, setOpen] = useState(false);
-	const [value, setValue] = useState("");
-
-	const placeholderDate = new Date(field.value)
-		.toLocaleTimeString()
-		.slice(0, 5);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -165,11 +193,10 @@ export function TimePicker({ form, field }: Props) {
 							role="combobox"
 							className={cn(
 								"flex h-10 lg:h-11 w-full rounded-md border border-input bg-background px-3 lg:px-4 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm lg:text-base change_later file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-								/* !field.value && "text-muted-foreground" */
 							)}
-							value={value}
+							value={field.value}
 							maxLength={5}
-							placeholder={placeholderDate}
+							placeholder={placeholder}
 							onValueChange={(currentValue) => {
 								let newString = currentValue;
 
@@ -184,12 +211,13 @@ export function TimePicker({ form, field }: Props) {
 									)}:${newString.slice(2)}`;
 								}
 
-								console.log(newString);
-
-								setValue(newString);
+								form.setValue(field.name, newString);
 							}}
-							/* onBlur={() => {
-								let newString = value;
+							onBlur={() => {
+								if (!field.value || field.value.length === 0)
+									return;
+
+								let newString = field.value;
 
 								// Removemos espaços em branco no início e no final
 								newString = newString.trim();
@@ -221,9 +249,11 @@ export function TimePicker({ form, field }: Props) {
 								}
 
 								// Agora, newString contém o formato corrigido (HH:MM)
-								setValue(newString);
-								setDate(newString, form);
-							}} */
+								form.setValue(field.name, newString);
+
+								// Verificamos se o horário final é menor que o horário inicial
+								checkDiscrepancy(form);
+							}}
 						/>
 					</FormControl>
 				</PopoverTrigger>
@@ -239,8 +269,11 @@ export function TimePicker({ form, field }: Props) {
 								value={time}
 								key={time}
 								onSelect={(currentValue) => {
-									setValue(currentValue);
-									setDate(currentValue, form);
+									form.setValue(field.name, currentValue);
+
+									// Verificamos se o horário final é menor que o horário inicial
+									checkDiscrepancy(form);
+
 									setOpen(false);
 								}}
 							>
@@ -253,48 +286,3 @@ export function TimePicker({ form, field }: Props) {
 		</Popover>
 	);
 }
-
-/* 
-export function TimePicker({ form, field }: Props) {
-	return (
-		<Popover>
-			<PopoverTrigger asChild>
-				<FormControl>
-					<Input
-						role="combobox"
-						className={cn(
-							"w-full justify-between",
-							!field.value && "text-muted-foreground"
-						)}
-						value={times.find((time) => time === field.value)}
-					/>
-				</FormControl>
-			</PopoverTrigger>
-			<PopoverContent className="w-full p-0 w-[var(--radix-popover-trigger-width);] max-h-[var(--radix-popover-content-available-height)]">
-				<Command>
-					<CommandInput placeholder="Procure por um horário..." />
-					<CommandEmpty>Nenhum horário encontrado.</CommandEmpty>
-					<CommandGroup>
-						{times.map((time) => (
-							<CommandItem
-								value={time}
-								key={time}
-                                >
-								<Check
-									className={cn(
-										"mr-2 h-4 w-4",
-										time === field.value
-											? "opacity-100"
-											: "opacity-0"
-									)}
-								/>
-								{time}
-							</CommandItem>
-						))}
-					</CommandGroup>
-				</Command>
-			</PopoverContent>
-		</Popover>
-	);
-}
-*/

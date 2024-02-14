@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo } from "react";
 
 /// Icons
 import CloudIcon from "@/public/icons/cloud.svg";
@@ -34,6 +34,17 @@ import { TimePicker } from "@/components/TimePicker";
 import { ACEs } from "@/lib/validations/AddEventForm";
 
 export default function AddEventFormContent({ form }: FormProps) {
+	const placeholderDateFrom = useMemo(() => {
+		const date = form.getValues("dateFrom");
+		return date.toLocaleTimeString().slice(0, 5);
+	}, []);
+
+	const placeholderDateTo = useMemo(() => {
+		const date = form.getValues("dateFrom");
+		date.setHours(date.getHours() + 1);
+		return date.toLocaleTimeString().slice(0, 5);
+	}, []);
+
 	return (
 		<div className="flex flex-col items-start justify-start gap-9 w-full">
 			<div className="flex flex-col items-start justify-start gap-9 w-full">
@@ -116,7 +127,12 @@ export default function AddEventFormContent({ form }: FormProps) {
 							name="timeFrom"
 							render={({ field }) => (
 								<FormItem>
-									<TimePicker form={form} field={field} />
+									<TimePicker
+										form={form}
+										field={field}
+										placeholder={placeholderDateFrom}
+									/>
+									<FormMessage />
 								</FormItem>
 							)}
 						/>
@@ -127,7 +143,12 @@ export default function AddEventFormContent({ form }: FormProps) {
 								name="timeTo"
 								render={({ field }) => (
 									<FormItem>
-										<TimePicker form={form} field={field} />
+										<TimePicker
+											form={form}
+											field={field}
+											placeholder={placeholderDateTo}
+										/>
+										<FormMessage />
 									</FormItem>
 								)}
 							/>
