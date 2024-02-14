@@ -29,11 +29,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
 // Validation
-import { isValid } from "@/validations";
+import { isValid } from "@/lib/validations";
 import {
 	type JoinFormSection3Schema,
 	joinFormSection3Schema,
-} from "@/validations/JoinForm/section3";
+} from "@/lib/validations/JoinForm/section3";
 
 const section3Keys = Object.keys(
 	joinFormSection3Schema.shape

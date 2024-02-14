@@ -16,7 +16,7 @@ import AddEventFormContent from "./Content";
 import {
 	type AddEventFormSchema,
 	addEventFormSchema,
-} from "@/validations/AddEventForm";
+} from "@/lib/validations/AddEventForm";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -25,6 +25,10 @@ export default function AddEventForm() {
 		false | "submitting" | "submitted"
 	>(false);
 
+	const currentDate = new Date();
+	const nextHourDate = new Date();
+	nextHourDate.setHours(currentDate.getHours() + 1);
+
 	// 1. Define your form.
 	const form = useForm<AddEventFormSchema>({
 		resolver: zodResolver(addEventFormSchema),
@@ -32,9 +36,9 @@ export default function AddEventForm() {
 			name: "",
 			description: "",
 			responsible: [],
-			dateFrom: "",
-			dateTo: "",
-			ace: "no",
+			dateFrom: currentDate,
+			dateTo: nextHourDate,
+			ace: undefined,
 		},
 	});
 

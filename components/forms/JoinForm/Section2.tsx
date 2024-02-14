@@ -27,11 +27,11 @@ import {
 } from "@/components/ui/select";
 
 // Validation
-import { isValid } from "@/validations";
+import { isValid } from "@/lib/validations";
 import {
 	type JoinFormSection2Schema,
 	joinFormSection2Schema,
-} from "@/validations/JoinForm/section2";
+} from "@/lib/validations/JoinForm/section2";
 
 const section2Keys = Object.keys(
 	joinFormSection2Schema.shape

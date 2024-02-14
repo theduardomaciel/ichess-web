@@ -19,8 +19,8 @@ import {
 	type JoinFormSchema,
 	JoinFormTypeEnum,
 	joinFormSchema,
-} from "@/validations/JoinForm";
-import { goToNextSection } from "@/validations";
+} from "@/lib/validations/JoinForm";
+import { goToNextSection } from "@/lib/validations";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 

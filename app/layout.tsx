@@ -47,7 +47,9 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
+					{/* <div vaul-drawer-wrapper=""> */}
 					{children}
+					{/* </div> */}
 					<Footer />
 				</ThemeProvider>
 			</body>
