@@ -54,7 +54,10 @@ export default function AddEventForm() {
 				<AddEventFormContent form={form} />
 			</form>
 			<LoadingDialog isOpen={currentState === "submitting"} />
-			<SuccessDialog isOpen={currentState === "submitted"} />
+			<SuccessDialog
+				isOpen={currentState === "submitted"}
+				href={`/dashboard`}
+			/>
 		</Form>
 	);
 }

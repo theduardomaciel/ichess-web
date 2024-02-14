@@ -52,21 +52,28 @@ export default function Footer() {
 			{/* Column 2 */}
 			<div className="flex flex-row items-start justify-start lg:justify-end gap-20">
 				<FooterSection
-					title="Sobre"
+					title="Contato"
 					items={[
-						{ label: "Sobre nós", href: "/sobre" },
-						{ label: "Contato", href: "/contato" },
+						{
+							label: "Instituto",
+							href: "https://ic.ufal.br",
+							target: "_blank",
+						},
+						{
+							label: "E-mail",
+							href: "mailto:ichess.ufal@gmail.com",
+						},
 					]}
 				/>
 				<FooterSection
-					title="Suporte"
+					title="Mais"
 					items={[
-						{ label: "FAQ", href: "/faq" },
 						{
 							label: "Política de Horas",
-							href: "/politica-de-horas",
+							href: "https://drive.google.com/file/d/1lcP4scEH7wrscuBN98DmDGVsytYv2rr-/view?usp=drive_link",
+							target: "_blank",
 						},
-						{ label: "Instituição", href: "/instituicao" },
+						{ label: "Dashboard", href: "/dashboard" },
 					]}
 				/>
 			</div>
@@ -79,6 +86,7 @@ interface FooterSectionProps {
 	items: {
 		label: string;
 		href: string;
+		target?: "_blank" | "_self";
 	}[];
 }
 
@@ -91,7 +99,11 @@ function FooterSection({ title, items }: FooterSectionProps) {
 			<ul className="flex flex-col items-start justify-center gap-5">
 				{items.map((item, index) => (
 					<li key={index}>
-						<a href={item.href} className="font-medium">
+						<a
+							href={item.href}
+							target={item.target ?? "_self"}
+							className="font-medium"
+						>
 							{item.label}
 						</a>
 					</li>

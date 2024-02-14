@@ -166,7 +166,7 @@ const SelectorTrigger = forwardRef<
 		role="combobox"
 		type="button"
 		className={cn(
-			"w-full justify-between h-fit font-normal text-sm lg:text-base min-h-[52px] px-3 lg:px-4",
+			"w-full justify-between h-fit font-normal hover:bg-background-200 hover:text-neutral text-sm lg:text-base min-h-[52px] px-3 lg:px-4",
 			!field.value && "text-muted-foreground"
 		)}
 		{...props}

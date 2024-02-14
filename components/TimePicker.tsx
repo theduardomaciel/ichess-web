@@ -186,7 +186,7 @@ export function TimePicker({ form, field, placeholder }: Props) {
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<Command>
+			<Command loop>
 				<PopoverTrigger asChild>
 					<FormControl>
 						<CommandPrimitive.Input
@@ -258,7 +258,7 @@ export function TimePicker({ form, field, placeholder }: Props) {
 					</FormControl>
 				</PopoverTrigger>
 				<PopoverContent
-					className="p-0 w-[var(--radix-popover-trigger-width)] max-h-56 overflow-y-scroll"
+					className="p-0 w-[var(--radix-popover-trigger-width)] max-h-56 overflow-y-scroll no-scrollbar"
 					onOpenAutoFocus={(event) => event.preventDefault()}
 					onCloseAutoFocus={(event) => event.preventDefault()}
 				>
@@ -268,6 +268,7 @@ export function TimePicker({ form, field, placeholder }: Props) {
 							<CommandItem
 								value={time}
 								key={time}
+								className="lg:py-3"
 								onSelect={(currentValue) => {
 									form.setValue(field.name, currentValue);
 

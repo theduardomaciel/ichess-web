@@ -19,6 +19,7 @@ import Link from "next/link";
 
 interface Props {
 	isOpen: boolean;
+	href?: string;
 }
 
 export function LoadingDialog({ isOpen }: Props) {
@@ -49,7 +50,7 @@ export function LoadingDialog({ isOpen }: Props) {
 	);
 }
 
-export function SuccessDialog({ isOpen }: Props) {
+export function SuccessDialog({ isOpen, href }: Props) {
 	return (
 		<Dialog open={isOpen}>
 			<DialogContent
@@ -71,7 +72,7 @@ export function SuccessDialog({ isOpen }: Props) {
 					breve!
 				</DialogDescription>
 				<DialogFooter>
-					<Link href={`/`}>
+					<Link href={href ?? `/`}>
 						<Button type="button" className="h-11 px-6">
 							Entendi!
 						</Button>
