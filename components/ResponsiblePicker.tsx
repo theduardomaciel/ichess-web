@@ -1,11 +1,13 @@
 "use client";
 
 import { forwardRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useQueryString } from "@/hooks/use-query-string";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -61,27 +63,48 @@ const moderators = [
 	},
 ] as Moderator[];
 
-interface Props {
+interface FormResponsiblePickerProps {
 	form: UseFormReturn<any>;
 	field: {
 		value: string[];
 	};
 }
 
-export function ResponsiblePicker({ form, field }: Props) {
+export function FormResponsiblePicker({
+	form,
+	field,
+}: FormResponsiblePickerProps) {
 	const [open, setOpen] = useState(false);
 	const isDesktop = useMediaQuery("(min-width: 768px)");
+
+	const handleSelect = (id: string) => {
+		{
+			if (field.value.includes(id)) {
+				form.setValue(
+					"responsible",
+					field.value.filter((id) => id !== id)
+				);
+			} else {
+				form.setValue("responsible", [...field.value, id]);
+			}
+		}
+	};
+
+	const isActive = (id: string) => field.value.includes(id);
 
 	if (isDesktop) {
 		return (
 			<Popover>
 				<PopoverTrigger asChild>
 					<FormControl>
-						<SelectorTrigger field={field} />
+						<SelectorTrigger moderatorsIds={field.value} />
 					</FormControl>
 				</PopoverTrigger>
 				<PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-					<ModeratorsList form={form} field={field} />
+					<ModeratorsList
+						onSelect={handleSelect}
+						isActive={isActive}
+					/>
 				</PopoverContent>
 			</Popover>
 		);
@@ -91,12 +114,84 @@ export function ResponsiblePicker({ form, field }: Props) {
 		<Drawer open={open} onOpenChange={setOpen}>
 			<DrawerTrigger asChild>
 				<FormControl>
-					<SelectorTrigger field={field} />
+					<SelectorTrigger moderatorsIds={field.value} />
 				</FormControl>
 			</DrawerTrigger>
 			<DrawerContent>
 				<div className="mt-4 border-t">
-					<ModeratorsList form={form} field={field} />
+					<ModeratorsList
+						onSelect={handleSelect}
+						isActive={isActive}
+					/>
+				</div>
+			</DrawerContent>
+		</Drawer>
+	);
+}
+
+interface ParamsResponsiblePickerProps {}
+
+export function ParamsResponsiblePicker({}: ParamsResponsiblePickerProps) {
+	const [open, setOpen] = useState(false);
+	const isDesktop = useMediaQuery("(min-width: 768px)");
+
+	const router = useRouter();
+	const { query, setQuery, deleteQuery, toUrl } = useQueryString();
+
+	const handleSelect = (id: string) => {
+		console.log("id", id);
+
+		const responsible = query.get("responsible")?.split(",") ?? [];
+
+		if (responsible.includes(id)) {
+			responsible.splice(responsible.indexOf(id), 1);
+		} else {
+			responsible.push(id);
+		}
+
+		if (responsible.length === 0) {
+			router.push(toUrl(deleteQuery("responsible")), { scroll: true });
+		} else {
+			router.push(toUrl(setQuery("responsible", responsible.join(","))), {
+				scroll: true,
+			});
+		}
+	};
+
+	const isActive = (id: string) =>
+		(query.get("responsible")?.split(",") ?? []).includes(id);
+
+	if (isDesktop) {
+		return (
+			<Popover>
+				<PopoverTrigger asChild>
+					<SelectorTrigger
+						moderatorsIds={query.get("responsible")?.split(",")}
+					/>
+				</PopoverTrigger>
+				<PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+					<ModeratorsList
+						onSelect={handleSelect}
+						isActive={isActive}
+					/>
+				</PopoverContent>
+			</Popover>
+		);
+	}
+
+	return (
+		<Drawer open={open} onOpenChange={setOpen}>
+			<DrawerTrigger asChild>
+				<SelectorTrigger
+					moderatorsIds={query.get("responsible")?.split(",")}
+				/>
+			</DrawerTrigger>
+			<DrawerContent>
+				<div className="mt-4 border-t">
+					<ModeratorsList
+						onSelect={handleSelect}
+						isActive={isActive}
+					/>
 				</div>
 			</DrawerContent>
 		</Drawer>
@@ -143,7 +238,7 @@ function Tag({ moderator }: { moderator: Moderator }) {
 					alt={moderator.name}
 					className="w-6 h-6 rounded-full"
 				/>
-				<span className="text-neutral text-xs font-bold">
+				<span className="text-neutral text-xs font-bold max-w-full overflow-hidden whitespace-nowrap overflow-ellipsis">
 					{moderator.name}
 				</span>
 			</div>
@@ -153,13 +248,13 @@ function Tag({ moderator }: { moderator: Moderator }) {
 
 interface SelectorTriggerProps
 	extends React.ComponentPropsWithoutRef<typeof PopoverTrigger> {
-	field: Props["field"];
+	moderatorsIds?: string[];
 }
 
 const SelectorTrigger = forwardRef<
 	React.ElementRef<typeof PopoverTrigger>,
 	SelectorTriggerProps
->(({ field, ...props }, ref) => (
+>(({ moderatorsIds, ...props }, ref) => (
 	<Button
 		ref={ref}
 		variant="outline"
@@ -167,27 +262,37 @@ const SelectorTrigger = forwardRef<
 		type="button"
 		className={cn(
 			"w-full justify-between h-fit font-normal hover:bg-background-200 hover:text-neutral text-sm lg:text-base min-h-[52px] px-3 lg:px-4",
-			!field.value && "text-muted-foreground"
+			!moderatorsIds ||
+				(moderatorsIds &&
+					moderatorsIds.length === 0 &&
+					"text-muted-foreground")
 		)}
 		{...props}
 	>
-		<ul className="flex flex-row flex-wrap justify-start gap-1">
-			{field.value.length > 0
-				? field.value.map((id) => {
-						const moderator = moderators.find(
-							(mod) => mod.id === id
-						);
-						if (!moderator) return null;
+		{moderatorsIds && moderatorsIds && moderatorsIds.length > 0 ? (
+			<ul className="flex flex-row flex-wrap justify-start gap-1">
+				{moderatorsIds.map((id) => {
+					const moderator = moderators.find((mod) => mod.id === id);
+					if (!moderator) return null;
 
-						return <Tag key={moderator.id} moderator={moderator} />;
-				  })
-				: "Selecione um moderador..."}
-		</ul>
+					return <Tag key={moderator.id} moderator={moderator} />;
+				})}
+			</ul>
+		) : (
+			<p className="overflow-hidden whitespace-nowrap overflow-ellipsis">
+				Selecione um moderador...
+			</p>
+		)}
 		<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 	</Button>
 ));
 
-function ModeratorsList({ form, field }: Props) {
+interface ModeratorsListProps {
+	onSelect: (id: string) => void;
+	isActive: (id: string) => boolean;
+}
+
+function ModeratorsList({ onSelect, isActive }: ModeratorsListProps) {
 	return (
 		<Command>
 			<CommandInput placeholder="Procurar moderador..." />
@@ -200,25 +305,11 @@ function ModeratorsList({ form, field }: Props) {
 						<CommandItem
 							key={moderator.id}
 							className="aria-selected:bg-primary-200/50"
-							onSelect={() => {
-								if (field.value.includes(moderator.id)) {
-									form.setValue(
-										"responsible",
-										field.value.filter(
-											(id) => id !== moderator.id
-										)
-									);
-								} else {
-									form.setValue("responsible", [
-										...field.value,
-										moderator.id,
-									]);
-								}
-							}}
+							onSelect={() => onSelect(moderator.id)}
 						>
 							<ModeratorPreview
 								moderator={moderator}
-								isActive={field.value.includes(moderator.id)}
+								isActive={isActive(moderator.id)}
 							/>
 						</CommandItem>
 					))

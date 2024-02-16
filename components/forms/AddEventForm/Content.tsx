@@ -24,7 +24,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { ResponsiblePicker } from "@/components/ResponsiblePicker";
+import { FormResponsiblePicker } from "@/components/ResponsiblePicker";
 
 import { ptBR } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
@@ -79,7 +79,10 @@ export default function AddEventFormContent({ form }: FormProps) {
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>Responsáveis</FormLabel>
-								<ResponsiblePicker form={form} field={field} />
+								<FormResponsiblePicker
+									form={form}
+									field={field}
+								/>
 								<FormMessage />
 							</FormItem>
 						)}

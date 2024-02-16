@@ -28,7 +28,7 @@ export default function SortBy() {
 	);
 
 	return (
-		<Select value={sortBy ?? "Mais recentes"} onValueChange={onValueChange}>
+		<Select value={sortBy ?? "recent"} onValueChange={onValueChange}>
 			<SelectTrigger className="w-44">
 				<SelectValue />
 			</SelectTrigger>

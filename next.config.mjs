@@ -20,6 +20,22 @@ const nextConfig = {
 
 		return config;
 	},
+	images: {
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "randomuser.me",
+				port: "",
+				pathname: "/api/portraits/**",
+			},
+			{
+				protocol: "https",
+				hostname: "github.com",
+				port: "",
+				pathname: "/**",
+			},
+		],
+	},
 };
 
 export default nextConfig;

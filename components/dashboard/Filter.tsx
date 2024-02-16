@@ -14,19 +14,30 @@ import { cn } from "@/lib/utils";
 
 interface FilterProps {
 	title: string;
+	prefix: string;
 	items: {
 		name: string;
 		value: string;
 	}[];
+	linesAmount?: number;
 }
 
-const MAX_VISIBLE_FILTERS = 4;
+const MAX_VISIBLE_FILTERS = 2;
+const ITEM_HEIGHT = 40;
+const GAP = 16;
 
-export function Filter({ title, items }: FilterProps) {
+const heightFormula = (linesAmount: number) => {
+	// A função ainda possui um bug: quando o usuário diminui muito o zoom, o texto do filtro passa a ocupar somente uma linha, mas o cálculo da altura não é atualizado
+	return (
+		(ITEM_HEIGHT + GAP) * MAX_VISIBLE_FILTERS - GAP * (linesAmount - 1 / 2)
+	);
+};
+
+export function Filter({ title, prefix, items, linesAmount = 1 }: FilterProps) {
 	const router = useRouter();
 	const { query, setQuery, deleteQuery, toUrl } = useQueryString();
 
-	const filters = query.get("filters")?.split(",") ?? [];
+	const filters = query.get(prefix)?.split(",") ?? [];
 
 	const handleFilterChange = (value: string, checked: boolean) => {
 		const newFilters = checked
@@ -34,12 +45,12 @@ export function Filter({ title, items }: FilterProps) {
 			: filters.filter((f) => f !== value);
 
 		if (newFilters.length === 0) {
-			deleteQuery("filters");
+			router.push(toUrl(deleteQuery(prefix)), { scroll: false });
+		} else {
+			router.push(toUrl(setQuery(prefix, newFilters.join(","))), {
+				scroll: false,
+			});
 		}
-
-		router.push(toUrl(setQuery("filters", newFilters.join(","))), {
-			scroll: false,
-		});
 	};
 
 	const [isExpanded, setIsExpanded] = useState(false);
@@ -50,17 +61,26 @@ export function Filter({ title, items }: FilterProps) {
 				{title}
 			</p>
 			<ul
-				className={cn(
-					"flex flex-col justify-start items-start gap-4 overflow-hidden max-h-[50rem] transition-[max-height] duration-300 ease-in-out",
-					{
-						"max-h-[190px]": !isExpanded,
-					}
-				)}
+				className={
+					"flex flex-col justify-start items-start gap-4 overflow-hidden max-h-[50rem] transition-[max-height] duration-300 ease-in-out"
+				}
+				style={{
+					maxHeight: isExpanded
+						? `${ITEM_HEIGHT * items.length * linesAmount}px`
+						: `${
+								heightFormula(linesAmount)
+								// para linesAmount = 1 -> GAP / 2
+								// para linesAmount = 2 -> GAP * 2
+								// Como tornar isso em uma fórmula?
+						  }px`,
+				}}
 			>
 				{items.map((item, index) => (
 					<li
 						key={index}
-						className="flex justify-center items-center gap-2"
+						className={
+							"flex justify-start items-center gap-2 w-full"
+						}
 					>
 						<Checkbox
 							id={item.value}
@@ -76,7 +96,15 @@ export function Filter({ title, items }: FilterProps) {
 								);
 							}}
 						/>
-						<Label htmlFor={item.value}>{item.name}</Label>
+						<Label
+							className="lg:text-sm leading-tight text-ellipsis overflow-hidden line-clamp-2"
+							style={{
+								maxHeight: ITEM_HEIGHT - 4,
+							}}
+							htmlFor={item.value}
+						>
+							{item.name}
+						</Label>
 					</li>
 				))}
 			</ul>

@@ -18,7 +18,7 @@ interface Props {
 
 const MAX_PAGINATION_PAGES = 5;
 
-export default function DashboardPagination({
+export function DashboardPagination({
 	pathname,
 	searchParams,
 	total,

@@ -10,6 +10,7 @@ import SearchIcon from "@/public/icons/search.svg";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useQueryString } from "@/hooks/use-query-string";
+import { X } from "lucide-react";
 
 interface SearchBarProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
@@ -53,6 +54,15 @@ export default function SearchBar({
 				}}
 				{...props}
 			/>
+			{value && (
+				<X
+					className="absolute w-4 h-4 right-4 top-1/2 -translate-y-1/2 text-muted cursor-pointer"
+					onClick={() => {
+						setValue("");
+						router.push(toUrl(deleteQuery("search")));
+					}}
+				/>
+			)}
 		</div>
 	);
 }
