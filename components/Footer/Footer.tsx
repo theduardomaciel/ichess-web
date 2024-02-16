@@ -16,30 +16,33 @@ export default function Footer() {
 			{/* Column 1 */}
 			<div className="flex flex-col items-start justify-center gap-12">
 				<div className="flex flex-col items-start justify-center gap-4">
-					<ul className="flex flex-row items-center justify-start gap-5 flex-wrap">
+					<div className="flex flex-row items-center justify-start gap-5 flex-wrap">
 						<Link href={`/`}>
 							<Logo />
 						</Link>
 						<div className="h-8 w-[1px] bg-neutral/50" />
 						<a
+							title="Repositório do Projeto IChess no Github"
 							target="_blank"
 							href={`https://github.com/theduardomaciel/ichess-web`}
 						>
 							<GithubIcon />
 						</a>
 						<a
+							title="Servidor do Discord IChess UFAL"
 							target="_blank"
 							href={`https://discord.gg/jrMfHpRnCf`}
 						>
 							<DiscordIcon />
 						</a>
 						<a
+							title="Instagram IChess UFAL"
 							target="_blank"
 							href={`https://instagram.com/ichess.ufal`}
 						>
 							<InstagramIcon />
 						</a>
-					</ul>
+					</div>
 					<p>
 						Copyright @ 2024 IChess. Todos os direitos reservados.
 					</p>

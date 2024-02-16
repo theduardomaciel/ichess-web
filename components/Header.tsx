@@ -8,15 +8,21 @@ export default function Header() {
 				<Logo />
 			</Link>
 			<ul className="hidden md:flex flex-row items-center justify-end gap-12">
-				<Link href={`/`} className="font-medium cursor-not-allowed">
-					Home
-				</Link>
-				<Link href={`/`} className="font-medium cursor-not-allowed">
-					Sobre
-				</Link>
-				<Link href={`/`} className="font-medium cursor-not-allowed">
-					Eventos
-				</Link>
+				<li>
+					<Link href={`/`} className="font-medium cursor-not-allowed">
+						Home
+					</Link>
+				</li>
+				<li>
+					<Link href={`/`} className="font-medium cursor-not-allowed">
+						Sobre
+					</Link>
+				</li>
+				<li>
+					<Link href={`/`} className="font-medium cursor-not-allowed">
+						Eventos
+					</Link>
+				</li>
 			</ul>
 		</header>
 	);
