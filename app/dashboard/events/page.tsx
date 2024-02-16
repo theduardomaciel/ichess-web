@@ -1,4 +1,7 @@
+import { useId } from "react";
+
 import Link from "next/link";
+import Image from "next/image";
 
 // Icons
 import CalendarIcon from "@/public/icons/calendar.svg";
@@ -16,7 +19,6 @@ import { ParamsResponsiblePicker } from "@/components/ResponsiblePicker";
 // Types
 import { z } from "zod";
 import { ACEs, addEventFormSchema } from "@/lib/validations/AddEventForm";
-import Image from "next/image";
 
 type Event = z.infer<typeof addEventFormSchema> & { id: string };
 
@@ -296,6 +298,9 @@ export default function EventsOverall({
 }
 
 function Empty() {
+	const randomId = useId();
+	// Math.floor(Math.random() * 1000);
+
 	return (
 		<div className="w-full px-8 py-16 rounded-2xl border border-dashed border-primary-200/50 flex-col justify-center items-center gap-4 inline-flex">
 			<ErrorFaceIcon />
@@ -308,7 +313,7 @@ function Empty() {
 				filtros pra ver se você acha dessa vez!
 			</p>
 			<Link
-				href={`/dashboard/events?r=true`}
+				href={`/dashboard/events?r=${randomId}`}
 				className="text-tertiary-200 underline"
 			>
 				Limpar filtros
