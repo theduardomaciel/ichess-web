@@ -12,7 +12,7 @@ import ThemePicker from "./subcomponents/ThemePicker";
 
 export default function Footer() {
 	return (
-		<footer className="flex flex-col-reverse md:flex-row flex-wrap items-start justify-between px-wrapper py-20 z-50 bg-background-300 gap-9 relative">
+		<footer className="flex flex-col-reverse md:flex-row flex-wrap items-start justify-between px-wrapper py-20 z-50 bg-gray-400 gap-9 relative">
 			{/* Column 1 */}
 			<div className="flex flex-col items-start justify-center gap-12">
 				<div className="flex flex-col items-start justify-center gap-4">

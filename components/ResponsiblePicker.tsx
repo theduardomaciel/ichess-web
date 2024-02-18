@@ -29,12 +29,6 @@ import {
 // Types
 import type { UseFormReturn } from "react-hook-form";
 
-interface Moderator {
-	name: string;
-	image_url: string;
-	id: string;
-}
-
 const moderators = [
 	{
 		name: "John Doe",
@@ -61,7 +55,7 @@ const moderators = [
 		image_url: "https://randomuser.me/api/portraits/men/21.jpg",
 		id: "5",
 	},
-] as Moderator[];
+] as any[];
 
 interface FormResponsiblePickerProps {
 	form: UseFormReturn<any>;
@@ -202,7 +196,7 @@ function ModeratorPreview({
 	moderator,
 	isActive,
 }: {
-	moderator: Moderator;
+	moderator: any;
 	isActive: boolean;
 }) {
 	return (
@@ -229,9 +223,9 @@ function ModeratorPreview({
 	);
 }
 
-function Tag({ moderator }: { moderator: Moderator }) {
+function Tag({ moderator }: { moderator: any }) {
 	return (
-		<li className="flex justify-start items-center pl-1 pr-2 py-1 bg-background-600 border border-primary-200/50 gap-2 rounded-full">
+		<li className="flex justify-start items-center pl-1 pr-2 py-1 bg-gray-600 border border-primary-200/50 gap-2 rounded-full">
 			<div className="flex items-center gap-3">
 				<img
 					src={moderator.image_url}
@@ -261,7 +255,7 @@ const SelectorTrigger = forwardRef<
 		role="combobox"
 		type="button"
 		className={cn(
-			"w-full justify-between h-fit font-normal hover:bg-background-200 hover:text-neutral text-sm lg:text-base min-h-[52px] px-3 lg:px-4",
+			"w-full justify-between h-fit font-normal hover:bg-gray-300 hover:text-neutral text-sm lg:text-base min-h-[52px] px-3 lg:px-4",
 			!moderatorsIds ||
 				(moderatorsIds &&
 					moderatorsIds.length === 0 &&

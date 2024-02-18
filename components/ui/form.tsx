@@ -158,10 +158,11 @@ FormDescription.displayName = "FormDescription";
 
 interface FormMessageProps extends React.HTMLAttributes<HTMLParagraphElement> {
 	type?: PanelProps["type"];
+	showIcon?: PanelProps["showIcon"];
 }
 
 const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
-	({ className, children, type, ...props }, ref) => {
+	({ className, children, type, showIcon, ...props }, ref) => {
 		const { error, formMessageId } = useFormField();
 		const body = error ? String(error?.message) : children;
 
@@ -171,7 +172,12 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
 
 		if (error?.type === "custom" && type) {
 			return (
-				<Panel type={type} className={className} {...props}>
+				<Panel
+					type={type}
+					showIcon={showIcon}
+					className={className}
+					{...props}
+				>
 					{body}
 				</Panel>
 			);
@@ -182,7 +188,7 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
 				ref={ref}
 				id={formMessageId}
 				className={cn(
-					"text-sm lg:text-base change_later font-medium text-destructive",
+					"text-sm change_later font-medium text-destructive",
 					className
 				)}
 				{...props}

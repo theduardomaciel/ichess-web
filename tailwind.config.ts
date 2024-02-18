@@ -25,15 +25,19 @@ const config = {
 			},
 			colors: {
 				neutral: "hsl(var(--neutral))",
-				border: "hsl(var(--background-100))",
-				input: "hsl(var(--background-100))",
+				border: "hsl(var(--gray-200))",
+				input: "hsl(var(--gray-200))",
 				ring: "hsl(var(--primary-200))",
 				background: {
-					DEFAULT: "hsl(var(--background-200))",
-					100: "hsl(var(--background-100))",
-					200: "hsl(var(--background-200))",
-					300: "hsl(var(--background-300))",
-					600: "hsl(var(--background-600))",
+					DEFAULT: "hsl(var(--gray-300))",
+				},
+				gray: {
+					100: "hsl(var(--gray-100))",
+					200: "hsl(var(--gray-200))",
+					300: "hsl(var(--gray-300))",
+					400: "hsl(var(--gray-400))",
+					500: "hsl(var(--gray-500))",
+					600: "hsl(var(--gray-600))",
 				},
 				foreground: "hsl(var(--foreground))",
 				primary: {
@@ -61,19 +65,19 @@ const config = {
 					foreground: "hsl(0 0% 100%)",
 				},
 				muted: {
-					DEFAULT: "hsl(var(--font-light))",
-					foreground: "hsl(var(--font-light) / 0.65)",
+					DEFAULT: "hsl(var(--foreground))",
+					foreground: "hsl(var(--neutral) / 0.65)",
 				},
 				accent: {
 					DEFAULT: "hsl(var(--primary-100))",
 					foreground: "hsl(var(--neutral))",
 				},
 				popover: {
-					DEFAULT: "hsl(var(--background-200))",
+					DEFAULT: "hsl(var(--gray-300))",
 					foreground: "hsl(var(--neutral))",
 				},
 				card: {
-					DEFAULT: "hsl(var(--background-300))",
+					DEFAULT: "hsl(var(--gray-400))",
 					foreground: "hsl(0 0% 100%)",
 				},
 			},

@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 
 // Icons
-import CalendarIcon from "@/public/icons/calendar.svg";
 import ErrorFaceIcon from "@/public/icons/error_face.svg";
 
 // Components
@@ -15,16 +14,18 @@ import { AceLabel } from "@/components/dashboard/AceCard";
 import { DashboardPagination } from "@/components/dashboard/Pagination";
 import { Filter } from "@/components/dashboard/Filter";
 import { ParamsResponsiblePicker } from "@/components/ResponsiblePicker";
+import { DateDisplay } from "@/components/ui/calendar";
 
 // Types
 import { z } from "zod";
 import { ACEs, addEventFormSchema } from "@/lib/validations/AddEventForm";
+import { cn } from "@/lib/utils";
 
 type Event = z.infer<typeof addEventFormSchema> & { id: string };
 
 const events: Event[] = [
 	{
-		id: "1",
+		id: "EHD723",
 		name: "Reunião de planejamento de eventos",
 		description: undefined,
 		responsible: ["1", "2"],
@@ -34,7 +35,7 @@ const events: Event[] = [
 		ace: "3",
 	},
 	{
-		id: "2",
+		id: "DHD723",
 		name: "Reunião Semanal",
 		description: "Reunião semanal para discutir os eventos da semana",
 		responsible: ["1"],
@@ -44,7 +45,7 @@ const events: Event[] = [
 		ace: "1",
 	},
 	{
-		id: "3",
+		id: "UHD723",
 		name: "Treino de táticas retiradas de livros",
 		description:
 			"Consiste na realização de sessões de treinamento focadas em aprender táticas retiradas de livros de xadrez relevantes. Os membros estudarão e resolverão problemas com o objetivo de melhorar sua capacidade de visualização e cálculo de jogo.",
@@ -55,7 +56,7 @@ const events: Event[] = [
 		ace: "3",
 	},
 	{
-		id: "4",
+		id: "IHD723",
 		name: "Análise de partidas históricas",
 		description:
 			"Envolve a análise de partidas históricas de xadrez, permitindo aos membros do grupo aprenderem com partidas passadas que tiveram momentos icônicos.",
@@ -66,7 +67,7 @@ const events: Event[] = [
 		ace: "3",
 	},
 	{
-		id: "5",
+		id: "OHD723",
 		name: "Análise de partidas relevantes entre os membros",
 		description:
 			"Consiste na análise conjunta de partidas realizadas entre os membros da ACE. Dessa forma será possível ver as diferentes abordagens individuais dos jogadores, erros que comeram e pontos a serem fortalecidos.",
@@ -182,7 +183,6 @@ export default function EventsOverall({
 						?.toLowerCase()
 						.includes(search.toLowerCase()))
 			) {
-				console.log("search", search);
 				return false;
 			}
 
@@ -267,7 +267,7 @@ export default function EventsOverall({
 				)}
 			</div>
 			<div className="flex flex-col items-start justify-start gap-4 w-full min-w-60 lg:w-[35%] lg:max-w-[17.5vw]">
-				<div className="flex p-6 bg-background-300 rounded-lg flex-col justify-start items-start gap-9 w-full ">
+				<div className="flex p-6 bg-gray-400 rounded-lg flex-col justify-start items-start gap-9 w-full ">
 					<h6>Filtros</h6>
 					<Filter
 						title="Filtrar por período"
@@ -332,7 +332,7 @@ function EventPreview({ event }: { event: Event }) {
 	const lastResponsible = responsible.length > 1 ? responsible.pop() : null;
 
 	return (
-		<li className="flex flex-col items-start justify-start p-9 gap-4 bg-background-200 rounded-lg w-full hover:bg-background-300 hover:outline outline-background-100 transition-[background-color,outline]">
+		<li className="flex flex-col items-start justify-start p-9 gap-4 bg-gray-300 rounded-lg w-full hover:bg-gray-400 hover:outline outline-gray-200 transition-[background-color,outline]">
 			<div className="flex flex-row items-center justify-between flex-wrap w-full gap-2">
 				<h3 className="text-lg lg:text-xl font-extrabold font-title leading-snug text-left">
 					{event.name}
@@ -349,27 +349,24 @@ function EventPreview({ event }: { event: Event }) {
 			<div className="flex flex-row flex-wrap items-center gap-4 justify-between w-full">
 				{ACE && <AceLabel ace={ACE} />}
 				<div className="flex flex-row items-center justify-between">
-					<div className="flex flex-row items-center justify-start gap-2">
-						<CalendarIcon />
-						<span className="text-sm lg:text-base font-medium leading-none mt-0.5">
-							{event.dateFrom.toLocaleDateString("pt-BR", {
-								year: "numeric",
-								month: "2-digit",
-								day: "numeric",
-							})}
-						</span>
-					</div>
+					<DateDisplay
+						dateString={event.dateFrom.toLocaleDateString("pt-BR", {
+							year: "numeric",
+							month: "2-digit",
+							day: "numeric",
+						})}
+					/>
 					{/* <span className="text-sm font-medium">{event.timeFrom}</span> */}
 				</div>
 			</div>
-			<div className="flex flex-row items-center justify-between pt-4 border-t border-t-background-100 w-full">
-				<div className="flex flex-row items-center justify-start gap-2">
+			<div className="flex flex-row flex-wrap items-center justify-between pt-4 border-t border-t-gray-100 w-full gap-4">
+				<div className="flex flex-row items-center justify-start gap-2 max-sm:w-full">
 					<ProfileImages
 						image_urls={responsible
 							.map((mod) => mod!.image_url)
 							.concat(lastResponsible?.image_url || [])}
 					/>
-					<span className="text-right text-neutral text-sm font-semibold">
+					<span className="text-left text-neutral text-sm font-semibold">
 						Organizado por{" "}
 						{responsible.map((mod) => mod?.name).join(", ")}{" "}
 						{lastResponsible && "e"} {lastResponsible?.name}
@@ -394,7 +391,9 @@ function ProfileImages({ image_urls }: { image_urls: string[] }) {
 					key={url}
 					height={24}
 					width={24}
-					className="w-6 h-6 min-w-6 rounded-full -ml-2"
+					className={cn("w-6 h-6 min-w-6 rounded-full", {
+						"-ml-2": image_urls.indexOf(url) > 0,
+					})}
 				/>
 			))}
 		</div>

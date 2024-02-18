@@ -3,11 +3,7 @@
 import { useSearchParams } from "next/navigation";
 
 // Components
-import {
-	type FormProps,
-	FormSection,
-	NextSectionButton,
-} from "@/components/forms";
+import { type FormProps, FormSection, SectionFooter } from "@/components/forms";
 import {
 	FormControl,
 	FormField,
@@ -89,7 +85,7 @@ export default function JoinForm1({ form }: FormProps) {
 								{...field}
 							/>
 						</FormControl>
-						<FormMessage type="warning" />
+						<FormMessage type="warning" showIcon />
 					</FormItem>
 				)}
 			/>
@@ -176,7 +172,7 @@ export default function JoinForm1({ form }: FormProps) {
 					</FormItem>
 				)}
 			/>
-			<NextSectionButton />
+			<SectionFooter />
 		</FormSection>
 	);
 }

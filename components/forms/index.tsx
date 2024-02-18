@@ -3,6 +3,8 @@ import { cn } from "@/lib/utils";
 
 // Icons
 import WarningIcon from "@/public/icons/warning.svg";
+import InfoIcon from "@/public/icons/info.svg";
+
 import CheckCircleIcon from "@/public/icons/check_circle.svg";
 import ArrowRightIcon from "@/public/icons/arrow_right.svg";
 
@@ -52,7 +54,7 @@ function FormSection({
 		>
 			<FormProgress {...rest} />
 			<div
-				className="flex flex-col justify-start items-start gap-6 p-9 w-full rounded-2xl border border-background-100 relative"
+				className="flex flex-col justify-start items-start gap-6 p-9 w-full rounded-2xl border border-gray-200 relative"
 				onClick={() => {
 					if (!isSelected && canSelect) {
 						// Atualizamos o valor do formulário para o valor da seção atual
@@ -82,7 +84,7 @@ function FormProgress({
 	fields,
 }: Omit<FormSectionProps, "form">) {
 	return (
-		<div className="flex flex-col w-full lg:sticky top-4 left-0 lg:w-2/5 bg-background-600 rounded-2xl border border-primary-100">
+		<div className="flex flex-col w-full lg:sticky top-4 left-0 lg:w-2/5 bg-gray-600 rounded-2xl border border-primary-100">
 			<div className="flex flex-row items-center justify-start px-6 py-[18px] bg-primary-100 rounded-tl-2xl rounded-tr-2xl">
 				<h6 className="font-extrabold text-base lg:text-lg">
 					{section}. {title}
@@ -115,10 +117,17 @@ function FormProgress({
 export interface PanelProps extends React.HTMLAttributes<HTMLParagraphElement> {
 	className?: string;
 	type?: "error" | "warning" | "info" | "hint";
+	showIcon?: boolean;
 	children: React.ReactNode;
 }
 
-function Panel({ className, type = "info", children, ...rest }: PanelProps) {
+function Panel({
+	className,
+	type = "info",
+	showIcon,
+	children,
+	...rest
+}: PanelProps) {
 	return (
 		<div
 			className={cn(
@@ -132,15 +141,13 @@ function Panel({ className, type = "info", children, ...rest }: PanelProps) {
 				}
 			)}
 		>
-			{/* {
+			{showIcon &&
 				{
 					error: <WarningIcon />,
 					warning: <WarningIcon />,
-					info: <WarningIcon />,
+					info: <InfoIcon className="w-[18px] h-[18px]" />,
 					hint: <WarningIcon />,
-				}[type]
-			} */}
-			{type === "warning" && <WarningIcon />}
+				}[type]}
 			<p
 				className={cn(
 					"grow shrink basis-0 text-sm font-medium whitespace-pre-wrap w-full",
@@ -154,13 +161,25 @@ function Panel({ className, type = "info", children, ...rest }: PanelProps) {
 	);
 }
 
-function NextSectionButton({
-	isFinalSection = false,
-}: {
+interface SectionFooterProps {
+	children?: React.ReactNode;
 	isFinalSection?: boolean;
-}) {
+}
+
+function SectionFooter({
+	isFinalSection = false,
+	children,
+}: SectionFooterProps) {
 	return (
-		<div className="flex flex-row items-center justify-end w-full">
+		<div
+			className={cn(
+				"flex flex-row flex-wrap items-center justify-end w-full gap-4",
+				{
+					"justify-between": !!children,
+				}
+			)}
+		>
+			{children}
 			<Button
 				className="px-9 h-12 text-white font-extrabold bg-primary-200 w-full md:w-fit"
 				type="submit"
@@ -196,4 +215,4 @@ function ResearchHeader({
 	);
 }
 
-export { FormSection, FormProgress, Panel, NextSectionButton, ResearchHeader };
+export { FormSection, FormProgress, Panel, SectionFooter, ResearchHeader };

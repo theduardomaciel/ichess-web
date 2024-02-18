@@ -1,13 +1,12 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { UseFormReturn } from "react-hook-form";
+import { useSearchParams } from "next/navigation";
 
 // Components
 import {
 	type FormProps,
 	FormSection,
-	NextSectionButton,
+	SectionFooter,
 	ResearchHeader,
 } from "@/components/forms";
 import {
@@ -26,7 +25,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 
 // Validation
 import { isValid } from "@/lib/validations";
@@ -69,7 +67,7 @@ export default function JoinForm3({ form }: FormProps) {
 				name="section3.reason"
 				render={({ field }) => (
 					<FormItem>
-						<ResearchHeader index={2}>
+						<ResearchHeader index={1}>
 							“O que fez você se inscrever no IChess?”
 						</ResearchHeader>
 						<FormControl>
@@ -128,7 +126,7 @@ export default function JoinForm3({ form }: FormProps) {
 					/>
 				)}
 			</div>
-			<NextSectionButton isFinalSection />
+			<SectionFooter isFinalSection />
 		</FormSection>
 	);
 }

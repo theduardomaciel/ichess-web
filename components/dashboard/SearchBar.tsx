@@ -46,7 +46,7 @@ export default function SearchBar({
 		<div className="w-full relative">
 			<SearchIcon className="absolute w-4 h-4 left-4 top-1/2 -translate-y-1/2 text-muted" />
 			<Input
-				className={cn("pl-12 lg:pl-12", className)}
+				className={cn("px-12 lg:px-12", className)}
 				value={value}
 				onChange={(e) => {
 					if (onChange) onChange(e);

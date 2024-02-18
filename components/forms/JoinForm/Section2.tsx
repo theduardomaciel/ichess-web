@@ -7,7 +7,7 @@ import { UseFormReturn } from "react-hook-form";
 import {
 	type FormProps,
 	FormSection,
-	NextSectionButton,
+	SectionFooter,
 	Panel,
 } from "@/components/forms";
 import {
@@ -128,7 +128,7 @@ export default function JoinForm2({ form }: FormProps) {
 					</FormItem>
 				)}
 			/>
-			<NextSectionButton />
+			<SectionFooter />
 		</FormSection>
 	);
 }

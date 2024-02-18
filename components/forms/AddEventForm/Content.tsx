@@ -33,14 +33,15 @@ import { TimePicker } from "@/components/TimePicker";
 // Utils
 import { ACEs } from "@/lib/validations/AddEventForm";
 
-const sectionClassName = "p-9 w-full rounded-2xl border border-background-100";
+const sectionClassName =
+	"md:p-9 w-full md:rounded-2xl md:border border-gray-200";
 
 export default function AddEventFormContent({ form }: FormProps) {
 	return (
 		<div className="flex flex-col items-start justify-start gap-9 w-full">
 			<div
 				className={
-					"flex flex-col lg:flex-row items-start justify-start gap-9 w-full"
+					"flex flex-col md:flex-row items-start justify-start gap-9 w-full"
 				}
 			>
 				<div className="flex flex-col items-start justify-start gap-9 w-full">
@@ -117,7 +118,7 @@ export default function AddEventFormContent({ form }: FormProps) {
 										cell: "w-full rounded-md",
 										head_cell: "w-full",
 										day_selected:
-											"bg-muted hover:bg-muted text-background-200 hover:text-background-200",
+											"bg-muted hover:bg-muted text-gray-300 hover:text-gray-300",
 									}}
 								/>
 								<FormMessage />
@@ -141,7 +142,7 @@ export default function AddEventFormContent({ form }: FormProps) {
 									</FormItem>
 								)}
 							/>
-							<div className="w-[15px] h-0.5 bg-background-300 rounded-full" />
+							<div className="w-[15px] h-0.5 bg-gray-400 rounded-full" />
 							<div className="flex flex-row items-center justify-between w-full">
 								<FormField
 									control={form.control}

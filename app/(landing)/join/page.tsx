@@ -6,7 +6,7 @@ import JoinForm from "@/components/forms/JoinForm";
 export default function JoinPage() {
 	return (
 		<main className="flex min-h-screen flex-col items-start justify-start">
-			<div className="flex flex-col items-center justify-center relative pt-48 pb-28 px-wrapper w-full bg-background-300 gap-4">
+			<div className="flex flex-col items-center justify-center relative pt-48 pb-28 px-wrapper w-full bg-gray-400 gap-4">
 				<h1 className="font-title font-extrabold text-4xl lg:text-5xl lg:max-w-[50%] text-center">
 					Formulário de Inscrição
 				</h1>

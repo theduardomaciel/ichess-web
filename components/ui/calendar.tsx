@@ -1,11 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+
+// Icons
+import CalendarIcon from "@/public/icons/calendar.svg";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -27,7 +30,7 @@ function Calendar({
 				nav: "space-x-1 flex items-center",
 				nav_button: cn(
 					buttonVariants({ variant: "outline" }),
-					"h-7 w-7 bg-transparent p-0 opacity-50 hover:bg-background-200 hover:opacity-100"
+					"h-7 w-7 bg-transparent p-0 opacity-50 hover:bg-gray-300 hover:opacity-100"
 				),
 				nav_button_previous: "absolute left-1",
 				nav_button_next: "absolute right-1",
@@ -39,12 +42,12 @@ function Calendar({
 				cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-muted/50 [&:has([aria-selected])]:bg-muted first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
 				day: cn(
 					buttonVariants({ variant: "ghost" }),
-					"h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-background-200 w-full"
+					"h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-gray-300 w-full"
 				),
 				day_range_end: "day-range-end",
 				day_selected:
-					"bg-muted text-primary-foreground hover:bg-background-100 hover:text-primary-foreground focus:bg-background-100 focus:text-primary-foreground",
-				day_today: "bg-background-100 text-accent-foreground",
+					"bg-muted text-primary-foreground hover:bg-gray-200 hover:text-primary-foreground focus:bg-gray-200 focus:text-primary-foreground",
+				day_today: "bg-gray-200 text-accent-foreground",
 				day_outside:
 					"day-outside text-muted-foreground opacity-50 aria-selected:bg-muted/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
 				day_disabled: "text-muted-foreground opacity-50",
@@ -65,4 +68,34 @@ function Calendar({
 }
 Calendar.displayName = "Calendar";
 
-export { Calendar };
+interface Props {
+	dateString: string;
+	size?: "sm" | "md" | "lg";
+}
+
+function DateDisplay({ dateString, size = "md" }: Props) {
+	return (
+		<div
+			className={cn("flex flex-row items-center justify-start gap-2", {
+				"sm:gap-4": size === "lg",
+			})}
+		>
+			<CalendarIcon
+				className={cn("w-[18px] h-[18px]", {
+					"w-6 h-6": size === "lg",
+					"w-4 h-4": size === "sm",
+				})}
+			/>
+			<span
+				className={cn("text-base font-medium leading-none mt-[1px]", {
+					"text-lg": size === "lg",
+					"text-sm": size === "sm",
+				})}
+			>
+				{dateString}
+			</span>
+		</div>
+	);
+}
+
+export { Calendar, DateDisplay };
