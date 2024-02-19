@@ -81,11 +81,11 @@ input[type="number"]::-webkit-outer-spin-button {
 	}
 }
 
-/* @media (min-width: 640px) {
+@media (min-width: 640px) {
 	:root {
 		--wrapper: 2.88rem;
 	}
-} */
+}
 
 @media (min-width: 1024px) {
 	:root {

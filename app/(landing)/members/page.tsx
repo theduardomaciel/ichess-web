@@ -1,6 +1,6 @@
 import BuildingIcon from "@/public/icons/building.svg";
 
-export default function LandingEvents() {
+export default function LandingMembers() {
 	return (
 		<main className="flex min-h-screen flex-col items-start justify-start">
 			<div className="flex flex-col items-center justify-center w-full h-full pt-36 gap-6 px-wrapper">

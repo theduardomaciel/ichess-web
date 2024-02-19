@@ -74,12 +74,12 @@ export default function PresenceForm3({ form }: FormProps) {
 							hoje?"
 						</ResearchHeader>
 						<FormControl>
-							<ul className="flex flex-row items-center justify-between w-full gap-2">
+							<ul className="flex flex-row items-center justify-between w-full gap-2 flex-wrap">
 								{faces.map((Face, index) => (
 									<li key={index}>
 										<Face
 											className={cn(
-												"w-24 h-24 filter sepia hover:filter-none transition-[filter] duration-100 ease-in-out",
+												"w-12 h-12 md:w-24 md:h-24 filter sepia hover:filter-none transition-[filter] duration-100 ease-in-out cursor-pointer",
 												{
 													"filter-none":
 														field.value ===

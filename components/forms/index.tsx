@@ -54,7 +54,7 @@ function FormSection({
 		>
 			<FormProgress {...rest} />
 			<div
-				className="flex flex-col justify-start items-start gap-6 p-9 w-full rounded-2xl border border-gray-200 relative"
+				className="flex flex-col justify-start items-start gap-6 p-6 md:p-9 w-full rounded-2xl border border-gray-200 relative"
 				onClick={() => {
 					if (!isSelected && canSelect) {
 						// Atualizamos o valor do formulário para o valor da seção atual
@@ -90,7 +90,7 @@ function FormProgress({
 					{section}. {title}
 				</h6>
 			</div>
-			<ul className="flex flex-col items-start justify-start px-9 py-[18px] gap-4">
+			<ul className="flex flex-col items-start justify-start px-6 md:px-9 py-[18px] gap-4">
 				{fields.map((field, key) => {
 					if (!field.name) return null;
 

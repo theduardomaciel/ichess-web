@@ -45,7 +45,7 @@ export default function PresenceForm1({ form }: FormProps) {
 		<FormSection
 			section={1}
 			form={form}
-			canSelect={true}
+			canSelect={false}
 			isSelected={!currentSection || currentSection === "1"}
 			title="Identificação"
 			fields={section1}
