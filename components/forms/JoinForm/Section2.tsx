@@ -1,8 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { UseFormReturn } from "react-hook-form";
-
 // Components
 import {
 	type FormProps,

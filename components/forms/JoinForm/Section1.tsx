@@ -1,7 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-
 // Components
 import { type FormProps, FormSection, SectionFooter } from "@/components/forms";
 import {
