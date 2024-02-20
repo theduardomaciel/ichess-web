@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 // Icons
@@ -15,31 +14,33 @@ import { FormLabel } from "@/components/ui/form";
 // Types
 import type { UseFormReturn } from "react-hook-form";
 
+// Utils
+import { scrollToNextSection } from "@/lib/validations";
+
 export interface FormProps {
 	form: UseFormReturn<any>;
 }
 
 interface FormSectionProps {
 	title: string;
-	canSelect?: boolean;
+	section: number;
 	form: FormProps["form"];
 	fields: {
 		name?: string;
 		value?: boolean;
 	}[];
-	section: number;
-	isSelected?: boolean;
 	children?: React.ReactNode;
 }
 
-function FormSection({
-	children,
-	canSelect,
-	form,
-	isSelected,
-	...rest
-}: FormSectionProps) {
-	const router = useRouter();
+function FormSection({ form, children, ...rest }: FormSectionProps) {
+	const formSection = form.watch("formType");
+	const sectionNumber = formSection?.replace("section", "");
+
+	const canSelect =
+		!isNaN(sectionNumber) && rest.section > Number(sectionNumber);
+	const isSelected =
+		formSection === `section${rest.section}` ||
+		(rest.section == 1 && !formSection);
 
 	return (
 		<div
@@ -61,14 +62,7 @@ function FormSection({
 						form.setValue("formType", `section${rest.section}`);
 
 						// Scrollamos para a seção atual
-						router.replace(`?section=${rest.section}`, {
-							scroll: false,
-						});
-						document
-							.getElementById(`section${rest.section}`)
-							?.scrollIntoView({
-								behavior: "smooth",
-							});
+						scrollToNextSection(rest.section);
 					}
 				}}
 			>
@@ -162,8 +156,8 @@ function Panel({
 }
 
 interface SectionFooterProps {
-	children?: React.ReactNode;
 	isFinalSection?: boolean;
+	children?: React.ReactNode;
 }
 
 function SectionFooter({

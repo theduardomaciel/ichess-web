@@ -1,8 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { UseFormReturn } from "react-hook-form";
-
 // Components
 import {
 	type FormProps,
@@ -18,13 +15,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 
 // Validation
 import { isValid } from "@/lib/validations";
@@ -42,7 +32,8 @@ const formTitles = {
 };
 
 export default function PresenceForm2({ form }: FormProps) {
-	const currentSection = useSearchParams().get("section");
+	const formSection = form.watch("formType");
+	const sectionNumber = formSection?.replace("section", "");
 
 	const section2 = section2Keys.map((key) => {
 		return {
@@ -53,13 +44,9 @@ export default function PresenceForm2({ form }: FormProps) {
 
 	return (
 		<FormSection
-			form={form}
-			canSelect={
-				!isNaN(Number(currentSection)) && Number(currentSection) > 1
-			}
-			section={2}
-			isSelected={currentSection === "2"}
 			title="Validação"
+			section={2}
+			form={form}
 			fields={section2}
 		>
 			<FormField

@@ -41,7 +41,7 @@ const formTitles = {
 };
 
 export default function JoinForm1({ form }: FormProps) {
-	const currentSection = useSearchParams().get("section");
+	const formSection = form.watch("formType");
 
 	const section1 = section1Keys.map((key) => {
 		return {
@@ -52,11 +52,9 @@ export default function JoinForm1({ form }: FormProps) {
 
 	return (
 		<FormSection
+			title="Dados Pessoais"
 			section={1}
 			form={form}
-			canSelect={true}
-			isSelected={!currentSection || currentSection === "1"}
-			title="Dados Pessoais"
 			fields={section1}
 		>
 			<FormField

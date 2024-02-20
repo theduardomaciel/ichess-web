@@ -1,7 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-
 // Components
 import { type FormProps, FormSection, SectionFooter } from "@/components/forms";
 import {
@@ -32,7 +30,7 @@ const formTitles = {
 };
 
 export default function PresenceForm1({ form }: FormProps) {
-	const currentSection = useSearchParams().get("section");
+	const formSection = form.watch("formType");
 
 	const section1 = section1Keys.map((key) => {
 		return {
@@ -43,11 +41,9 @@ export default function PresenceForm1({ form }: FormProps) {
 
 	return (
 		<FormSection
+			title="Identificação"
 			section={1}
 			form={form}
-			canSelect={false}
-			isSelected={!currentSection || currentSection === "1"}
-			title="Identificação"
 			fields={section1}
 		>
 			<FormField

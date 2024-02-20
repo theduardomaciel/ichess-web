@@ -44,7 +44,7 @@ const formTitles = {
 };
 
 export default function JoinForm3({ form }: FormProps) {
-	const currentSection = useSearchParams().get("section");
+	const formSection = form.watch("formType");
 	const otherIsSelected = form.watch("section3.discovery") === "other";
 
 	const section3 = section3Keys.map((key) => {
@@ -55,20 +55,14 @@ export default function JoinForm3({ form }: FormProps) {
 	});
 
 	return (
-		<FormSection
-			form={form}
-			section={3}
-			isSelected={currentSection === "3"}
-			title="Pesquisa"
-			fields={section3}
-		>
+		<FormSection title="Pesquisa" section={3} form={form} fields={section3}>
 			<FormField
 				control={form.control}
 				name="section3.reason"
 				render={({ field }) => (
 					<FormItem>
 						<ResearchHeader index={1}>
-							“O que fez você se inscrever no IChess?”
+							&quot;O que fez você se inscrever no IChess?&quot;
 						</ResearchHeader>
 						<FormControl>
 							<Textarea
@@ -88,7 +82,7 @@ export default function JoinForm3({ form }: FormProps) {
 					render={({ field }) => (
 						<FormItem>
 							<ResearchHeader index={2}>
-								“Por onde você descobriu o IChess?”
+								&quot;Por onde você descobriu o IChess?&quot;
 							</ResearchHeader>
 							<Select
 								onValueChange={field.onChange}

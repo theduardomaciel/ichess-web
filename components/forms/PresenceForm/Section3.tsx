@@ -58,10 +58,9 @@ export default function PresenceForm3({ form }: FormProps) {
 
 	return (
 		<FormSection
-			form={form}
-			section={3}
-			isSelected={currentSection === "3"}
 			title="Avaliação"
+			section={3}
+			form={form}
 			fields={section3}
 		>
 			<FormField
@@ -111,8 +110,8 @@ export default function PresenceForm3({ form }: FormProps) {
 					render={({ field }) => (
 						<FormItem>
 							<ResearchHeader index={2}>
-								“Você tem alguma sugestão do que poderia ter
-								sido melhor durante o evento?”
+								&quot;Você tem alguma sugestão do que poderia
+								ter sido melhor durante o evento?&quot;
 							</ResearchHeader>
 							<FormControl>
 								<Textarea

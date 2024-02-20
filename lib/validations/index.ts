@@ -15,10 +15,7 @@ export function isValid(
 	);
 }
 
-export function goToNextSection(newSection: number, router: any) {
-	router.replace(`?section=${newSection}`, {
-		scroll: false,
-	});
+export function scrollToNextSection(newSection: number) {
 	document.getElementById(`section${newSection}`)?.scrollIntoView({
 		behavior: "smooth",
 	});

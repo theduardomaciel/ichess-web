@@ -40,7 +40,7 @@ export default function AddEventForm() {
 
 		console.log(data);
 
-		await wait(1000);
+		await wait(5000);
 
 		setCurrentState("submitted");
 	}

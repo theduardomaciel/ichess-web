@@ -8,6 +8,14 @@ export const joinFormSection1Schema = z.object({
 		})
 		.refine((value) => value.split(" ").length >= 2, {
 			message: `Um nome completo deve conter pelo menos um sobrenome.`,
+		})
+		.transform((value) => {
+			return value
+				.split(" ")
+				.map((word) => {
+					return word.charAt(0).toUpperCase() + word.slice(1);
+				})
+				.join(" ");
 		}),
 	email: z
 		.string({ required_error: "Obrigatório" })
@@ -22,9 +30,12 @@ export const joinFormSection1Schema = z.object({
 			}
 		),
 	course: z.enum(["cc", "ec"], { required_error: "Selecione uma opção" }),
-	registrationId: z.string({ required_error: "Obrigatório" }).min(7, {
-		message: "O número de matrícula é inválido.",
-	}),
+	registrationId: z
+		.string({ required_error: "Obrigatório" })
+		.min(7, {
+			message: "O número de matrícula é inválido.",
+		})
+		.max(9, { message: "O número de matrícula é inválido" }),
 	period: z.enum(["1", "2", "3", "4", "5", "6", "7", "8"], {
 		required_error: "Selecione uma opção",
 	}),

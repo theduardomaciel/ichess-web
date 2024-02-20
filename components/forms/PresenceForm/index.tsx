@@ -20,7 +20,7 @@ import {
 	PresenceFormTypeEnum,
 	presenceFormSchema,
 } from "@/lib/validations/PresenceForm";
-import { goToNextSection } from "@/lib/validations";
+import { scrollToNextSection } from "@/lib/validations";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -57,16 +57,17 @@ export default function PresenceForm() {
 
 	// 2. Define a submit handler.
 	async function handleNextFormType() {
+		const formSection = formType.replace("section", "");
+
 		// 3. Switch between form sections.
 		switch (formType) {
 			case "section1":
-				console.log("section1", form.getValues());
 				setFormType(PresenceFormTypeEnum.Section2);
-				goToNextSection(2, router);
+				scrollToNextSection(Number(formSection) + 1);
 				break;
 			case "section2":
 				setFormType(PresenceFormTypeEnum.Section3);
-				goToNextSection(3, router);
+				scrollToNextSection(Number(formSection) + 1);
 				break;
 			case "section3":
 				// Do something with the form values.
@@ -76,7 +77,7 @@ export default function PresenceForm() {
 
 				setCurrentState("submitting");
 
-				await wait(2000);
+				await wait(5000);
 
 				setCurrentState("submitted");
 
