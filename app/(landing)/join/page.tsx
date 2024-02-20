@@ -2,6 +2,7 @@ import Image from "next/image";
 
 // Components
 import JoinForm from "@/components/forms/JoinForm";
+import { Suspense } from "react";
 
 export default function JoinPage() {
 	return (
@@ -23,7 +24,9 @@ export default function JoinPage() {
 					alt="Chess board for decoration"
 				/>
 			</div>
-			<JoinForm />
+			<Suspense fallback={<p>testando...</p>}>
+				<JoinForm />
+			</Suspense>
 		</main>
 	);
 }

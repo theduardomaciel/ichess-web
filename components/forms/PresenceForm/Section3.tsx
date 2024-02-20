@@ -70,8 +70,8 @@ export default function PresenceForm3({ form }: FormProps) {
 				render={({ field }) => (
 					<FormItem>
 						<ResearchHeader index={1}>
-							"De 1 a 5, como você classificaria o evento de
-							hoje?"
+							&quot;De 1 a 5, como você classificaria o evento de
+							hoje?&quot;
 						</ResearchHeader>
 						<FormControl>
 							<ul className="flex flex-row items-center justify-between w-full gap-2 flex-wrap">

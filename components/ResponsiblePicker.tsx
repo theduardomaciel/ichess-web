@@ -28,6 +28,7 @@ import {
 
 // Types
 import type { UseFormReturn } from "react-hook-form";
+import Image from "next/image";
 
 const moderators = [
 	{
@@ -206,7 +207,9 @@ function ModeratorPreview({
 			})}
 		>
 			<div className="flex items-center gap-3">
-				<img
+				<Image
+					width={32}
+					height={32}
 					src={moderator.image_url}
 					alt={moderator.name}
 					className="w-8 h-8 rounded-full"
@@ -227,7 +230,9 @@ function Tag({ moderator }: { moderator: any }) {
 	return (
 		<li className="flex justify-start items-center pl-1 pr-2 py-1 bg-gray-600 border border-primary-200/50 gap-2 rounded-full">
 			<div className="flex items-center gap-3">
-				<img
+				<Image
+					width={24}
+					height={24}
 					src={moderator.image_url}
 					alt={moderator.name}
 					className="w-6 h-6 rounded-full"
@@ -280,6 +285,8 @@ const SelectorTrigger = forwardRef<
 		<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 	</Button>
 ));
+
+SelectorTrigger.displayName = "SelectorTrigger";
 
 interface ModeratorsListProps {
 	onSelect: (id: string) => void;
