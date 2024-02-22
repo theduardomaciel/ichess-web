@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@designbycode/tailwindcss-text-stroke':
+    specifier: ^1.2.1
+    version: 1.2.1(tailwindcss@3.4.1)
   '@dotlottie/react-player':
     specifier: ^1.6.15
     version: 1.6.17(react@18.2.0)
@@ -1399,6 +1402,14 @@ packages:
       '@babel/helper-string-parser': 7.23.4
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+
+  /@designbycode/tailwindcss-text-stroke@1.2.1(tailwindcss@3.4.1):
+    resolution: {integrity: sha512-6SqiFuMjJaWWv5Mm+RIu8Ui3Kc/8AK3m0qSocPOFhk4yS6aMVioy8QLghAj5KOR/8lsfZe3r7I1uJ7YM1FimUA==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0 || >=3.0.0-alpha.1'
+    dependencies:
+      tailwindcss: 3.4.1
+    dev: false
 
   /@dotlottie/common@0.7.10:
     resolution: {integrity: sha512-fIer1XuAWWhcBAg6gTxsPH9bsqVbKkjSFP5JU8zMzRRd+dQPAwpEd0z2JU3fZxK32DBsXrZVSZN1Z0Mq+uDNQA==}
