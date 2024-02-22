@@ -20,7 +20,7 @@ export function ExternalEvent(props: EventProps) {
 				{props.description || "(Evento sem descrição)"}
 			</p>
 
-			<div className="flex items-center">
+			<div className="flex flex-wrap justify-center items-center gap-4">
 				<Button asChild className="" size={"xl"}>
 					<Link href="/">
 						{"Quero participar" /** mudar isso */}

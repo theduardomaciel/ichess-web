@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export function Header() {
 	return (
-		<div className="flex w-full items-stretch justify-start relative overflow-hidden pt-[10rem] pb-[3rem] bg-[#282622]">
+		<div className="flex flex-wrap w-full items-stretch justify-start gap-10 relative overflow-hidden pt-[10rem] pb-[3rem] bg-[#282622]">
 			<Image
 				src={`/board.png`}
 				width={2048}

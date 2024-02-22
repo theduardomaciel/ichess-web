@@ -78,7 +78,7 @@ export default function Events() {
 					<h2 className="font-title font-bold text-[#8c8b8b] text-start text-2xl pt-4 pb-3">
 						Esta Semana
 					</h2>
-					<div className="flex gap-4 w-full">
+					<div className="flex flex-wrap gap-4 w-full">
 						{thisWeekInternal.length ? (
 							thisWeekInternal.map(
 								(ExternalEvent: EventProps, index: number) => (
