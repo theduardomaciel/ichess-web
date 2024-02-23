@@ -39,6 +39,8 @@
 
 		--wrapper: 1.44rem;
 		--radius: 0.5rem;
+
+		--board-bg-square: 5rem;
 	}
 
 	.dark {
@@ -84,6 +86,45 @@ input[type="number"]::-webkit-outer-spin-button {
 		background-color: hsl(var(--gray-400));
 		border-radius: 0.25rem;
 	}
+}
+
+.bg-board {
+	background-image: linear-gradient(
+			45deg,
+			rgba(58, 54, 46, 0.4) 25%,
+			transparent 25%,
+			transparent 75%,
+			rgba(58, 54, 46, 0.4) 75%,
+			rgba(58, 54, 46, 0.4)
+		),
+		linear-gradient(
+			45deg,
+			rgba(58, 54, 46, 0.4) 25%,
+			transparent 25%,
+			transparent 75%,
+			rgba(58, 54, 46, 0.4) 75%,
+			rgba(58, 54, 46, 0.4)
+		),
+		linear-gradient(
+			45deg,
+			rgba(108, 140, 75, 0.4) 25%,
+			transparent 25%,
+			transparent 75%,
+			rgba(108, 140, 75, 0.4) 75%,
+			rgba(108, 140, 75, 0.4)
+		),
+		linear-gradient(
+			45deg,
+			rgba(108, 140, 75, 0.4) 25%,
+			transparent 25%,
+			transparent 75%,
+			rgba(108, 140, 75, 0.4) 75%,
+			rgba(108, 140, 75, 0.4)
+		);
+	background-position: 0 0,
+		calc(var(--board-bg-square) / 2) calc(var(--board-bg-square) / 2),
+		calc(var(--board-bg-square) / 2) 0, 0 calc(var(--board-bg-square) / 2);
+	background-size: var(--board-bg-square) var(--board-bg-square);
 }
 
 @media (min-width: 640px) {

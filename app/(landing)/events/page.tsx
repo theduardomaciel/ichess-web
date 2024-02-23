@@ -38,7 +38,7 @@ export default function Events() {
 				<div className="text-left">
 					<h2 className="text-2xl font-title font-bold pb-3 pt-12">
 						Este Mês
-					</h2>
+					</h3>
 
 					<div className="flex gap-4 w-full pt-2 pb-16">
 						{monthExternal.length ? (
@@ -49,9 +49,8 @@ export default function Events() {
 							<NoEvents />
 						)}
 					</div>
-				</div>
 
-				<StyledTitle title="Eventos Internos" />
+					<StyledTitle title="Eventos Internos" />
 
 				{!isLogged ? (
 					<NotLogged>
@@ -98,7 +97,7 @@ export default function Events() {
 
 					<h2 className="font-title font-bold text-neutral text-start text-2xl pt-10 pb-3">
 						Próxima Semana
-					</h2>
+					</h3>
 					<div className="flex gap-4 w-full">
 						{nextWeekInternal.length ? (
 							nextWeekInternal.map(
