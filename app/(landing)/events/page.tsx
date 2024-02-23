@@ -36,7 +36,7 @@ export default function Events() {
 				<StyledTitle title="Evento Externos" />
 
 				<div className="text-left">
-					<h2 className="text-2xl font-title font-bold pb-3 pt-12">
+					<h3 className="text-2xl font-title font-bold pb-3 pt-12">
 						Este Mês
 					</h3>
 
@@ -51,6 +51,7 @@ export default function Events() {
 					</div>
 
 					<StyledTitle title="Eventos Internos" />
+				</div>
 
 				{!isLogged ? (
 					<NotLogged>
@@ -73,12 +74,12 @@ export default function Events() {
 						"flex flex-col items-start justify-start mt-8 gap-4 w-full",
 						{
 							"opacity-50 pointer-events-none": !isLogged,
-						},
+						}
 					)}
 				>
-					<h2 className="font-title font-bold text-neutral text-start text-2xl pt-4 pb-3">
+					<h3 className="font-title font-bold text-neutral text-start text-2xl pt-4 pb-3">
 						Esta Semana
-					</h2>
+					</h3>
 					<div className="flex flex-col md:grid grid-cols-2 gap-4 w-full">
 						{thisWeekInternal.length ? (
 							thisWeekInternal.map(
@@ -88,14 +89,14 @@ export default function Events() {
 										event={event}
 										showResponsible={false}
 									/>
-								),
+								)
 							)
 						) : (
 							<NoEvents />
 						)}
 					</div>
 
-					<h2 className="font-title font-bold text-neutral text-start text-2xl pt-10 pb-3">
+					<h3 className="font-title font-bold text-neutral text-start text-2xl pt-10 pb-3">
 						Próxima Semana
 					</h3>
 					<div className="flex gap-4 w-full">
@@ -107,7 +108,7 @@ export default function Events() {
 										event={event}
 										showResponsible={false}
 									/>
-								),
+								)
 							)
 						) : (
 							<NoEvents />

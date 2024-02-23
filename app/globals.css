@@ -31,16 +31,19 @@
 		--info-200: 216 67% 44%;
 
 		--gray-100: 0 0% 100%;
-		--gray-200: 0 0% 98.04%;
-		--gray-300: 0 0% 96.08%;
-		--gray-400: 0 0% 94.33%;
+		--gray-200: 0 0% 99%;
+		--gray-300: 0 0% 98%;
+		--gray-400: 0 0% 94%;
 		--gray-500: 0 0% 92%;
 		--gray-600: 0 0% 90%;
 
 		--wrapper: 1.44rem;
 		--radius: 0.5rem;
 
-		--board-bg-square: 5rem;
+		--board-square-dark: 230, 230, 230;
+		--board-square-light: 108, 140, 75;
+		--board-square: 10rem;
+		--board-opacity: 0.1;
 	}
 
 	.dark {
@@ -53,6 +56,9 @@
 		--gray-400: 40 8% 15%;
 		--gray-500: 30 3% 11%;
 		--gray-600: 30 4% 9%;
+
+		--board-square-dark: 58, 54, 46;
+		--board-opacity: 0.05;
 	}
 }
 
@@ -91,40 +97,40 @@ input[type="number"]::-webkit-outer-spin-button {
 .bg-board {
 	background-image: linear-gradient(
 			45deg,
-			rgba(58, 54, 46, 0.4) 25%,
+			rgba(var(--board-square-dark), var(--board-opacity)) 25%,
 			transparent 25%,
 			transparent 75%,
-			rgba(58, 54, 46, 0.4) 75%,
-			rgba(58, 54, 46, 0.4)
+			rgba(var(--board-square-dark), var(--board-opacity)) 75%,
+			rgba(var(--board-square-dark), var(--board-opacity))
 		),
 		linear-gradient(
 			45deg,
-			rgba(58, 54, 46, 0.4) 25%,
+			rgba(var(--board-square-dark), var(--board-opacity)) 25%,
 			transparent 25%,
 			transparent 75%,
-			rgba(58, 54, 46, 0.4) 75%,
-			rgba(58, 54, 46, 0.4)
+			rgba(var(--board-square-dark), var(--board-opacity)) 75%,
+			rgba(var(--board-square-dark), var(--board-opacity))
 		),
 		linear-gradient(
 			45deg,
-			rgba(108, 140, 75, 0.4) 25%,
+			rgba(var(--board-square-light), var(--board-opacity)) 25%,
 			transparent 25%,
 			transparent 75%,
-			rgba(108, 140, 75, 0.4) 75%,
-			rgba(108, 140, 75, 0.4)
+			rgba(var(--board-square-light), var(--board-opacity)) 75%,
+			rgba(var(--board-square-light), var(--board-opacity))
 		),
 		linear-gradient(
 			45deg,
-			rgba(108, 140, 75, 0.4) 25%,
+			rgba(var(--board-square-light), var(--board-opacity)) 25%,
 			transparent 25%,
 			transparent 75%,
-			rgba(108, 140, 75, 0.4) 75%,
-			rgba(108, 140, 75, 0.4)
+			rgba(var(--board-square-light), var(--board-opacity)) 75%,
+			rgba(var(--board-square-light), var(--board-opacity))
 		);
 	background-position: 0 0,
-		calc(var(--board-bg-square) / 2) calc(var(--board-bg-square) / 2),
-		calc(var(--board-bg-square) / 2) 0, 0 calc(var(--board-bg-square) / 2);
-	background-size: var(--board-bg-square) var(--board-bg-square);
+		calc(var(--board-square) / 2) calc(var(--board-square) / 2),
+		calc(var(--board-square) / 2) 0, 0 calc(var(--board-square) / 2);
+	background-size: var(--board-square) var(--board-square);
 }
 
 @media (min-width: 640px) {
@@ -144,7 +150,7 @@ input[type="number"]::-webkit-outer-spin-button {
 		@apply border-border;
 	}
 	body {
-		@apply bg-gray-600 text-neutral text-base;
+		@apply bg-gray-400 dark:bg-gray-600 text-neutral text-base;
 		font-feature-settings: "rlig" 1, "calt" 1;
 	}
 }

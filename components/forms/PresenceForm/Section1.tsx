@@ -52,7 +52,7 @@ export default function PresenceForm1({ form }: FormProps) {
 				render={({ field }) => (
 					<FormItem>
 						<FormControl>
-							<GoogleLoginButton />
+							<GoogleLoginButton fullWidth />
 						</FormControl>
 						<FormMessage />
 					</FormItem>
