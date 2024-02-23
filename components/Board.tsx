@@ -1,7 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect } from "react";
+
+import Image from "next/image";
 import VanillaTilt from "vanilla-tilt";
 
 export default function BoardTilt() {

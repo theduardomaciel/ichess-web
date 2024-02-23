@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 // Icons
-import GoogleColorIcon from "@/public/google.svg";
+import GoogleColorIcon from "@/public/logos/google.svg";
 
 import { Button } from "@/components/ui/button";
 
@@ -20,7 +20,7 @@ export function GoogleLoginButton({ className, fullWidth }: Props) {
 				{
 					"w-full": fullWidth, // É necessário aplicar esse estilo separadamente pois alguns navegadores não suportam o uso de width: fit-content, o que impossibilitaria o uso do botão em casos que fugissem do padrão,
 				},
-				className,
+				className
 			)}
 		>
 			<GoogleColorIcon className="w-5 h-5" />
