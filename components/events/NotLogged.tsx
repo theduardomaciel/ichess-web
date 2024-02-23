@@ -1,19 +1,23 @@
-import { GoogleLoginButton } from "../GoogleLogin";
+import Link from "next/link";
 
-export function NotLogged() {
+// Components
+import { GoogleLoginButton } from "../GoogleLogin";
+import React from "react";
+
+interface Props {
+	className?: string;
+	children: React.ReactNode;
+}
+
+export function NotLogged({ className, children }: Props) {
 	return (
-		<div className="flex justify-center items-center flex-wrap gap-3 w-10/12 p-6 m-auto border-4 border-dashed border-[#3b432b] rounded mt-10">
+		<div className="flex flex-col md:flex-row justify-center items-start md:items-center flex-wrap w-full px-8 py-8 md:py-4 gap-4 md:gap-9 m-auto border-2 border-dashed border-primary-200/50 rounded-md mt-10 text-base font-medium">
 			<span className="font-title font-bold">Eita!</span>
-			<span className="text-s flex-1">
-				Para acessar os eventos internos você precisa ser membro
-				integrante do IChess :( Caso você seja parte do IC, e tem
-				interesse em participar,{" "}
-				<a className="underline text-[#83b352]">ingresse já</a> no
-				projeto!
+			<span className="text-left flex-1">
+				{children ||
+					"Você precisa estar logado para ver os eventos internos."}
 			</span>
-			<div>
-				<GoogleLoginButton />
-			</div>
+			<GoogleLoginButton className="px-8 max-md:w-full" />
 		</div>
 	);
 }

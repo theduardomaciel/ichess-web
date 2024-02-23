@@ -1,8 +1,7 @@
-
 export function NoEvents() {
 	return (
-		<div className="flex-1 py-5 border-4 text-center border-[#3b432b] border-dashed rounded">
-			<span className="text-[#8c8b8b] text-xl font-title font-bold">
+		<div className="flex-1 py-5 border-2 text-center border-primary-200/50 border-dashed rounded opacity-50 pointer-events-none select-none">
+			<span className="text-foreground text-xl font-title font-bold">
 				A definir...
 			</span>
 		</div>

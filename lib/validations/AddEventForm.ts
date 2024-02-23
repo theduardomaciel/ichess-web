@@ -72,6 +72,9 @@ export const addEventFormSchema = z.object({
 		required_error:
 			"É necessário informar qual a ACE cumprida pelo evento.",
 	}),
+	type: z.enum(["internal", "external"], {
+		required_error: "É necessário informar o tipo do evento",
+	}),
 });
 
 export type AddEventFormSchema = z.infer<typeof addEventFormSchema>;

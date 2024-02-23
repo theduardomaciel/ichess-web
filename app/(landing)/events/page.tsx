@@ -1,69 +1,50 @@
-//Components
+import Link from "next/link";
+
+import { cn } from "@/lib/utils";
+
+// Components
 import { NoEvents } from "@/components/events/NoEvents";
 import { Header } from "./header";
 import { StyledTitle } from "@/components/events/StyledTitle";
 import { ExternalEvent } from "@/components/events/ExternalEvent";
-import { InternalEvent } from "@/components/events/InternalEvent";
 import { NotLogged } from "@/components/events/NotLogged";
+import { EventPreview } from "@/components/events/EventPreview";
 
-//Types
-import { EventProps } from "@/components/events/Event.model";
+// Types
+import { events, type Event } from "@/lib/fake_data";
 
 /*
-- Unificar internal e external event
-- Ajeitar tailwind
-- Ajeitar tags html
+	- Unificar internal e external event
+	- Ajeitar tailwind
+	- Ajeitar tags html
 */
 
 export default function Events() {
 	const isLogged: boolean = false; //substituir isso qnd tiver em producao
 
 	//substituir esses arrays por requests qnd tiver em producao
-	const monthExternal: Array<EventProps> = [
-		{
-			title: "Futuro Evento",
-			description: "Este é um evento do IC onde iremos jogar xadrez",
-			date: "30/01 • das 13h às 17h",
-			state: "join",
-		},
-	];
+	const monthExternal: Array<Event> = [events[0]];
 
-	const thisWeekInternal: Array<EventProps> = [
-		{
-			title: "Torneio de Engenharia",
-			description: "Torneio de classificação para eliminatórias",
-			date: "17/02 • das 12h às 14h",
-			state: "read-only",
-		},
-		{
-			title: "Torneio de Ciência",
-			description:
-				"Torneio amistoso para os alunos de CC",
-			date: "15/02 • das 12h às 16h",
-			state: "read-only",
-		},
-	];
+	const thisWeekInternal: Array<Event> = events.slice(0, 3);
 
-	const nextWeekInternal: Array<EventProps> = [];
+	const nextWeekInternal: Array<Event> = [];
 
 	return (
 		<>
 			<Header />
-			<main className="bg-[#191817] text-white text-center pt-8 pb-14">
+			<main className="text-neutral text-center pt-8 pb-14 px-wrapper">
 				<StyledTitle title="Evento Externos" />
 
-				<div className="text-left w-10/12 m-auto">
+				<div className="text-left">
 					<h2 className="text-2xl font-title font-bold pb-3 pt-12">
 						Este Mês
 					</h2>
 
 					<div className="flex gap-4 w-full pt-2 pb-16">
 						{monthExternal.length ? (
-							monthExternal.map(
-								(event: EventProps, index: number) => (
-									<ExternalEvent key={index} {...event} />
-								)
-							)
+							monthExternal.map((event: Event, index: number) => (
+								<ExternalEvent key={index} {...event} />
+							))
 						) : (
 							<NoEvents />
 						)}
@@ -72,33 +53,62 @@ export default function Events() {
 
 				<StyledTitle title="Eventos Internos" />
 
-				{!isLogged ? <NotLogged /> : null}
+				{!isLogged ? (
+					<NotLogged>
+						Para acessar os eventos internos você precisa ser membro
+						integrante do IChess :( <br />
+						Caso você seja parte do IC, e tem interesse em
+						participar,{" "}
+						<Link
+							className="underline text-primary-200"
+							href={`/join`}
+						>
+							ingresse já
+						</Link>{" "}
+						no projeto!
+					</NotLogged>
+				) : null}
 
-				<div className="w-10/12 mx-auto mt-8">
-					<h2 className="font-title font-bold text-[#8c8b8b] text-start text-2xl pt-4 pb-3">
+				<div
+					className={cn(
+						"flex flex-col items-start justify-start mt-8 gap-4 w-full",
+						{
+							"opacity-50 pointer-events-none": !isLogged,
+						},
+					)}
+				>
+					<h2 className="font-title font-bold text-neutral text-start text-2xl pt-4 pb-3">
 						Esta Semana
 					</h2>
-					<div className="flex flex-wrap gap-4 w-full">
+					<div className="flex flex-col md:grid grid-cols-2 gap-4 w-full">
 						{thisWeekInternal.length ? (
 							thisWeekInternal.map(
-								(ExternalEvent: EventProps, index: number) => (
-									<InternalEvent key={index} {...ExternalEvent} />
-								)
+								(event: Event, index: number) => (
+									<EventPreview
+										key={index}
+										event={event}
+										showResponsible={false}
+									/>
+								),
 							)
 						) : (
 							<NoEvents />
 						)}
 					</div>
 
-					<h2 className="font-title font-bold text-[#8c8b8b] text-start text-2xl pt-10 pb-3">
+					<h2 className="font-title font-bold text-neutral text-start text-2xl pt-10 pb-3">
 						Próxima Semana
 					</h2>
 					<div className="flex gap-4 w-full">
 						{nextWeekInternal.length ? (
 							nextWeekInternal.map(
-								(ExternalEvent: EventProps, index: number) => (
-									<InternalEvent key={index} {...ExternalEvent} />
-								)
+								(event: Event, index: number) => (
+									<EventPreview
+										key={index}
+										event={event}
+										showResponsible={false}
+									/>
+								),
 							)
 						) : (
 							<NoEvents />

@@ -10,6 +10,10 @@
 		-webkit-text-stroke: 1px hsl(var(--neutral) / 0.05);
 	}
 
+	/* 
+		É necessário declarar as CSS Variables de cor nesse formato por conta das recomendações do TailwindCSS 
+		O padrão seria, por exemplo: --primary-100: hsl(90, 39%, 51%);
+	*/
 	:root {
 		--neutral: 0 0% 0%;
 		--foreground: 0 0% 30.49%;
@@ -26,11 +30,12 @@
 		--info-100: 216 58% 52%;
 		--info-200: 216 67% 44%;
 
-		--gray-200: 240 100% 98.43%;
-		--gray-300: 20 14.29% 95.88%;
-		--gray-400: 0 0% 88.24%;
-		--gray-500: 0 0% 80.39%;
-		--gray-600: 0 0% 83.39%;
+		--gray-100: 0 0% 100%;
+		--gray-200: 0 0% 98.04%;
+		--gray-300: 0 0% 96.08%;
+		--gray-400: 0 0% 94.33%;
+		--gray-500: 0 0% 92%;
+		--gray-600: 0 0% 90%;
 
 		--wrapper: 1.44rem;
 		--radius: 0.5rem;

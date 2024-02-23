@@ -1,37 +1,46 @@
-
-//Assets
-import ArrowIcon from "@/public/icons/arrow_right.svg"
-import CalendarIcon from "@/public/icons/calendar.svg"
-
-//Components
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-//Types
-import { EventProps } from "@/components/events/Event.model";
+// Assets
+import ArrowIcon from "@/public/icons/arrow_right.svg";
 
-export function ExternalEvent(props: EventProps) {
+// Components
+import { Button } from "@/components/ui/button";
+import { DateDisplay } from "@/components/ui/calendar";
+
+// Types
+import type { Event } from "@/lib/fake_data";
+
+export function ExternalEvent({
+	name,
+	description,
+	dateFrom,
+	timeFrom,
+	timeTo,
+}: Event) {
 	return (
-		<div className="w-full p-6 border-4 border-[#6c8c4b] rounded bg-[#332f28]">
+		<div className="w-full p-9 border-2 border-primary-200 rounded-md bg-gray-300">
 			<h1 className="text-2xl font-title font-bold">
-				{props.title || "(Sem título)"}
+				{name || "(Sem título)"}
 			</h1>
 			<p className="pb-6 text-[#838380]">
-				{props.description || "(Evento sem descrição)"}
+				{description || "(Evento sem descrição)"}
 			</p>
 
-			<div className="flex flex-wrap justify-center items-center gap-4">
-				<Button asChild className="" size={"xl"}>
+			<div className="flex w-full flex-wrap justify-between items-center gap-4">
+				<Button asChild className="" size={"lg"}>
 					<Link href="/">
-						{"Quero participar" /** mudar isso */}
+						Quero participar
 						<ArrowIcon />
 					</Link>
 				</Button>
 
-				<div className="flex-1 flex items-center justify-end">
-					<CalendarIcon className="h-6 pr-2" />
-					<span className="text-end text-base">{props.date}</span>
-				</div>
+				<DateDisplay
+					size="md"
+					dateString={`${dateFrom.toLocaleDateString("pt-BR", {
+						month: "2-digit",
+						day: "numeric",
+					})} • das ${timeFrom} às ${timeTo}`}
+				/>
 			</div>
 		</div>
 	);

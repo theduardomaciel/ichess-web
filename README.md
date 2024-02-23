@@ -2,13 +2,11 @@
     IChess - Web
 </h1>
 
-<!-- <picture>
+<picture>
   <source media="(prefers-color-scheme: dark)" srcset="/.github/cover.png">
   <source media="(prefers-color-scheme: light)" srcset="/.github/cover_light.png">
     <img alt="Main project cover" src="/.github/cover_light.png">
-</picture> -->
-
-![cover](.github/cover.png?style=flat)
+</picture>
 
 <br />
 
@@ -44,8 +42,8 @@ Uma dashboard para o controle da frequência dos membros do projeto de extensão
 
 ## 🚧 Roadmap
 
-[ ] Implementar o frontend de todas as páginas
-[ ] Verificar a possibilidade da conversão do repositório em um monorepo
+-   [ ] Implementar o frontend de todas as páginas
+-   [ ] Verificar a possibilidade da conversão do repositório em um monorepo
 
 <br />
 
