@@ -13,6 +13,7 @@ import { EventProps } from "@/components/events/Event.model";
 - Unificar internal e external event
 - Ajeitar tailwind
 - Ajeitar tags html
+- Fazer styled title receber parametro por node
 */
 
 export default function Events() {
@@ -31,14 +32,13 @@ export default function Events() {
 	const thisWeekInternal: Array<EventProps> = [
 		{
 			title: "Torneio de Engenharia",
-			description: "Torneio de classificação para eliminatórias",
+			description: "Torneio classificatório do IChess",
 			date: "17/02 • das 12h às 14h",
 			state: "read-only",
 		},
 		{
 			title: "Torneio de Ciência",
-			description:
-				"Torneio amistoso para os alunos de CC",
+			description: "Torneio amistoso para os alunos de CC",
 			date: "15/02 • das 12h às 16h",
 			state: "read-only",
 		},
@@ -53,9 +53,9 @@ export default function Events() {
 				<StyledTitle title="Evento Externos" />
 
 				<div className="text-left w-10/12 m-auto">
-					<h2 className="text-2xl font-title font-bold pb-3 pt-12">
+					<h3 className="text-2xl font-title font-bold pb-3 pt-12">
 						Este Mês
-					</h2>
+					</h3>
 
 					<div className="flex gap-4 w-full pt-2 pb-16">
 						{monthExternal.length ? (
@@ -68,21 +68,22 @@ export default function Events() {
 							<NoEvents />
 						)}
 					</div>
-				</div>
 
-				<StyledTitle title="Eventos Internos" />
+					<StyledTitle title="Eventos Internos" />
 
-				{!isLogged ? <NotLogged /> : null}
+					{!isLogged ? <NotLogged /> : null}
 
-				<div className="w-10/12 mx-auto mt-8">
-					<h2 className="font-title font-bold text-[#8c8b8b] text-start text-2xl pt-4 pb-3">
+					<h3 className="font-title font-bold text-[#8c8b8b] text-start text-2xl pt-4 pb-3">
 						Esta Semana
-					</h2>
+					</h3>
 					<div className="flex flex-wrap gap-4 w-full">
 						{thisWeekInternal.length ? (
 							thisWeekInternal.map(
 								(ExternalEvent: EventProps, index: number) => (
-									<InternalEvent key={index} {...ExternalEvent} />
+									<InternalEvent
+										key={index}
+										{...ExternalEvent}
+									/>
 								)
 							)
 						) : (
@@ -90,14 +91,17 @@ export default function Events() {
 						)}
 					</div>
 
-					<h2 className="font-title font-bold text-[#8c8b8b] text-start text-2xl pt-10 pb-3">
+					<h3 className="font-title font-bold text-[#8c8b8b] text-start text-2xl pt-10 pb-3">
 						Próxima Semana
-					</h2>
+					</h3>
 					<div className="flex gap-4 w-full">
 						{nextWeekInternal.length ? (
 							nextWeekInternal.map(
 								(ExternalEvent: EventProps, index: number) => (
-									<InternalEvent key={index} {...ExternalEvent} />
+									<InternalEvent
+										key={index}
+										{...ExternalEvent}
+									/>
 								)
 							)
 						) : (

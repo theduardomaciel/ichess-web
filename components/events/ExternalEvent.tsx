@@ -1,7 +1,6 @@
-
 //Assets
-import ArrowIcon from "@/public/icons/arrow_right.svg"
-import CalendarIcon from "@/public/icons/calendar.svg"
+import ArrowIcon from "@/public/icons/arrow_right.svg";
+import CalendarIcon from "@/public/icons/calendar.svg";
 
 //Components
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,7 @@ export function ExternalEvent(props: EventProps) {
 
 			<div className="flex flex-wrap justify-center items-center gap-4">
 				<Button asChild className="" size={"xl"}>
-					<Link href="/">
+					<Link href={props.url || "/"}>
 						{"Quero participar" /** mudar isso */}
 						<ArrowIcon />
 					</Link>
