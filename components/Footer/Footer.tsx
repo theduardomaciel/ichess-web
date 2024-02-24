@@ -2,9 +2,9 @@ import Link from "next/link";
 
 import Logo from "@/public/logo.svg";
 
-import GithubIcon from "@/public/icons/github.svg";
-import DiscordIcon from "@/public/icons/discord.svg";
-import InstagramIcon from "@/public/icons/instagram.svg";
+import GithubIcon from "@/public/logos/github.svg";
+import DiscordIcon from "@/public/logos/discord.svg";
+import InstagramIcon from "@/public/logos/instagram.svg";
 
 // Components
 import Status from "./subcomponents/Status";

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+// Icons
 import PiecesIcon from "@/public/icons/pieces.svg";
 
 // Components
@@ -13,14 +14,7 @@ export default function Home() {
 		<main className="flex min-h-screen flex-col items-center justify-between">
 			<div className="flex flex-col items-start justify-center w-full h-screen relative gap-12 px-wrapper pt-16">
 				<Image
-					src={`/board.png`}
-					width={2048}
-					height={1024}
-					className="opacity-5 lg:dark:opacity-[0.03] absolute top-0 left-0 w-full h-full object-cover select-none pointer-events-none z-20"
-					alt="Chess board for decoration"
-				/>
-				<Image
-					src={`/hero.png`}
+					src={`/images/hero.png`}
 					priority
 					width={823}
 					height={717}
@@ -37,6 +31,7 @@ export default function Home() {
 						<PiecesIcon />
 					</Link>
 				</Button>
+				<div className="bg-board absolute top-0 left-0 w-full h-full opacity-40 z-10" />
 			</div>
 		</main>
 	);

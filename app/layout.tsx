@@ -25,6 +25,18 @@ export const titleFont = Inknut_Antiqua({
 export const metadata: Metadata = {
 	title: "IChess",
 	description: "Um hub para os jogadores de xadrez do IC.",
+	icons: [
+		{
+			media: "(prefers-color-scheme: dark)",
+			url: "/images/favicon_dark.ico",
+			href: "/images/favicon_dark.ico",
+		},
+		{
+			media: "(prefers-color-scheme: light)",
+			url: "/images/favicon.ico",
+			href: "/images/favicon.ico",
+		},
+	],
 };
 
 export default function RootLayout({
@@ -36,7 +48,7 @@ export default function RootLayout({
 		<html lang="en" suppressHydrationWarning>
 			<body
 				className={cn(
-					"min-h-screen bg-gray-600 font-sans antialiased relative",
+					"min-h-screen font-sans antialiased relative",
 					fontSans.variable,
 					titleFont.variable
 				)}

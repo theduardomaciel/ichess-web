@@ -37,7 +37,7 @@ function FormSection({ form, children, ...rest }: FormSectionProps) {
 	const sectionNumber = formSection?.replace("section", "");
 
 	const canSelect =
-		!isNaN(sectionNumber) && rest.section > Number(sectionNumber);
+		!isNaN(sectionNumber) && rest.section < Number(sectionNumber);
 	const isSelected =
 		formSection === `section${rest.section}` ||
 		(rest.section == 1 && !formSection);
@@ -78,9 +78,9 @@ function FormProgress({
 	fields,
 }: Omit<FormSectionProps, "form">) {
 	return (
-		<div className="flex flex-col w-full lg:sticky top-4 left-0 lg:w-2/5 bg-gray-600 rounded-2xl border border-primary-100">
+		<div className="flex flex-col w-full lg:sticky top-4 left-0 lg:w-2/5 rounded-2xl border border-primary-100">
 			<div className="flex flex-row items-center justify-start px-6 py-[18px] bg-primary-100 rounded-tl-2xl rounded-tr-2xl">
-				<h6 className="font-extrabold text-base lg:text-lg">
+				<h6 className="font-extrabold text-white text-base lg:text-lg">
 					{section}. {title}
 				</h6>
 			</div>

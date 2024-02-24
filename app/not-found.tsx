@@ -10,7 +10,7 @@ import ArrowRightIcon from "@/public/icons/arrow_right.svg";
 
 export default function NotFound() {
 	return (
-		<div className="flex flex-col lg:flex-row items-center justify-start lg:justify-between h-screen bg-gray-600 relative z-10 overflow-hidden">
+		<div className="flex flex-col lg:flex-row items-center justify-start lg:justify-between h-screen relative z-10 overflow-hidden">
 			<BoardTilt />
 			<div className="order-1 lg:order-3 flex flex-col items-start justify-start gap-12 px-9 lg:px-0">
 				<div className="flex flex-col items-start justify-start">
