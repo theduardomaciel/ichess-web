@@ -1,0 +1,31 @@
+{
+  "name": "@ichess/eslint-config",
+  "version": "0.0.0",
+  "files": [
+    "lib.js",
+    "next.js",
+    "prettier.mjs"
+  ],
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "eslint-config-next": "^14.1.0",
+    "eslint-config-turbo": "^1.11.3",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "@ichess/prettier-config": "workspace:*"
+  },
+  "overrides": {
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/typescript-estree": "^6.21.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "./lib.js"
+    ]
+  },
+  "prettier": "@ichess/prettier-config"
+}
