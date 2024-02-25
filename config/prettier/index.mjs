@@ -6,7 +6,7 @@ const config = {
   plugins: ["prettier-plugin-tailwindcss"],
   tailwindConfig: "../../apps/web/tailwind.config.js",
   useTabs: true,
-  tabSize: 4
+  tabWidth: 4,
 }
 
 export default config

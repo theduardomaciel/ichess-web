@@ -1,0 +1,33 @@
+{
+  "name": "@ichess/drizzle",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "db:generate": "drizzle-kit generate:pg",
+    "db:migrate": "pnpm migrate.ts",
+    "db:studio": "drizzle-kit studio",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.7.2",
+    "@ichess/env": "workspace:*",
+    "drizzle-orm": "^0.29.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.20.14",
+    "pg": "^8.11.3",
+    "@ichess/typescript-config": "workspace:*",
+    "@ichess/prettier-config": "workspace:*",
+    "@ichess/eslint-config": "workspace:*"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@ichess/eslint-config/lib"
+    ]
+  },
+  "prettier": "@ichess/prettier-config"
+}

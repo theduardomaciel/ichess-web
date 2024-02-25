@@ -1,13 +1,13 @@
-import type { Config } from "tailwindcss";
+/** @type {import('tailwindcss').Config} */
+
 const { fontFamily } = require("tailwindcss/defaultTheme");
 
 const config = {
 	darkMode: ["class"],
 	content: [
-		"./pages/**/*.{ts,tsx}",
 		"./components/**/*.{ts,tsx}",
 		"./app/**/*.{ts,tsx}",
-		"./src/**/*.{ts,tsx}",
+		"./**/*.{ts,tsx}",
 	],
 	prefix: "",
 	theme: {
@@ -109,6 +109,6 @@ const config = {
 		require("tailwindcss-animate"),
 		require("@designbycode/tailwindcss-text-stroke"),
 	],
-} satisfies Config;
+};
 
 export default config;

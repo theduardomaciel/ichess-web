@@ -47,6 +47,14 @@ Uma dashboard para o controle da frequência dos membros do projeto de extensão
 
 <br />
 
+## 👣 Como iniciar o projeto
+
+Após clonar o repositório, utilize `pnpm install` para instalar as dependências do projeto. Caso o `pnpm` não esteja instalado, é possível [https://pnpm.io/installation](baixá-lo aqui).
+
+Para dar início ao servidor local de desenvolvimento, utilize `turbo dev`.
+
+<br />
+
 ## 📝 Licença
 
 Este projeto utiliza a MIT License. Veja o arquivo de [LICENÇA](LICENSE) para mais detalhes.

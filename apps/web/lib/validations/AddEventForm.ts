@@ -48,7 +48,7 @@ export const ACEs = [
 type ACE = (typeof ACEs)[0]["id"];
 
 const ACEsNames: [ACE, ...ACE[]] = [
-	ACEs[0]["id"],
+	ACEs[0].id,
 	...ACEs.slice(1).map((ace) => ace.id),
 ];
 
