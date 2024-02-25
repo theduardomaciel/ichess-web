@@ -13,7 +13,6 @@ export const account = pgTable(
 				onDelete: "cascade",
 				onUpdate: "cascade",
 			}),
-		email: text("email"),
 		provider: text("provider").notNull(),
 		providerAccountId: text("provider_account_id").notNull(),
 		accessToken: text("access_token"),
@@ -29,7 +28,6 @@ export const account = pgTable(
 				table.provider,
 				table.providerAccountId,
 			),
-			emailUnique: uniqueIndex().on(table.email),
 		};
 	},
 );

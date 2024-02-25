@@ -27,7 +27,7 @@ export const event = pgTable("events", {
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const eventRelations = relations(event, ({ one, many }) => ({
+export const eventRelations = relations(event, ({ one }) => ({
 	project: one(project, {
 		fields: [event.projectId],
 		references: [project.id],
@@ -35,8 +35,5 @@ export const eventRelations = relations(event, ({ one, many }) => ({
 	author: one(user, {
 		fields: [event.authorId],
 		references: [user.id],
-	}),
-	users: many(user, {
-		relationName: "participants",
 	}),
 }));

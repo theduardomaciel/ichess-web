@@ -24,7 +24,6 @@
 		"@ichess/auth": "workspace:*",
 		"@ichess/drizzle": "workspace:*",
 		"@ichess/env": "workspace:*",
-		"@ichess/trpc": "workspace:*",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.0",
 		"cmdk": "^0.2.1",
