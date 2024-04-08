@@ -11,12 +11,13 @@
     "@auth/core": "^0.25.0",
     "@ichess/drizzle": "workspace:*",
     "@ichess/env": "workspace:*",
+    "drizzle-orm": "^0.29.3",
     "next-auth": "beta"
   },
   "devDependencies": {
-    "@ichess/typescript-config": "workspace:*",
+    "@ichess/eslint-config": "workspace:*",
     "@ichess/prettier-config": "workspace:*",
-    "@ichess/eslint-config": "workspace:*"
+    "@ichess/typescript-config": "workspace:*"
   },
   "eslintConfig": {
     "root": true,

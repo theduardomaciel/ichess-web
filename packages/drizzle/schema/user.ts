@@ -13,14 +13,14 @@ export const user = pgTable(
 	"users",
 	{
 		id: uuid("id").primaryKey().defaultRandom(),
-		name: text("name").notNull(),
+		name: text("name"),
 		email: text("email").notNull(),
+		emailVerified: timestamp("email_verified"),
 		course: text("course").$type<"cc" | "ec">().notNull(),
 		registrationId: text("registration_id").notNull(),
 		period: text("period")
 			.$type<"1" | "2" | "3" | "4" | "5" | "6" | "7" | "8">()
 			.notNull(),
-		createdAt: timestamp("created_at").defaultNow().notNull(),
 	},
 	(table) => {
 		return {

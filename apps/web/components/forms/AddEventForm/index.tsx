@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +24,9 @@ export default function AddEventForm() {
 	const [currentState, setCurrentState] = useState<
 		false | "submitting" | "submitted"
 	>(false);
+	const submittedEvent = useRef<(AddEventFormSchema & { id: string }) | null>(
+		null,
+	);
 
 	// 1. Define your form.
 	const form = useForm<AddEventFormSchema>({
@@ -42,6 +45,12 @@ export default function AddEventForm() {
 
 		await wait(5000);
 
+		const response = {
+			id: "123",
+			...data,
+		};
+
+		submittedEvent.current = response;
 		setCurrentState("submitted");
 	}
 
@@ -49,14 +58,14 @@ export default function AddEventForm() {
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className="flex flex-col items-center justify-start w-full gap-9"
+				className="flex w-full flex-col items-center justify-start gap-9"
 			>
 				<AddEventFormContent form={form} />
 			</form>
 			<LoadingDialog isOpen={currentState === "submitting"} />
 			<SuccessDialog
 				isOpen={currentState === "submitted"}
-				href={`/dashboard`}
+				href={`/dashboard/events/${submittedEvent.current?.id}`}
 			/>
 		</Form>
 	);

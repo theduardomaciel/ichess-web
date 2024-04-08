@@ -4,13 +4,19 @@ import type { DefaultJWT } from "next-auth/jwt";
 
 declare module "@auth/core/adapters" {
 	export interface AdapterUser extends AdapterUserBase {
-		projectId: string;
+		/* projectId: string; */
+		course: "cc" | "ec";
+		registrationId: string;
+		period: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8";
 	}
 }
 
 declare module "next-auth" {
 	interface User extends DefaultUser {
-		projectId: string;
+		/* projectId: string; */
+		course: "cc" | "ec";
+		registrationId: string;
+		period: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8";
 	}
 
 	export interface Session extends DefaultSession {
@@ -20,6 +26,6 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
 	interface JWT extends DefaultJWT {
-		projectId: string;
+		/* projectId: string; */
 	}
 }

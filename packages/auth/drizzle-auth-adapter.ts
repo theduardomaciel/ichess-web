@@ -5,25 +5,12 @@ import { and, eq, getTableColumns } from "drizzle-orm";
 
 export const drizzleAuthAdapter: Adapter = {
 	async createUser(userToCreate) {
-		const [, emailDomain] = userToCreate.email.split("@");
-
-		const project = await db.query.project.findFirst({
-			where(fields, { eq }) {
-				return eq(fields.domain, emailDomain);
-			},
-		});
-
-		if (!project) {
-			throw new Error("Domain not registered.");
-		}
-
 		const [drizzleUser] = await db
 			.insert(user)
 			.values({
 				...userToCreate,
 				id: crypto.randomUUID(),
 				emailVerified: new Date(),
-				projectId: project.id,
 			})
 			.returning();
 

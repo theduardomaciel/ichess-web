@@ -1,11 +1,7 @@
-import { db } from "@ichess/drizzle";
-// import { env } from '@ichess/env'
 import type { NextAuthConfig, Session } from "next-auth";
 import { GoogleProfile } from "next-auth/providers/google";
-
-// import { credentialsProvider } from './credentials-provider'
-import { drizzleAuthAdapter } from "./drizzle-auth-adapter";
 import { googleProvider } from "./google-provider";
+import { drizzleAuthAdapter } from "./drizzle-auth-adapter";
 
 export const authConfig = {
 	adapter: drizzleAuthAdapter,
@@ -27,24 +23,14 @@ export const authConfig = {
 					return false;
 				}
 
-				const project = await db.query.project.findFirst({
-					where(fields, { eq }) {
-						return eq(fields.domain, emailDomain);
-					},
-				});
-
-				return googleProfile.email_verified && !!project;
+				return googleProfile.email_verified;
 			} else if (account?.provider === "credentials") {
 				return true;
 			}
 
 			return false;
 		},
-		jwt({ token, user, session, trigger }) {
-			if (user) {
-				token.projectId = user.projectId;
-			}
-
+		jwt({ token, session, trigger }) {
 			function isSessionAvailable(session: unknown): session is Session {
 				return !!session;
 			}
@@ -58,7 +44,6 @@ export const authConfig = {
 		},
 		session({ session, ...params }) {
 			if ("token" in params && session.user) {
-				session.user.projectId = params.token.projectId;
 				session.user.id = params.token.sub!;
 			}
 

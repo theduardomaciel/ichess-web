@@ -1,3 +1,4 @@
+import type { AdapterAccount } from "@auth/core/adapters";
 import { relations } from "drizzle-orm";
 import { integer, pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
@@ -13,14 +14,17 @@ export const account = pgTable(
 				onDelete: "cascade",
 				onUpdate: "cascade",
 			}),
+		//
+		type: text("type").$type<AdapterAccount["type"]>().notNull(),
 		provider: text("provider").notNull(),
 		providerAccountId: text("provider_account_id").notNull(),
-		accessToken: text("access_token"),
-		expiresAt: integer("expires_at"),
-		idToken: text("id_token"),
-		refreshToken: text("refresh_token"),
-		sessionState: text("session_state"),
-		tokenType: text("token_type"),
+		refresh_token: text("refresh_token"),
+		access_token: text("access_token"),
+		expires_at: integer("expires_at"),
+		token_type: text("token_type"),
+		scope: text("scope"),
+		id_token: text("id_token"),
+		session_state: text("session_state"),
 	},
 	(table) => {
 		return {
