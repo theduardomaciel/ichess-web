@@ -1,8 +1,7 @@
-import Link from "next/link";
+import React from "react";
 
 // Components
-import { GoogleLoginButton } from "../GoogleLogin";
-import React from "react";
+import { GoogleButton } from "@/app/auth/sign-in/SignInButton";
 
 interface Props {
 	className?: string;
@@ -11,13 +10,13 @@ interface Props {
 
 export function NotLogged({ className, children }: Props) {
 	return (
-		<div className="flex flex-col md:flex-row justify-center items-start md:items-center flex-wrap w-full px-8 py-8 md:py-4 gap-4 md:gap-9 m-auto border-2 border-dashed border-primary-200/50 rounded-md mt-10 text-base font-medium">
+		<div className="m-auto mt-10 flex w-full flex-col flex-wrap items-start justify-center gap-4 rounded-md border-2 border-dashed border-primary-200/50 px-8 py-8 text-base font-medium md:flex-row md:items-center md:gap-9 md:py-4">
 			<span className="font-title font-bold">Eita!</span>
-			<span className="text-left flex-1">
+			<span className="flex-1 text-left">
 				{children ||
 					"Você precisa estar logado para ver os eventos internos."}
 			</span>
-			<GoogleLoginButton className="px-8 max-md:w-full" />
+			<GoogleButton className="px-8 max-md:w-full" />
 		</div>
 	);
 }

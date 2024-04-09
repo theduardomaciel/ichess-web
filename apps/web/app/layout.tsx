@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { Manrope as FontSans, Inknut_Antiqua } from "next/font/google";
 
-import { ThemeProvider } from "@/components/ThemeProvider";
-
 import "./globals.css";
 import "@dotlottie/react-player/dist/index.css";
 
 import { cn } from "@/lib/utils";
 
 // Components
+import { Providers } from "./providers";
 import Footer from "@/components/Footer/Footer";
 
 export const fontSans = FontSans({
@@ -45,25 +44,16 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" suppressHydrationWarning>
-			<body
-				className={cn(
-					"min-h-screen font-sans antialiased relative",
-					fontSans.variable,
-					titleFont.variable
-				)}
-			>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
-					{/* <div vaul-drawer-wrapper=""> */}
+		<html
+			lang="en"
+			className={cn(fontSans.variable, titleFont.variable)}
+			suppressHydrationWarning
+		>
+			<body className={"relative min-h-screen font-sans antialiased"}>
+				<Providers>
 					{children}
-					{/* </div> */}
 					<Footer />
-				</ThemeProvider>
+				</Providers>
 			</body>
 		</html>
 	);

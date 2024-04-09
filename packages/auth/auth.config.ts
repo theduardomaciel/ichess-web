@@ -19,7 +19,9 @@ export const authConfig = {
 				const googleProfile = profile as GoogleProfile;
 				const [, emailDomain] = googleProfile.email.split("@");
 
-				if (!emailDomain) {
+				const icDomain = "ic.ufal.br";
+
+				if (!emailDomain || emailDomain !== icDomain) {
 					return false;
 				}
 
@@ -52,7 +54,11 @@ export const authConfig = {
 		authorized({ auth, request: { nextUrl } }) {
 			const isLoggedIn = !!auth?.user;
 
-			const isOnPublicPages = nextUrl.pathname.startsWith("/auth");
+			const publicPages = ["/", "/join", "/members", "/events"];
+
+			const isOnPublicPages =
+				nextUrl.pathname.startsWith("/auth") ||
+				publicPages.includes(nextUrl.pathname);
 			const isOnWebhooks = nextUrl.pathname.startsWith("/api/webhooks");
 			const isOnPublicAPIRoutes =
 				nextUrl.pathname.startsWith("/api/auth");
@@ -63,9 +69,9 @@ export const authConfig = {
 				return true;
 			}
 
-			if (isOnPublicPages && isLoggedIn) {
+			/* if (isOnPublicPages && isLoggedIn) {
 				return Response.redirect(new URL("/", nextUrl));
-			}
+			} */
 
 			if (isOnAPIRoutes && !isLoggedIn) {
 				return Response.json(

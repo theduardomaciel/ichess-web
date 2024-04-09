@@ -15,12 +15,12 @@ export const user = pgTable(
 		id: uuid("id").primaryKey().defaultRandom(),
 		name: text("name"),
 		email: text("email").notNull(),
-		emailVerified: timestamp("email_verified"),
-		course: text("course").$type<"cc" | "ec">().notNull(),
-		registrationId: text("registration_id").notNull(),
-		period: text("period")
-			.$type<"1" | "2" | "3" | "4" | "5" | "6" | "7" | "8">()
-			.notNull(),
+		emailVerified: timestamp("emailVerified", { mode: "date" }),
+		course: text("course").$type<"cc" | "ec">(),
+		registrationId: text("registration_id"),
+		period: text("period").$type<
+			"1" | "2" | "3" | "4" | "5" | "6" | "7" | "8"
+		>(),
 	},
 	(table) => {
 		return {

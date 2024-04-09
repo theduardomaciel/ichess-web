@@ -12,7 +12,10 @@
 		"./**/*.ts",
 		"./**/*.tsx",
 		".next/types",
-		".next/types/**/*.ts"
+		".next/types/**/*.ts",
+		// Middleware (na raiz do projeto)
+		"./middleware/**/*.ts",
+		"./middleware/**/*.tsx",
 	],
 	"exclude": ["node_modules"]
 }

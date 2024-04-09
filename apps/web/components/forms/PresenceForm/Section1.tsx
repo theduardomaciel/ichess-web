@@ -18,10 +18,10 @@ import {
 } from "@/lib/validations/PresenceForm/section1";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { GoogleLoginButton } from "@/components/GoogleLogin";
+import { GoogleLoginButton } from "@/app/auth/sign-in/GoogleLogin";
 
 const section1Keys = Object.keys(
-	presenceFormSection1Schema.shape
+	presenceFormSection1Schema.shape,
 ) as (keyof PresenceFormSection1Schema)[];
 
 const formTitles = {
@@ -52,7 +52,7 @@ export default function PresenceForm1({ form }: FormProps) {
 				render={({ field }) => (
 					<FormItem>
 						<FormControl>
-							<GoogleLoginButton fullWidth />
+							<GoogleLoginButton className="w-full" />
 						</FormControl>
 						<FormMessage />
 					</FormItem>
@@ -73,7 +73,7 @@ export default function PresenceForm1({ form }: FormProps) {
 									/>
 								</FormControl>
 								<Label
-									className="lg:text-sm leading-tight text-ellipsis overflow-hidden line-clamp-2"
+									className="line-clamp-2 overflow-hidden text-ellipsis leading-tight lg:text-sm"
 									htmlFor={field.name}
 								>
 									Lembrar de mim

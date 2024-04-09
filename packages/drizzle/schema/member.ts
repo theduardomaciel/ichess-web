@@ -21,8 +21,8 @@ export const member = pgTable(
 			}),
 		username: text("username").notNull(),
 		role: text("role")
-			.$type<"student" | "moderator" | "admin">()
-			.default("student")
+			.$type<"member" | "admin">()
+			.default("member")
 			.notNull(),
 	},
 	(table) => {

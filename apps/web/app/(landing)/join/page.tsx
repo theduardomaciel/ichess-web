@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 // Components
 import JoinForm from "@/components/forms/JoinForm";
 import { Suspense } from "react";
@@ -7,8 +5,9 @@ import { Suspense } from "react";
 export default function JoinPage() {
 	return (
 		<main className="flex min-h-screen flex-col items-start justify-start">
-			<div className="flex flex-col items-center justify-center relative pt-48 pb-28 px-wrapper w-full bg-board gap-4">
-				<h1 className="font-title font-extrabold text-4xl lg:text-5xl lg:max-w-[50%] text-center">
+			<div className="bg-vignette relative flex w-full flex-col items-center justify-center gap-4 px-wrapper pb-28 pt-48">
+				<div className="bg-board absolute left-0 top-0 -z-10 h-full w-full" />
+				<h1 className="text-center font-title text-4xl font-extrabold lg:max-w-[50%] lg:text-5xl">
 					Formulário de Inscrição
 				</h1>
 				<h2 className="text-center font-semibold lg:max-w-[35%]">

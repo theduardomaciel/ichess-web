@@ -1,7 +1,7 @@
 import { Adapter } from "@auth/core/adapters";
 import { db } from "@ichess/drizzle";
 import { account, session, user } from "@ichess/drizzle/schema";
-import { and, eq, getTableColumns } from "drizzle-orm";
+import { and, eq, getTableColumns } from "@ichess/drizzle/orm";
 
 export const drizzleAuthAdapter: Adapter = {
 	async createUser(userToCreate) {
@@ -55,6 +55,10 @@ export const drizzleAuthAdapter: Adapter = {
 	},
 
 	async updateUser({ id, ...userToUpdate }) {
+		if (!id) {
+			throw new Error("No user id.");
+		}
+
 		const [drizzleUser] = await db
 			.update(user)
 			.set(userToUpdate)

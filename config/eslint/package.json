@@ -9,9 +9,9 @@
 	"license": "MIT",
 	"private": true,
 	"devDependencies": {
+		"@ichess/prettier-config": "workspace:*",
 		"@theduardomaciel/eslint-config": "^1.0.4",
-		"eslint-config-next": "^14.1.0",
-		"@ichess/prettier-config": "workspace:*"
+		"eslint-config-next": "^14.1.0"
 	},
 	"overrides": {
 		"@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -24,5 +24,8 @@
 			"./lib.js"
 		]
 	},
-	"prettier": "@ichess/prettier-config"
+	"prettier": "@ichess/prettier-config",
+	"dependencies": {
+		"eslint": "^8"
+	}
 }

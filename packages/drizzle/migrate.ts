@@ -12,5 +12,5 @@ const connection = neon(env.DATABASE_URL, {
 const db = drizzle(connection as NeonQueryFunction<boolean, boolean>);
 
 migrate(db, { migrationsFolder: __dirname.concat("/migrations") }).then(() => {
-	console.log("Migrations applied successfully!");
+	console.log("✅ Migrations applied successfully!");
 });

@@ -12,11 +12,11 @@ import ThemePicker from "./subcomponents/ThemePicker";
 
 export default function Footer() {
 	return (
-		<footer className="flex flex-col-reverse md:flex-row flex-wrap items-start justify-between px-wrapper py-20 z-50 bg-gray-400 gap-9 relative">
+		<footer className="relative z-50 flex flex-col-reverse flex-wrap items-start justify-between gap-9 bg-gray-400 px-wrapper py-20 md:flex-row">
 			{/* Column 1 */}
 			<div className="flex flex-col items-start justify-center gap-12">
 				<div className="flex flex-col items-start justify-center gap-4">
-					<div className="flex flex-row items-center justify-start gap-5 flex-wrap">
+					<div className="flex flex-row flex-wrap items-center justify-start gap-5">
 						<Link href={`/`}>
 							<Logo />
 						</Link>
@@ -33,7 +33,7 @@ export default function Footer() {
 							target="_blank"
 							href={`https://discord.gg/jrMfHpRnCf`}
 						>
-							<DiscordIcon />
+							<DiscordIcon width={24} />
 						</a>
 						<a
 							title="Instagram IChess UFAL"
@@ -47,13 +47,13 @@ export default function Footer() {
 						Copyright @ 2024 IChess. Todos os direitos reservados.
 					</p>
 				</div>
-				<div className="flex flex-row flex-wrap justify-start items-start gap-9">
+				<div className="flex flex-row flex-wrap items-start justify-start gap-9">
 					<ThemePicker />
 					<Status />
 				</div>
 			</div>
 			{/* Column 2 */}
-			<div className="flex flex-row items-start justify-start lg:justify-end gap-20">
+			<div className="flex flex-row items-start justify-start gap-20 lg:justify-end">
 				<FooterSection
 					title="Contato"
 					items={[
@@ -96,7 +96,7 @@ interface FooterSectionProps {
 function FooterSection({ title, items }: FooterSectionProps) {
 	return (
 		<div className="flex flex-col items-start justify-center gap-6">
-			<h6 className="text-neutral text-base font-black font-title">
+			<h6 className="font-title text-base font-black text-neutral">
 				{title}
 			</h6>
 			<ul className="flex flex-col items-start justify-center gap-5">

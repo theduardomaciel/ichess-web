@@ -1,14 +1,16 @@
 CREATE TABLE IF NOT EXISTS "accounts" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
+	"type" text NOT NULL,
 	"provider" text NOT NULL,
 	"provider_account_id" text NOT NULL,
+	"refresh_token" text,
 	"access_token" text,
 	"expires_at" integer,
+	"token_type" text,
+	"scope" text,
 	"id_token" text,
-	"refresh_token" text,
-	"session_state" text,
-	"token_type" text
+	"session_state" text
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "events" (
@@ -38,12 +40,12 @@ CREATE TABLE IF NOT EXISTS "sessions" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"name" text NOT NULL,
+	"name" text,
 	"email" text NOT NULL,
+	"emailVerified" timestamp,
 	"course" text NOT NULL,
 	"registration_id" text NOT NULL,
-	"period" text NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL
+	"period" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "members" (
@@ -61,10 +63,16 @@ CREATE TABLE IF NOT EXISTS "verification_tokens" (
 	CONSTRAINT "verification_tokens_identifier_token_pk" PRIMARY KEY("identifier","token")
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "member_events" (
+	"member_id" uuid NOT NULL,
+	"event_id" uuid NOT NULL
+);
+--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "accounts_provider_provider_account_id_index" ON "accounts" ("provider","provider_account_id");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "users_email_index" ON "users" ("email");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "members_user_id_role_index" ON "members" ("user_id","role");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "verification_tokens_token_index" ON "verification_tokens" ("token");--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "member_events_member_id_event_id_index" ON "member_events" ("member_id","event_id");--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE cascade;
 EXCEPTION
@@ -97,6 +105,18 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "members" ADD CONSTRAINT "members_project_id_companies_id_fk" FOREIGN KEY ("project_id") REFERENCES "companies"("id") ON DELETE cascade ON UPDATE cascade;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "member_events" ADD CONSTRAINT "member_events_member_id_members_id_fk" FOREIGN KEY ("member_id") REFERENCES "members"("id") ON DELETE cascade ON UPDATE cascade;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "member_events" ADD CONSTRAINT "member_events_event_id_events_id_fk" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE cascade ON UPDATE cascade;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

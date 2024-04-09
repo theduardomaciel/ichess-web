@@ -74,20 +74,11 @@ Para dar início ao servidor local de desenvolvimento, utilize `dotenv -- turbo 
 
 ## 🎲 Dados
 
+Para a migração de um novo esquema para o banco de dados, utilize `dotenv -- turbo db:generate` para a criação do arquivo `.sql` com a migração, e em seguida `dotenv -- turbo db:migrate` para enviar os dados para a rede.  
 Para a visualização do banco de dados, utilize `dotenv -- turbo db:studio`
 
 > [!WARNING]
 > Execute esse comando sempre na raiz do projeto para evitar erros com o arquivo `.env`.
-
-No caso de um reset nas _migrations_, recrie o caminho de arquivos: `packages/drizzle/migrations/meta/_journal.json` com o seguinte conteúdo para o arquivo `_journal.json`:
-
-```json
-{
-  "version": "0",
-  "dialect": "pg",
-  "entries": []
-}
-```
 
 <br />
 
