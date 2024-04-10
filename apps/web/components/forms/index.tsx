@@ -40,22 +40,22 @@ function FormSection({ form, children, ...rest }: FormSectionProps) {
 		!isNaN(sectionNumber) && rest.section < Number(sectionNumber);
 	const isSelected =
 		formSection === `section${rest.section}` ||
-		(rest.section == 1 && !formSection);
+		(rest.section === 1 && !formSection);
 
 	return (
 		<div
 			id={`section${rest.section}`}
 			className={cn(
-				"flex flex-col lg:flex-row items-start justify-start gap-9 lg:gap-16 w-full transition-opacity duration-300 ease-in-out pt-4 -mt-4",
+				"-mt-4 flex w-full flex-col items-start justify-start gap-9 pt-4 transition-opacity duration-300 ease-in-out lg:flex-row lg:gap-16",
 				{
-					"opacity-50 select-none": !isSelected,
+					"select-none opacity-50": !isSelected,
 					"pointer-events-none": !canSelect && !isSelected,
-				}
+				},
 			)}
 		>
 			<FormProgress {...rest} />
 			<div
-				className="flex flex-col justify-start items-start gap-6 p-6 md:p-9 w-full rounded-2xl border border-gray-200 relative"
+				className="relative flex w-full flex-col items-start justify-start gap-6 rounded-2xl border border-gray-200 p-6 md:p-9"
 				onClick={() => {
 					if (!isSelected && canSelect) {
 						// Atualizamos o valor do formulário para o valor da seção atual
@@ -78,13 +78,13 @@ function FormProgress({
 	fields,
 }: Omit<FormSectionProps, "form">) {
 	return (
-		<div className="flex flex-col w-full lg:sticky top-4 left-0 lg:w-2/5 rounded-2xl border border-primary-100">
-			<div className="flex flex-row items-center justify-start px-6 py-[18px] bg-primary-100 rounded-tl-2xl rounded-tr-2xl">
-				<h6 className="font-extrabold text-white text-base lg:text-lg">
+		<div className="left-0 top-4 flex w-full flex-col rounded-2xl border border-primary-100 lg:sticky lg:w-2/5">
+			<div className="flex flex-row items-center justify-start rounded-tl-2xl rounded-tr-2xl bg-primary-100 px-6 py-[18px]">
+				<h6 className="text-base font-extrabold text-white lg:text-lg">
 					{section}. {title}
 				</h6>
 			</div>
-			<ul className="flex flex-col items-start justify-start px-6 md:px-9 py-[18px] gap-4">
+			<ul className="flex flex-col items-start justify-start gap-4 px-6 py-[18px] md:px-9">
 				{fields.map((field, key) => {
 					if (!field.name) return null;
 
@@ -92,10 +92,10 @@ function FormProgress({
 						<li
 							key={key}
 							className={cn(
-								"flex flex-row items-center justify-start gap-2 text-sm lg:text-base text-neutral select-none",
+								"flex select-none flex-row items-center justify-start gap-2 text-sm text-neutral lg:text-base",
 								{
-									"opacity-50 text-primary-200": field.value,
-								}
+									"text-primary-200 opacity-50": field.value,
+								},
 							)}
 						>
 							{field.value && <CheckCircleIcon />}
@@ -125,27 +125,27 @@ function Panel({
 	return (
 		<div
 			className={cn(
-				"inline-flex flex-row w-full px-6 py-3 rounded-lg justify-start items-center gap-2.5 text-white",
+				"inline-flex w-full flex-row items-center justify-start gap-2.5 rounded-lg px-6 py-3 text-white",
 				{
 					"bg-tertiary-200 dark:bg-tertiary-200/50": type === "error",
 					"bg-secondary-100 dark:bg-secondary-100/50":
 						type === "warning",
 					"bg-info-100 dark:bg-info-100/50": type === "info",
 					"bg-primary-200 dark:bg-primary-200/50": type === "hint",
-				}
+				},
 			)}
 		>
 			{showIcon &&
 				{
 					error: <WarningIcon />,
 					warning: <WarningIcon />,
-					info: <InfoIcon className="w-[18px] h-[18px]" />,
+					info: <InfoIcon className="h-[18px] w-[18px]" />,
 					hint: <WarningIcon />,
 				}[type]}
 			<p
 				className={cn(
-					"grow shrink basis-0 text-sm font-medium whitespace-pre-wrap w-full",
-					className
+					"w-full shrink grow basis-0 whitespace-pre-wrap text-left text-sm font-medium",
+					className,
 				)}
 				{...rest}
 			>
@@ -167,15 +167,15 @@ function SectionFooter({
 	return (
 		<div
 			className={cn(
-				"flex flex-row flex-wrap items-center justify-end w-full gap-4",
+				"flex w-full flex-row flex-wrap items-center justify-end gap-4",
 				{
 					"justify-between": !!children,
-				}
+				},
 			)}
 		>
 			{children}
 			<Button
-				className="px-9 h-12 text-white font-extrabold bg-primary-200 w-full md:w-fit"
+				className="h-12 w-full bg-primary-200 px-9 font-extrabold text-white md:w-fit"
 				type="submit"
 			>
 				{isFinalSection ? (
@@ -200,9 +200,9 @@ function ResearchHeader({
 }) {
 	return (
 		<div className="flex flex-col items-start justify-start gap-2">
-			<div className="flex flex-row items-center justify-between w-full">
+			<div className="flex w-full flex-row items-center justify-between">
 				<FormLabel>Pergunta {index}</FormLabel>
-				<p className="text-xs lg:text-sm text-muted/80">Opcional</p>
+				<p className="text-xs text-muted/80 lg:text-sm">Opcional</p>
 			</div>
 			<FormLabel className="font-bold">{children}</FormLabel>
 		</div>

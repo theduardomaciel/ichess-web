@@ -7,15 +7,16 @@ import { ArrowRight } from "lucide-react";
 
 // Components
 import { Button } from "@/components/ui/button";
+import { ErrorDisplay } from "./ErrorDisplay";
 
 export const metadata: Metadata = {
-	title: "Access denied",
+	title: "Acesso negado",
 };
 
 export default function ErrorPage() {
 	return (
 		<div className="relative flex min-h-screen flex-col items-center justify-center">
-			<div className="mx-auto flex w-full max-w-[350px] flex-col justify-center space-y-6">
+			<div className="mx-auto flex w-full max-w-[500px] flex-col justify-center space-y-6">
 				<div className="flex flex-col items-center space-y-8">
 					<IChessLogo />
 
@@ -23,14 +24,14 @@ export default function ErrorPage() {
 						<h1 className="text-2xl font-semibold tracking-tight">
 							Acesso negado!
 						</h1>
+
 						<p className="text-sm leading-relaxed text-muted-foreground">
 							Parece que ocorreu um erro enquanto você tentava se
 							autenticar.
 						</p>
-						<p className="text-sm leading-relaxed text-muted-foreground">
-							Somente <strong>membros</strong> podem acessar essa
-							página.
-						</p>
+
+						<br />
+						<ErrorDisplay />
 					</div>
 					<Button
 						asChild

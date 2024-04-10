@@ -1,7 +1,10 @@
-import type { NextAuthConfig, Session } from "next-auth";
+import { db } from "@ichess/drizzle";
 import { GoogleProfile } from "next-auth/providers/google";
 import { googleProvider } from "./google-provider";
 import { drizzleAuthAdapter } from "./drizzle-auth-adapter";
+
+// Types
+import type { NextAuthConfig, Session } from "next-auth";
 
 export const authConfig = {
 	adapter: drizzleAuthAdapter,
@@ -32,14 +35,24 @@ export const authConfig = {
 
 			return false;
 		},
-		jwt({ token, session, trigger }) {
+		async jwt({ token, session, trigger }) {
 			function isSessionAvailable(session: unknown): session is Session {
 				return !!session;
 			}
 
 			if (trigger === "update" && isSessionAvailable(session)) {
 				console.log(session);
+
+				const members = await db.query.member.findMany({
+					where(fields, { eq }) {
+						return eq(fields.userId, session.user.id!);
+					},
+				});
+
+				const projectsIds = members.map((member) => member.projectId);
+
 				token.name = session.user.name;
+				token.projectsIds = projectsIds;
 			}
 
 			return token;
@@ -52,6 +65,7 @@ export const authConfig = {
 			return session;
 		},
 		authorized({ auth, request: { nextUrl } }) {
+			console.log("Auth: " + auth?.user);
 			const isLoggedIn = !!auth?.user;
 
 			const publicPages = ["/", "/join", "/members", "/events"];
