@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS "events" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "companies" (
+CREATE TABLE IF NOT EXISTS "projects" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
@@ -43,9 +43,9 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"name" text,
 	"email" text NOT NULL,
 	"emailVerified" timestamp,
-	"course" text NOT NULL,
-	"registration_id" text NOT NULL,
-	"period" text NOT NULL
+	"course" text,
+	"registration_id" text,
+	"period" text
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "members" (
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS "members" (
 	"user_id" uuid NOT NULL,
 	"project_id" uuid NOT NULL,
 	"username" text NOT NULL,
-	"role" text DEFAULT 'student' NOT NULL
+	"role" text DEFAULT 'member' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "verification_tokens" (
@@ -80,7 +80,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "events" ADD CONSTRAINT "events_project_id_companies_id_fk" FOREIGN KEY ("project_id") REFERENCES "companies"("id") ON DELETE restrict ON UPDATE cascade;
+ ALTER TABLE "events" ADD CONSTRAINT "events_project_id_projects_id_fk" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE restrict ON UPDATE cascade;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -104,7 +104,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "members" ADD CONSTRAINT "members_project_id_companies_id_fk" FOREIGN KEY ("project_id") REFERENCES "companies"("id") ON DELETE cascade ON UPDATE cascade;
+ ALTER TABLE "members" ADD CONSTRAINT "members_project_id_projects_id_fk" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE cascade ON UPDATE cascade;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

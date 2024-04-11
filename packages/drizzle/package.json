@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "db:generate": "drizzle-kit generate:pg",
+    "db:drop": "drizzle-kit drop",
     "db:migrate": "pnpm tsx ./migrate.ts",
     "db:studio": "drizzle-kit studio",
     "lint": "eslint ."
@@ -23,7 +24,7 @@
     "@ichess/prettier-config": "workspace:*",
     "@ichess/typescript-config": "workspace:*",
     "drizzle-kit": "^0.20.14",
-    "postgres": "^3.4.4"
+    "pg": "^8.11.5"
   },
   "eslintConfig": {
     "root": true,

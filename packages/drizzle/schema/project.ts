@@ -3,7 +3,7 @@ import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { event, member } from ".";
 
-export const project = pgTable("companies", {
+export const project = pgTable("projects", {
 	id: uuid("id").primaryKey().defaultRandom(),
 	name: text("name").notNull(),
 	createdAt: timestamp("created_at").defaultNow().notNull(),

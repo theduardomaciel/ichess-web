@@ -18,6 +18,8 @@ declare module "next-auth" {
 
 	export interface Session extends DefaultSession {
 		user: User;
+		projectsIds: string[];
+		projectsWithAdminIds: string[];
 	}
 }
 
@@ -25,5 +27,6 @@ declare module "next-auth/jwt" {
 	interface JWT extends DefaultJWT {
 		/* projectId: string; */
 		projectsIds: string[];
+		projectsWithAdminIds: string[];
 	}
 }

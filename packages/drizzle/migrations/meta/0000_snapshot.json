@@ -1,5 +1,5 @@
 {
-  "id": "4316b265-50eb-4e76-b542-32dd34359b03",
+  "id": "f49c657a-1f3d-4a47-9e55-d2770651feae",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -180,10 +180,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "events_project_id_companies_id_fk": {
-          "name": "events_project_id_companies_id_fk",
+        "events_project_id_projects_id_fk": {
+          "name": "events_project_id_projects_id_fk",
           "tableFrom": "events",
-          "tableTo": "companies",
+          "tableTo": "projects",
           "columnsFrom": [
             "project_id"
           ],
@@ -210,8 +210,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "companies": {
-      "name": "companies",
+    "projects": {
+      "name": "projects",
       "schema": "",
       "columns": {
         "id": {
@@ -315,19 +315,19 @@
           "name": "course",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "registration_id": {
           "name": "registration_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "period": {
           "name": "period",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {
@@ -377,7 +377,7 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "'student'"
+          "default": "'member'"
         }
       },
       "indexes": {
@@ -404,10 +404,10 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "members_project_id_companies_id_fk": {
-          "name": "members_project_id_companies_id_fk",
+        "members_project_id_projects_id_fk": {
+          "name": "members_project_id_projects_id_fk",
           "tableFrom": "members",
-          "tableTo": "companies",
+          "tableTo": "projects",
           "columnsFrom": [
             "project_id"
           ],

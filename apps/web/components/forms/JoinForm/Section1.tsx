@@ -27,7 +27,7 @@ import {
 } from "@/lib/validations/JoinForm/section1";
 
 const section1Keys = Object.keys(
-	joinFormSection1Schema.shape
+	joinFormSection1Schema.shape,
 ) as (keyof JoinFormSection1Schema)[];
 
 const formTitles = {
@@ -68,7 +68,7 @@ export default function JoinForm1({ form }: FormProps) {
 					</FormItem>
 				)}
 			/>
-			<FormField
+			{/* <FormField
 				control={form.control}
 				name="section1.email"
 				render={({ field }) => (
@@ -84,8 +84,8 @@ export default function JoinForm1({ form }: FormProps) {
 						<FormMessage type="warning" showIcon />
 					</FormItem>
 				)}
-			/>
-			<div className="flex flex-col lg:flex-row items-center justify-between gap-6 w-full">
+			/> */}
+			<div className="flex w-full flex-col items-center justify-between gap-6 lg:flex-row">
 				<FormField
 					control={form.control}
 					name="section1.course"

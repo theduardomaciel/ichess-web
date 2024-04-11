@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 
 // Components
 import { Providers } from "./providers";
-import Footer from "@/components/Footer/Footer";
 
 export const fontSans = FontSans({
 	subsets: ["latin"],
@@ -50,10 +49,7 @@ export default function RootLayout({
 			suppressHydrationWarning
 		>
 			<body className={"relative min-h-screen font-sans antialiased"}>
-				<Providers>
-					{children}
-					<Footer />
-				</Providers>
+				<Providers>{children}</Providers>
 			</body>
 		</html>
 	);

@@ -1,15 +1,19 @@
 "use client";
 
-import { Panel } from "@/components/forms";
+import { Panel, type PanelProps } from "@/components/forms";
 import { useQueryString } from "@/hooks/use-query-string";
 import Link from "next/link";
 
-export function ErrorDisplay() {
-	const query = useQueryString().query;
+interface Error {
+	type: PanelProps["type"];
+	content: React.ReactNode;
+}
 
-	if (query.get("error") === "AuthorizedCallbackError") {
-		return (
-			<Panel showIcon type="warning">
+const ERRORS: { [key: string]: Error } = {
+	AuthorizedCallbackError: {
+		type: "info",
+		content: (
+			<>
 				Eita! Pelo visto você não inseriu um e-mail institucional...
 				<br />
 				<strong>
@@ -25,13 +29,45 @@ export function ErrorDisplay() {
 					Eventos abertos ao público
 				</Link>
 				!
-			</Panel>
-		);
-	}
+			</>
+		),
+	},
+	PermissionLevelError: {
+		type: "error",
+		content: (
+			<>
+				Você não possui permissão para acessar essa página.
+				<br />
+				<strong>
+					Se você acredita que isso é um erro, entre em contato com a
+					administração.
+				</strong>
+			</>
+		),
+	},
+	default: {
+		type: "error",
+		content: (
+			<>
+				Somente <strong>membros cadastrados</strong> podem acessar essa
+				página.
+			</>
+		),
+	},
+};
+
+export function ErrorDisplay() {
+	const error = useQueryString().query.get("error");
+	const { type, content } =
+		ERRORS[error as keyof typeof ERRORS] || ERRORS.default;
 
 	return (
-		<Panel showIcon type="error">
-			Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.
+		<Panel
+			className="text-left text-sm leading-relaxed text-muted-foreground"
+			type={type}
+			showIcon
+		>
+			{content}
 		</Panel>
 	);
 }

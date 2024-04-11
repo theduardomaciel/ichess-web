@@ -1,7 +1,7 @@
 import Header from "@/components/dashboard/Header";
-import { env } from "@ichess/env";
+// import { env } from "@ichess/env";
 
-console.log(env);
+// console.log(env);
 
 export default function DashboardLayout({
 	children,

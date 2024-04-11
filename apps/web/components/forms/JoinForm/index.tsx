@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 // Components
@@ -25,7 +24,6 @@ import { scrollToNextSection } from "@/lib/validations";
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default function JoinForm() {
-	const router = useRouter();
 	const [currentState, setCurrentState] = useState<
 		false | "submitting" | "submitted"
 	>(false);
@@ -94,7 +92,7 @@ export default function JoinForm() {
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(handleNextFormType)}
-				className="flex flex-col items-center justify-start w-full gap-9 px-wrapper py-12 lg:py-24"
+				className="flex w-full flex-col items-center justify-start gap-9 px-wrapper py-12 lg:py-24"
 			>
 				<JoinForm1 form={form} />
 				<JoinForm2 form={form} />

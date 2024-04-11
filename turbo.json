@@ -9,6 +9,7 @@
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "db:generate": {},
+    "db:drop": {},
     "db:migrate": {},
     "db:studio": {},
     "dev": {

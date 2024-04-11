@@ -18,7 +18,7 @@ export default function BoardTilt() {
 	}, []);
 
 	return (
-		<div className="order-3 lg:order-1 flex items-center justify-center max-md:w-full lg:h-full select-none -z-10 translate-y-[15vh] lg:translate-y-0 lg:-translate-x-1/3 scale-[1.35]">
+		<div className="-z-10 order-3 flex translate-y-[15vh] scale-[1.35] select-none items-center justify-center max-md:w-full lg:order-1 lg:h-full lg:-translate-x-1/3 lg:translate-y-0">
 			<Image
 				id="board"
 				src={`/board.svg`}
