@@ -159,11 +159,13 @@ function Panel({
 }
 
 interface SectionFooterProps {
+	className?: string;
 	isFinalSection?: boolean;
 	children?: React.ReactNode;
 }
 
 function SectionFooter({
+	className,
 	isFinalSection = false,
 	children,
 }: SectionFooterProps) {
@@ -174,6 +176,7 @@ function SectionFooter({
 				{
 					"justify-between": !!children,
 				},
+				className,
 			)}
 		>
 			{children}

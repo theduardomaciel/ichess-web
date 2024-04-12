@@ -86,7 +86,7 @@ export default function JoinForm2({ form }: FormProps) {
 								</SelectItem>
 							</SelectContent>
 						</Select>
-						<Panel type="hint">
+						<Panel type="success">
 							Não se acanhe ao escolher uma opção! Estamos aqui
 							para garantir que você aprenda e se divirta com o
 							xadrez!

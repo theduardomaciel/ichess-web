@@ -7,12 +7,18 @@ import {
 	SectionFooter,
 	Panel,
 } from "@/components/forms";
+import {
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
 import { GoogleButton } from "@/app/auth/sign-in/SignInButton";
 
 export default function JoinForm0({
 	form,
 	email,
-}: FormProps & { email?: string }) {
+}: FormProps & { email?: string | null }) {
 	return (
 		<FormSection
 			title="Identificação"
@@ -25,13 +31,35 @@ export default function JoinForm0({
 				},
 			]}
 		>
-			<GoogleButton className="w-full py-5" callbackUrl="/join" />
-			{email && (
-				<Panel type="success" showIcon>
-					Você está logado como <strong>{email}</strong>.
-				</Panel>
-			)}
-			<SectionFooter />
+			<FormField
+				control={form.control}
+				name="section0.email"
+				render={() => (
+					<FormItem>
+						<FormLabel>E-mail institucional</FormLabel>
+						<GoogleButton
+							className="w-full py-[1.35rem]"
+							callbackUrl="/join"
+						/>
+						{email && (
+							<Panel type="success" showIcon>
+								Você está logado como <strong>{email}</strong>.
+							</Panel>
+						)}
+						<FormMessage type="warning" showIcon />
+					</FormItem>
+				)}
+			/>
+			<SectionFooter>
+				{/* {email && (
+					<button
+						type="button"
+						className="transition-colors hover:text-tertiary-100 hover:underline"
+					>
+						Sair da conta
+					</button>
+				)} */}
+			</SectionFooter>
 		</FormSection>
 	);
 }

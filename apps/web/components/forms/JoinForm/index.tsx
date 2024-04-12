@@ -22,7 +22,10 @@ import {
 } from "@/lib/validations/JoinForm";
 import { scrollToNextSection, wait } from "@/lib/validations";
 
-export default function JoinForm({ email }: { email?: string }) {
+// Types
+import { User } from "@ichess/auth";
+
+export default function JoinForm({ user }: { user?: User }) {
 	const [currentState, setCurrentState] = useState<
 		false | "submitting" | "submitted"
 	>(false);
@@ -32,8 +35,11 @@ export default function JoinForm({ email }: { email?: string }) {
 		resolver: zodResolver(joinFormSchema),
 		defaultValues: {
 			formType: JoinFormTypeEnum.Section0,
+			section0: {
+				email: user?.email || "",
+			},
 			section1: {
-				name: "",
+				name: user?.name || "",
 				course: undefined,
 				registrationId: "",
 				period: undefined,
@@ -70,8 +76,6 @@ export default function JoinForm({ email }: { email?: string }) {
 
 	// 2. Define a submit handler.
 	async function handleNextFormType() {
-		console.log(formType);
-
 		// 3. Switch between form sections.
 		switch (formType) {
 			case "section0":
@@ -98,7 +102,7 @@ export default function JoinForm({ email }: { email?: string }) {
 				onSubmit={form.handleSubmit(handleNextFormType)}
 				className="flex w-full flex-col items-center justify-start gap-9 px-wrapper py-12 lg:py-24"
 			>
-				<JoinForm0 form={form} email={email} />
+				<JoinForm0 form={form} email={user?.email} />
 				<JoinForm1 form={form} />
 				<JoinForm2 form={form} />
 				<JoinForm3 form={form} />

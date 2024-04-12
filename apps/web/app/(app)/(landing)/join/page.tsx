@@ -18,7 +18,7 @@ export default async function JoinPage() {
 					saber um pouco mais sobre você!
 				</h2>
 			</div>
-			<JoinForm email={session?.user.email || undefined} />
+			<JoinForm user={session?.user || undefined} />
 		</main>
 	);
 }
