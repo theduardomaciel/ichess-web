@@ -21,7 +21,7 @@ export default function SignInPage() {
 						</h1>
 					</div>
 				</div>
-				<GoogleButton />
+				<GoogleButton callbackUrl="/join" />
 				<p className="px-8 text-center text-sm leading-relaxed text-muted-foreground">
 					Ao continuar, você concorda com os{" "}
 					<a

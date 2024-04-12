@@ -16,6 +16,7 @@ import {
 } from "@/lib/validations/JoinForm/section3";
 
 export enum JoinFormTypeEnum {
+	Section0 = "section0",
 	Section1 = "section1",
 	Section2 = "section2",
 	Section3 = "section3",

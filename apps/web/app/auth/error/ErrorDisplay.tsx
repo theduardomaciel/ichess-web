@@ -45,12 +45,21 @@ const ERRORS: { [key: string]: Error } = {
 			</>
 		),
 	},
-	default: {
+	NotAuthenticated: {
 		type: "error",
 		content: (
 			<>
 				Somente <strong>membros cadastrados</strong> podem acessar essa
 				página.
+			</>
+		),
+	},
+	default: {
+		type: "error",
+		content: (
+			<>
+				Ocorreu um erro inesperado. Por favor, tente novamente mais
+				tarde.
 			</>
 		),
 	},

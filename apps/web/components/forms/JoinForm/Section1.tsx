@@ -32,15 +32,12 @@ const section1Keys = Object.keys(
 
 const formTitles = {
 	name: "Nome completo",
-	email: "E-mail",
 	course: "Curso",
 	registrationId: "Nº de matrícula",
 	period: "Período",
 };
 
 export default function JoinForm1({ form }: FormProps) {
-	const formSection = form.watch("formType");
-
 	const section1 = section1Keys.map((key) => {
 		return {
 			name: formTitles[key],
@@ -68,23 +65,6 @@ export default function JoinForm1({ form }: FormProps) {
 					</FormItem>
 				)}
 			/>
-			{/* <FormField
-				control={form.control}
-				name="section1.email"
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>{formTitles.email}</FormLabel>
-						<FormControl>
-							<Input
-								type="email"
-								placeholder="fulano@ic.ufal.br"
-								{...field}
-							/>
-						</FormControl>
-						<FormMessage type="warning" showIcon />
-					</FormItem>
-				)}
-			/> */}
 			<div className="flex w-full flex-col items-center justify-between gap-6 lg:flex-row">
 				<FormField
 					control={form.control}

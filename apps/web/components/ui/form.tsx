@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
@@ -22,18 +24,18 @@ const Form = FormProvider;
 
 type FormFieldContextValue<
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
 	name: TName;
 };
 
 const FormFieldContext = React.createContext<FormFieldContextValue>(
-	{} as FormFieldContextValue
+	{} as FormFieldContextValue,
 );
 
 const FormField = <
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
 	...props
 }: ControllerProps<TFieldValues, TName>) => {
@@ -72,7 +74,7 @@ type FormItemContextValue = {
 };
 
 const FormItemContext = React.createContext<FormItemContextValue>(
-	{} as FormItemContextValue
+	{} as FormItemContextValue,
 );
 
 const FormItem = React.forwardRef<
@@ -85,7 +87,7 @@ const FormItem = React.forwardRef<
 		<FormItemContext.Provider value={{ id }}>
 			<div
 				ref={ref}
-				className={cn("space-y-2 w-full", className)}
+				className={cn("w-full space-y-2", className)}
 				{...props}
 			/>
 		</FormItemContext.Provider>
@@ -147,8 +149,8 @@ const FormDescription = React.forwardRef<
 			ref={ref}
 			id={formDescriptionId}
 			className={cn(
-				"text-sm lg:text-base change_later text-muted-foreground",
-				className
+				"change_later text-sm text-muted-foreground lg:text-base",
+				className,
 			)}
 			{...props}
 		/>
@@ -188,15 +190,15 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
 				ref={ref}
 				id={formMessageId}
 				className={cn(
-					"text-sm change_later font-medium text-destructive",
-					className
+					"change_later text-sm font-medium text-destructive",
+					className,
 				)}
 				{...props}
 			>
 				{body}
 			</p>
 		);
-	}
+	},
 );
 FormMessage.displayName = "FormMessage";
 

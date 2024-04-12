@@ -13,17 +13,24 @@ import { Button } from "@/components/ui/button";
 
 interface Props {
 	className?: string;
+	callbackUrl?: string;
+	callback?: () => void;
 }
 
-export function GoogleButton({ className }: Props) {
+export function GoogleButton({ className, callbackUrl, callback }: Props) {
 	const [loading, setLoading] = useState(false);
 
 	async function handleSignIn() {
 		setLoading(true);
 
-		await signIn("google", {
-			callbackUrl: "/dashboard",
-		});
+		if (callbackUrl) {
+			await signIn("google", {
+				callbackUrl: callbackUrl || "/", // Default to home page
+			});
+		} else {
+			console.log("No callback URL provided");
+			callback && callback();
+		}
 	}
 
 	return (

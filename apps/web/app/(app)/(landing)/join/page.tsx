@@ -1,8 +1,11 @@
+import { auth } from "@ichess/auth";
+
 // Components
 import JoinForm from "@/components/forms/JoinForm";
-import { Suspense } from "react";
 
-export default function JoinPage() {
+export default async function JoinPage() {
+	const session = await auth();
+
 	return (
 		<main className="flex min-h-screen flex-col items-start justify-start">
 			<div className="bg-vignette relative flex w-full flex-col items-center justify-center gap-4 px-wrapper pb-28 pt-48">
@@ -15,9 +18,7 @@ export default function JoinPage() {
 					saber um pouco mais sobre você!
 				</h2>
 			</div>
-			<Suspense fallback={<p>testando...</p>}>
-				<JoinForm />
-			</Suspense>
+			<JoinForm email={session?.user.email || undefined} />
 		</main>
 	);
 }

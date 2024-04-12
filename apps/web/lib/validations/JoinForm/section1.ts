@@ -17,18 +17,6 @@ export const joinFormSection1Schema = z.object({
 				})
 				.join(" ");
 		}),
-	email: z
-		.string({ required_error: "Obrigatório" })
-		.email({ message: "E-mail inválido." })
-		.refine(
-			(email) => {
-				return email.endsWith("ic.ufal.br");
-			},
-			{
-				message:
-					"Eita! Parece que você não inseriu um e-mail institucional...\nPara ingressar no IChess é necessário ser discente do IC. Caso você não faça parte, mas deseja se envolver em nossas atividades, confira os Eventos abertos ao público!",
-			}
-		),
 	course: z.enum(["cc", "ec"], { required_error: "Selecione uma opção" }),
 	registrationId: z
 		.string({ required_error: "Obrigatório" })

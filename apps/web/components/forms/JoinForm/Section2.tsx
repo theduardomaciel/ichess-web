@@ -31,7 +31,7 @@ import {
 } from "@/lib/validations/JoinForm/section2";
 
 const section2Keys = Object.keys(
-	joinFormSection2Schema.shape
+	joinFormSection2Schema.shape,
 ) as (keyof JoinFormSection2Schema)[];
 
 const formTitles = {
@@ -40,9 +40,6 @@ const formTitles = {
 };
 
 export default function JoinForm2({ form }: FormProps) {
-	const formSection = form.watch("formType");
-	const sectionNumber = formSection?.replace("section", "");
-
 	const section2 = section2Keys.map((key) => {
 		return {
 			name: formTitles[key],
@@ -110,7 +107,7 @@ export default function JoinForm2({ form }: FormProps) {
 						<Panel type="info">
 							Não tem uma conta no Chess.com? Crie uma em
 							<a
-								className="underline ml-1 break-all"
+								className="ml-1 break-all underline"
 								rel="noreferrer noopener"
 								href="https://www.chess.com/pt-BR/register"
 								target="_blank"

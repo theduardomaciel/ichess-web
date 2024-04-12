@@ -16,9 +16,10 @@ import type { UseFormReturn } from "react-hook-form";
 
 // Utils
 import { scrollToNextSection } from "@/lib/validations";
+import { JoinFormSchema, JoinFormTypeEnum } from "@/lib/validations/JoinForm";
 
 export interface FormProps {
-	form: UseFormReturn<any>;
+	form: UseFormReturn<JoinFormSchema, unknown, JoinFormSchema>;
 }
 
 interface FormSectionProps {
@@ -34,13 +35,12 @@ interface FormSectionProps {
 
 function FormSection({ form, children, ...rest }: FormSectionProps) {
 	const formSection = form.watch("formType");
-	const sectionNumber = formSection?.replace("section", "");
+	const sectionNumber = Number(formSection?.replace("section", ""));
 
-	const canSelect =
-		!isNaN(sectionNumber) && rest.section < Number(sectionNumber);
+	const canSelect = !isNaN(sectionNumber) && rest.section < sectionNumber;
 	const isSelected =
 		formSection === `section${rest.section}` ||
-		(rest.section === 1 && !formSection);
+		(rest.section === 0 && !formSection);
 
 	return (
 		<div
@@ -59,9 +59,12 @@ function FormSection({ form, children, ...rest }: FormSectionProps) {
 				onClick={() => {
 					if (!isSelected && canSelect) {
 						// Atualizamos o valor do formulário para o valor da seção atual
-						form.setValue("formType", `section${rest.section}`);
+						form.setValue(
+							"formType",
+							`section${rest.section}` as JoinFormTypeEnum,
+						);
 
-						// Scrollamos para a seção atual
+						// Realizamos o scroll para a seção atual
 						scrollToNextSection(rest.section);
 					}
 				}}
@@ -81,7 +84,7 @@ function FormProgress({
 		<div className="left-0 top-4 flex w-full flex-col rounded-2xl border border-primary-100 lg:sticky lg:w-2/5">
 			<div className="flex flex-row items-center justify-start rounded-tl-2xl rounded-tr-2xl bg-primary-100 px-6 py-[18px]">
 				<h6 className="text-base font-extrabold text-white lg:text-lg">
-					{section}. {title}
+					{section + 1}. {title}
 				</h6>
 			</div>
 			<ul className="flex flex-col items-start justify-start gap-4 px-6 py-[18px] md:px-9">
@@ -110,7 +113,7 @@ function FormProgress({
 
 export interface PanelProps extends React.HTMLAttributes<HTMLParagraphElement> {
 	className?: string;
-	type?: "error" | "warning" | "info" | "hint";
+	type?: "error" | "warning" | "info" | "success" | "success";
 	showIcon?: boolean;
 	children: React.ReactNode;
 }
@@ -131,7 +134,7 @@ function Panel({
 					"bg-secondary-100 dark:bg-secondary-100/50":
 						type === "warning",
 					"bg-info-100 dark:bg-info-100/50": type === "info",
-					"bg-primary-200 dark:bg-primary-200/50": type === "hint",
+					"bg-primary-200 dark:bg-primary-200/50": type === "success",
 				},
 			)}
 		>
@@ -140,7 +143,7 @@ function Panel({
 					error: <WarningIcon />,
 					warning: <WarningIcon />,
 					info: <InfoIcon className="h-[18px] w-[18px]" />,
-					hint: <WarningIcon />,
+					success: <CheckCircleIcon />,
 				}[type]}
 			<p
 				className={cn(

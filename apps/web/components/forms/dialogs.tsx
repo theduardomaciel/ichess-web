@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { DotLottiePlayer } from "@dotlottie/react-player";
 
@@ -26,7 +28,7 @@ export function LoadingDialog({ isOpen }: Props) {
 	return (
 		<Dialog open={isOpen}>
 			<DialogContent
-				className="sm:max-w-[450px] flex flex-col items-center justify-center pb-16"
+				className="flex flex-col items-center justify-center pb-16 sm:max-w-[450px]"
 				hasCloseButton={false}
 				onInteractOutside={(event) => {
 					event.preventDefault();
@@ -38,11 +40,11 @@ export function LoadingDialog({ isOpen }: Props) {
 						autoplay
 						loop
 					/>
-					<DialogTitle className="font-title font-extrabold text-2xl text-center">
+					<DialogTitle className="text-center font-title text-2xl font-extrabold">
 						Estamos realizando seu cadastro...
 					</DialogTitle>
 				</DialogHeader>
-				<DialogDescription className="text-center font-medium text-lg max-w-[80%]">
+				<DialogDescription className="max-w-[80%] text-center text-lg font-medium">
 					Aguarde um pouquinho enquanto processamos tudo!
 				</DialogDescription>
 			</DialogContent>
@@ -54,7 +56,7 @@ export function SuccessDialog({ isOpen, href }: Props) {
 	return (
 		<Dialog open={isOpen}>
 			<DialogContent
-				className="sm:max-w-[450px] flex flex-col items-center justify-center py-16"
+				className="flex flex-col items-center justify-center py-16 sm:max-w-[450px]"
 				hasCloseButton={false}
 				onInteractOutside={(event) => {
 					event.preventDefault();
@@ -62,11 +64,11 @@ export function SuccessDialog({ isOpen, href }: Props) {
 			>
 				<DialogHeader className="flex flex-col items-center justify-center gap-4">
 					<SuccessIcon />
-					<DialogTitle className="font-title font-extrabold text-2xl text-center">
+					<DialogTitle className="text-center font-title text-2xl font-extrabold">
 						Eba! Deu tudo certo!
 					</DialogTitle>
 				</DialogHeader>
-				<DialogDescription className="text-center font-medium text-lg max-w-[80%]">
+				<DialogDescription className="max-w-[80%] text-center text-lg font-medium">
 					Seu cadastro já foi enviado e está em análise. <br />
 					Uma resposta será enviada ao seu e-mail institucional em
 					breve!

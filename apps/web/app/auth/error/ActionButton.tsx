@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 const ERRORS = {
 	AuthorizedCallbackError: {
 		title: "Tentar novamente",
-		href: "/auth/sign-in",
+		href: "/",
 		icon: {
 			instance: Repeat2Icon,
 			position: "left",

@@ -1,10 +1,11 @@
 // Types
 import { type UseFormReturn } from "react-hook-form";
+import type { JoinFormSchema } from "./JoinForm";
 
 export function isValid(
 	key: string,
 	section: number,
-	form: UseFormReturn<any>
+	form: UseFormReturn<JoinFormSchema>,
 ) {
 	const errors = form.formState.errors as Record<string, any>;
 
@@ -20,3 +21,6 @@ export function scrollToNextSection(newSection: number) {
 		behavior: "smooth",
 	});
 }
+
+export const wait = (ms: number) =>
+	new Promise((resolve) => setTimeout(resolve, ms));
