@@ -16,6 +16,7 @@ export const user = pgTable(
 		name: text("name"),
 		email: text("email").notNull(),
 		emailVerified: timestamp("emailVerified", { mode: "date" }),
+		image: text("image"),
 		course: text("course").$type<"cc" | "ec">(),
 		registrationId: text("registration_id"),
 		period: text("period").$type<

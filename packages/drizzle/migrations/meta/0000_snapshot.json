@@ -1,5 +1,5 @@
 {
-  "id": "f49c657a-1f3d-4a47-9e55-d2770651feae",
+  "id": "c951121c-c083-479e-8bff-7c831e4858bc",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -145,12 +145,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "ace": {
-          "name": "ace",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "type": {
           "name": "type",
           "type": "text",
@@ -158,9 +152,9 @@
           "notNull": true,
           "default": "'internal'"
         },
-        "project_id": {
-          "name": "project_id",
-          "type": "uuid",
+        "ace_id": {
+          "name": "ace_id",
+          "type": "smallserial",
           "primaryKey": false,
           "notNull": true
         },
@@ -169,6 +163,12 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -180,17 +180,17 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "events_project_id_projects_id_fk": {
-          "name": "events_project_id_projects_id_fk",
+        "events_ace_id_aces_id_fk": {
+          "name": "events_ace_id_aces_id_fk",
           "tableFrom": "events",
-          "tableTo": "projects",
+          "tableTo": "aces",
           "columnsFrom": [
-            "project_id"
+            "ace_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "restrict",
+          "onDelete": "set null",
           "onUpdate": "cascade"
         },
         "events_author_id_users_id_fk": {
@@ -204,6 +204,19 @@
             "id"
           ],
           "onDelete": "set null",
+          "onUpdate": "cascade"
+        },
+        "events_project_id_projects_id_fk": {
+          "name": "events_project_id_projects_id_fk",
+          "tableFrom": "events",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
           "onUpdate": "cascade"
         }
       },
@@ -308,6 +321,12 @@
         "emailVerified": {
           "name": "emailVerified",
           "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -463,6 +482,97 @@
           ]
         }
       },
+      "uniqueConstraints": {}
+    },
+    "periods": {
+      "name": "periods",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "from": {
+          "name": "from",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "to": {
+          "name": "to",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "periods_slug_unique": {
+          "name": "periods_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "slug"
+          ]
+        }
+      }
+    },
+    "aces": {
+      "name": "aces",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "smallserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hours": {
+          "name": "hours",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "aces_project_id_projects_id_fk": {
+          "name": "aces_project_id_projects_id_fk",
+          "tableFrom": "aces",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "member_events": {

@@ -1,7 +1,15 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+	pgTable,
+	smallserial,
+	text,
+	timestamp,
+	uuid,
+} from "drizzle-orm/pg-core";
 
-import { project, user } from ".";
+import { ace, memberOnEvent, project, user } from ".";
+
+export const EventTypes = ["internal", "external"] as const;
 
 export const event = pgTable("events", {
 	id: uuid("id").primaryKey().defaultRandom(),
@@ -9,25 +17,28 @@ export const event = pgTable("events", {
 	description: text("description"),
 	dateFrom: timestamp("date_from").notNull(),
 	dateTo: timestamp("date_to").notNull(),
-	ace: text("ace").$type<"1" | "2" | "3" | "4" | "5" | "6">().notNull(),
 	type: text("type")
-		.$type<"internal" | "external">()
+		.$type<(typeof EventTypes)[number]>()
 		.default("internal")
 		.notNull(),
+	aceId: smallserial("ace_id").references(() => ace.id, {
+		onDelete: "set null",
+		onUpdate: "cascade",
+	}),
+	authorId: uuid("author_id").references(() => user.id, {
+		onDelete: "set null",
+		onUpdate: "cascade",
+	}),
 	projectId: uuid("project_id")
 		.notNull()
 		.references(() => project.id, {
 			onDelete: "restrict",
 			onUpdate: "cascade",
 		}),
-	authorId: uuid("author_id").references(() => user.id, {
-		onDelete: "set null",
-		onUpdate: "cascade",
-	}),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const eventRelations = relations(event, ({ one }) => ({
+export const eventRelations = relations(event, ({ one, many }) => ({
 	project: one(project, {
 		fields: [event.projectId],
 		references: [project.id],
@@ -36,4 +47,9 @@ export const eventRelations = relations(event, ({ one }) => ({
 		fields: [event.authorId],
 		references: [user.id],
 	}),
+	ace: one(ace, {
+		fields: [event.aceId],
+		references: [ace.id],
+	}),
+	membersOnEvent: many(memberOnEvent),
 }));

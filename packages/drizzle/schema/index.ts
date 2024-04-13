@@ -5,4 +5,6 @@ export * from "./session";
 export * from "./user";
 export * from "./member";
 export * from "./verification-token";
+export * from "./period";
+export * from "./ace";
 export * from "./member-on-event";

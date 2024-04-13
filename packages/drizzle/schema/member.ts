@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
-import { project, user } from ".";
+import { memberOnEvent, project, user } from ".";
 
 export const member = pgTable(
 	"members",
@@ -32,7 +32,7 @@ export const member = pgTable(
 	},
 );
 
-export const memberRelations = relations(member, ({ one }) => ({
+export const memberRelations = relations(member, ({ one, many }) => ({
 	user: one(user, {
 		fields: [member.userId],
 		references: [user.id],
@@ -41,4 +41,5 @@ export const memberRelations = relations(member, ({ one }) => ({
 		fields: [member.projectId],
 		references: [project.id],
 	}),
+	membersOnEvent: many(memberOnEvent),
 }));
