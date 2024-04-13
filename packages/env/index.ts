@@ -11,14 +11,16 @@ export const env = createEnv({
 		NEXTAUTH_SECRET: z.string().min(1),
 		GOOGLE_CLIENT_ID: z.string().min(1),
 		GOOGLE_CLIENT_SECRET: z.string().min(1),
+		VERCEL_URL: z.string().url(),
 	},
 	client: {
-		NEXT_PUBLIC_VERCEL_URL: z.string().url().min(1),
+		NEXT_PUBLIC_VERCEL_URL: z.string().url(),
 	},
 	runtimeEnv: {
 		NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
 		ICHESS_ID: process.env.ICHESS_ID,
 		NODE_ENV: process.env.NODE_ENV,
+		VERCEL_URL: process.env.VERCEL_URL,
 		DATABASE_URL: process.env.DATABASE_URL,
 		NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
 		GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,

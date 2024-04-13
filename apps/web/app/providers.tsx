@@ -1,9 +1,24 @@
 "use client";
 
+import { ReactNode, useState } from "react";
 import { ThemeProvider } from "next-themes";
-import { ReactNode } from "react";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import { trpcLinks } from "@/lib/trpc/client";
+import { trpc, TRPCProvider } from "@/lib/trpc/react";
 
 export function Providers({ children }: { children: ReactNode }) {
+	const [queryClient] = useState(() => {
+		return new QueryClient();
+	});
+
+	const [trpcClient] = useState(() => {
+		return trpc.createClient({
+			links: trpcLinks,
+		});
+	});
+
 	return (
 		<ThemeProvider
 			attribute="class"
@@ -11,7 +26,11 @@ export function Providers({ children }: { children: ReactNode }) {
 			enableSystem
 			disableTransitionOnChange
 		>
-			{children}
+			<TRPCProvider client={trpcClient} queryClient={queryClient}>
+				<QueryClientProvider client={queryClient}>
+					{children}
+				</QueryClientProvider>
+			</TRPCProvider>
 		</ThemeProvider>
 	);
 }

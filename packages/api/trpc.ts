@@ -41,6 +41,13 @@ const t = initTRPC.context<TRPCContext>().create({
 });
 
 /**
+ * mergeRouters
+ * @see https://trpc.io/docs/server/router
+ * @see https://trpc.io/docs/server/merging-routers
+ */
+export const mergeRouters = t.mergeRouters;
+
+/**
  * Create a server-side caller
  * @see https://trpc.io/docs/server/server-side-calls
  */
