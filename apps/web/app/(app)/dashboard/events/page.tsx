@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { env } from "@ichess/env";
 
 import Link from "next/link";
-import { unstable_noStore } from "next/cache";
+// import { unstable_noStore } from "next/cache";
 
 // Icons
 import ErrorFaceIcon from "@/public/icons/error_face.svg";
@@ -19,7 +19,7 @@ import { ParamsResponsiblePicker } from "@/components/dashboard/ResponsiblePicke
 
 // Validation
 import { z } from "zod";
-import { eventsParams } from "@ichess/api/routers/events";
+import { getEventsParams } from "@ichess/api/routers/events";
 
 // API
 import { serverClient } from "@/lib/trpc/server";
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 	description: "Veja todos os eventos cadastrados",
 };
 
-const eventsPageParams = eventsParams.extend({
+const eventsPageParams = getEventsParams.extend({
 	r: z.string().optional(),
 });
 
@@ -67,7 +67,9 @@ export default async function EventsPage({
 	// O "r" equivale ao estado da barra de pesquisa quando o usuário clica em "Limpar filtros"
 	// Isso é feito por meio da mudança de key do componente SearchBar
 
-	console.log({ searchParams });
+	console.log(
+		events && events.length > 0 ? events[0] : "Nenhum evento encontrado",
+	);
 
 	return (
 		<main className="flex min-h-screen flex-col items-start justify-start gap-[var(--wrapper)] px-wrapper py-12 lg:flex-row lg:gap-12">
@@ -89,7 +91,7 @@ export default async function EventsPage({
 								href={`/dashboard/events/${event.id}`}
 								className="w-full"
 							>
-								{/* <EventPreview event={event} /> */}
+								<EventPreview event={event} />
 							</Link>
 						))
 					) : (
@@ -98,12 +100,11 @@ export default async function EventsPage({
 				</ul>
 				{events && events.length > 0 && (
 					<Suspense fallback={null}>
-						{/* <DashboardPagination
+						<DashboardPagination
 							pathname="/dashboard/events"
-							searchParams={searchParams}
 							currentPage={pageIndex}
 							pageCount={pageCount}
-						/> */}
+						/>
 					</Suspense>
 				)}
 			</div>

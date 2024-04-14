@@ -1,5 +1,5 @@
 import { db } from "@ichess/drizzle";
-import { event, EventTypes, user, memberOnEvent } from "@ichess/drizzle/schema";
+import { event, EventTypes, memberOnEvent, ace } from "@ichess/drizzle/schema";
 import { transformSingleToArray } from "../utils";
 import {
 	and,
@@ -18,7 +18,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
-export const eventsParams = z.object({
+export const getEventsParams = z.object({
 	search: z.string().optional(),
 	sortBy: z.enum(["recent", "oldest"]).optional(),
 	periodsFilter: z
@@ -35,6 +35,15 @@ export const eventsParams = z.object({
 		.transform(transformSingleToArray),
 	pageIndex: z.coerce.number().default(0),
 	pageSize: z.coerce.number().default(10),
+});
+
+const mutateEventParams = z.object({
+	name: z.string().min(1),
+	description: z.string().nullable(),
+	dateFrom: z.string().transform((value) => new Date(value)),
+	dateTo: z.string().transform((value) => new Date(value)),
+	type: z.enum(EventTypes),
+	aceId: z.string().uuid(),
 });
 
 export const eventsRouter = createTRPCRouter({
@@ -93,7 +102,7 @@ export const eventsRouter = createTRPCRouter({
 
 	getEvents: protectedProcedure
 		.input(
-			eventsParams.extend({
+			getEventsParams.extend({
 				projectId: z.string().uuid(),
 			}),
 		)
@@ -114,8 +123,6 @@ export const eventsRouter = createTRPCRouter({
 			const acesFilterConverted = acesFilter
 				? acesFilter.map((aceId) => Number(aceId))
 				: undefined;
-
-			console.log(acesFilter);
 
 			const aces =
 				acesFilterConverted && acesFilterConverted.length > 0
@@ -154,12 +161,13 @@ export const eventsRouter = createTRPCRouter({
 				db
 					.select({
 						...eventColumns,
-						author: {
-							name: user.name,
-							image: user.image,
-						},
 						memberOnEvent: {
 							memberId: memberOnEvent.memberId,
+						},
+						ace: {
+							id: ace.id,
+							description: ace.description,
+							hours: ace.hours,
 						},
 					})
 					.from(event)
@@ -167,7 +175,7 @@ export const eventsRouter = createTRPCRouter({
 						memberOnEvent,
 						eq(memberOnEvent.eventId, event.id),
 					)
-					.leftJoin(user, eq(event.authorId, user.id))
+					.leftJoin(ace, eq(event.aceId, ace.id))
 					.where(
 						and(
 							eq(event.projectId, projectId),
@@ -242,24 +250,87 @@ export const eventsRouter = createTRPCRouter({
 					),
 			]);
 
-			console.log(events);
-			console.log("Amount: ", amount);
+			// console.log(events);
+			// console.log("Amount: ", amount);
 
 			const pageCount = Math.ceil(amount / pageSize);
+
+			/* const eventsWithAce = await Promise.all(
+				events.map(async (event) => {
+					let ace = acesFilter
+						? aces?.find((ace) => ace.id === event.aceId)
+						: undefined;
+
+					if (!ace) {
+						const acesIds = events
+							.map((event) => event.aceId)
+							.filter(
+								(aceId, index, self) =>
+									self.indexOf(aceId) === index,
+							); // Remove duplicates
+
+						const eventsAces = await db.query.ace.findMany({
+							where(fields) {
+								return inArray(fields.id, acesIds);
+							},
+						});
+
+						ace = eventsAces.find((ace) => ace.id === event.aceId);
+					}
+
+					return {
+						...event,
+						ace,
+					};
+				}),
+			); */
 
 			return { events, pageCount };
 		}),
 
+	createEvent: protectedProcedure
+		.input(
+			mutateEventParams.extend({
+				projectId: z.string().uuid(),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			const {
+				name,
+				description,
+				dateFrom,
+				dateTo,
+				type,
+				aceId,
+				projectId,
+			} = input;
+
+			const newEvent = await db.transaction(async (tx) => {
+				const [createdEvent] = await tx
+					.insert(event)
+					.values({
+						name,
+						description,
+						dateFrom,
+						dateTo,
+						type,
+						aceId: !isNaN(Number(aceId))
+							? Number(aceId)
+							: undefined,
+						projectId,
+					})
+					.returning();
+
+				return createdEvent;
+			});
+
+			return { event: newEvent };
+		}),
+
 	updateEvent: protectedProcedure
 		.input(
-			z.object({
+			mutateEventParams.extend({
 				eventId: z.string().uuid(),
-				name: z.string().min(1),
-				description: z.string().nullable(),
-				dateFrom: z.string().transform((value) => new Date(value)),
-				dateTo: z.string().transform((value) => new Date(value)),
-				type: z.enum(EventTypes),
-				aceId: z.string().uuid(),
 				membersIds: z.array(z.string().uuid()).default([]),
 			}),
 		)
@@ -272,6 +343,7 @@ export const eventsRouter = createTRPCRouter({
 				dateTo,
 				type,
 				aceId,
+				membersIds,
 			} = input;
 
 			const eventToUpdate = await db.query.event.findFirst({
@@ -290,36 +362,28 @@ export const eventsRouter = createTRPCRouter({
 				});
 			}
 
-			const currentEventMembers = await db.query.memberOnEvent.findMany({
-				where(fields, { eq }) {
-					return eq(fields.eventId, eventId);
-				},
-			});
-
-			/* const currentEventMembersIds = currentEventMembers.map(
-				(item) => item.memberId,
-			);
-
-			const membersIds = input.membersIds;
-
-			const membersIdsToRemove = currentEventMembersIds.filter(
-				(memberId) => !membersIds.includes(memberId),
-			);
-
-			const membersIdsToAdd = membersIds.filter((memberId) => {
-				return !currentEventMembersIds.includes(memberId);
-			}); */
+			const currentEventMembers = membersIds
+				? await db.query.memberOnEvent.findMany({
+						where(fields, { eq }) {
+							return eq(fields.eventId, eventId);
+						},
+					})
+				: undefined;
 
 			const membersIdsToRemove = currentEventMembers
-				.filter((item) => !input.membersIds.includes(item.memberId))
-				.map((item) => item.memberId);
+				? currentEventMembers
+						.filter((item) => membersIds.includes(item.memberId))
+						.map((item) => item.memberId)
+				: [];
 
-			const membersIdsToAdd = input.membersIds.filter(
-				(memberId) =>
-					!currentEventMembers.find(
-						(item) => item.memberId === memberId,
-					),
-			);
+			const membersIdsToAdd = currentEventMembers
+				? membersIds.filter(
+						(memberId) =>
+							!currentEventMembers.find(
+								(item) => item.memberId === memberId,
+							),
+					)
+				: [];
 
 			// Para ter o evento atualizado retornado, utilize: const updatedEvent = await db.transaction(async (tx) => { ... });
 			await db.transaction(async (tx) => {

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { z } from "zod";
 
 import { cn } from "@/lib/utils";
 
@@ -8,40 +7,33 @@ import { DateDisplay } from "@/components/ui/calendar";
 import { AceLabel } from "@/components/dashboard/AceCard";
 
 // Utils
-import { ACEs, type addEventFormSchema } from "@/lib/validations/AddEventForm";
-import { moderators } from "@/lib/fake_data";
-
-type Event = z.infer<typeof addEventFormSchema> & { id: string };
 
 interface Props {
-	event: Event;
+	event: any;
 	showResponsible?: boolean;
 }
 
 export function EventPreview({ event, showResponsible = true }: Props) {
-	const ACE = ACEs.find((ace) => ace.id == event.ace);
-
-	const responsible = event.responsible.map((id) => {
-		const mod = moderators.find((mod) => mod.id === id);
-		return mod;
-	});
-	const lastResponsible = responsible.length > 1 ? responsible.pop() : null;
+	const moderators = event.memberOnEvent
+		? event.memberOnEvent.filter((member) => member.role === "admin")
+		: [];
+	const lastModerator = moderators.length > 1 ? moderators.pop() : null;
 
 	return (
-		<li className="flex flex-col items-start justify-start p-9 gap-4 bg-gray-300 rounded-lg w-full hover:bg-gray-400 hover:outline outline-gray-200 transition-[background-color,outline]">
-			<div className="flex flex-row items-center justify-between flex-wrap w-full gap-2">
-				<h3 className="text-lg lg:text-xl font-extrabold font-title leading-snug text-left">
+		<li className="flex w-full flex-col items-start justify-start gap-4 rounded-lg bg-gray-300 p-9 outline-gray-200 transition-[background-color,outline] hover:bg-gray-400 hover:outline">
+			<div className="flex w-full flex-row flex-wrap items-center justify-between gap-2">
+				<h3 className="text-left font-title text-lg font-extrabold leading-snug lg:text-xl">
 					{event.name}
 				</h3>
-				<p className="opacity-50 text-neutral text-xs lg:text-base font-semibold leading-none">
+				<p className="text-xs font-semibold leading-none text-neutral opacity-50 lg:text-base">
 					#{event.id}
 				</p>
 			</div>
-			<p className="text-sm lg:text-base text-muted text-left font-medium">
+			<p className="text-left text-sm font-medium text-muted lg:text-base">
 				{event.description || "[nenhuma descrição provida]"}
 			</p>
-			<div className="flex flex-row flex-wrap items-center gap-4 justify-between w-full mt-auto">
-				{ACE && <AceLabel ace={ACE} />}
+			<div className="mt-auto flex w-full flex-row flex-wrap items-center justify-between gap-4">
+				{event.ace && <AceLabel ace={event.ace} />}
 				<div className="flex flex-row items-center justify-between">
 					<DateDisplay
 						dateString={event.dateFrom.toLocaleDateString("pt-BR", {
@@ -53,21 +45,21 @@ export function EventPreview({ event, showResponsible = true }: Props) {
 					{/* <span className="text-sm font-medium">{event.timeFrom}</span> */}
 				</div>
 			</div>
-			{showResponsible && (
-				<div className="flex flex-row flex-wrap items-center justify-between pt-4 border-t border-t-gray-100 w-full gap-4">
+			{showResponsible && moderators.length > 0 && (
+				<div className="flex w-full flex-row flex-wrap items-center justify-between gap-4 border-t border-t-gray-100 pt-4">
 					<div className="flex flex-row items-center justify-start gap-2 max-sm:w-full">
 						<ProfileImages
-							image_urls={responsible
+							image_urls={moderators
 								.map((mod) => mod!.image_url)
-								.concat(lastResponsible?.image_url || [])}
+								.concat(lastModerator?.image_url || [])}
 						/>
-						<span className="text-left text-neutral text-sm font-semibold">
+						<span className="text-left text-sm font-semibold text-neutral">
 							Organizado por{" "}
-							{responsible.map((mod) => mod?.name).join(", ")}{" "}
-							{lastResponsible && "e"} {lastResponsible?.name}
+							{moderators.map((mod) => mod?.name).join(", ")}{" "}
+							{lastModerator && "e"} {lastModerator?.name}
 						</span>
 					</div>
-					<p className="text-right text-neutral text-sm font-semibold">
+					<p className="text-right text-sm font-semibold text-neutral">
 						+ de <span className="underline">10 membros</span>{" "}
 						participaram
 					</p>
@@ -87,7 +79,7 @@ function ProfileImages({ image_urls }: { image_urls: string[] }) {
 					key={url}
 					height={24}
 					width={24}
-					className={cn("w-6 h-6 min-w-6 rounded-full", {
+					className={cn("h-6 w-6 min-w-6 rounded-full", {
 						"-ml-2": image_urls.indexOf(url) > 0,
 					})}
 				/>

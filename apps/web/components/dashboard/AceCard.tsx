@@ -15,19 +15,19 @@ export function AceCard({ className, ace }: AceCardProps) {
 	return (
 		<div
 			className={cn(
-				"px-6 py-3 bg-gray-300 rounded-lg border border-gray-200 flex-row flex-wrap justify-between items-start gap-4 inline-flex",
-				className
+				"inline-flex flex-row flex-wrap items-start justify-between gap-4 rounded-lg border border-gray-200 bg-gray-300 px-6 py-3",
+				className,
 			)}
 		>
-			<div className="self-stretch justify-start items-center gap-4 inline-flex">
+			<div className="inline-flex items-center justify-start gap-4 self-stretch">
 				<AceIcon />
-				<p className="grow shrink basis-0 text-neutral text-base font-medium">
+				<p className="shrink grow basis-0 text-base font-medium text-neutral">
 					{ace.name}
 				</p>
 			</div>
-			<div className="justify-end items-center gap-2 inline-flex">
+			<div className="inline-flex items-center justify-end gap-2">
 				<TimeIcon />
-				<p className="text-left text-neutral text-base font-medium">
+				<p className="text-left text-base font-medium text-neutral">
 					{ace.hours}h
 				</p>
 			</div>
@@ -38,9 +38,9 @@ export function AceCard({ className, ace }: AceCardProps) {
 export function AceLabel({ ace }: { ace: (typeof ACEs)[number] }) {
 	return (
 		<div className="flex flex-row items-center justify-start gap-4">
-			<AceIcon className="text-neutral min-w-fit" />
-			<p className="text-left leading-tight text-sm lg:text-base">
-				{ace.name}
+			<AceIcon className="min-w-fit text-neutral" />
+			<p className="text-left text-sm leading-tight lg:text-base">
+				{ace.description}
 			</p>
 		</div>
 	);

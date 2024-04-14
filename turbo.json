@@ -12,6 +12,7 @@
     "db:drop": {},
     "db:migrate": {},
     "db:studio": {},
+    "db:seed": {},
     "dev": {
       "cache": false,
       "persistent": true

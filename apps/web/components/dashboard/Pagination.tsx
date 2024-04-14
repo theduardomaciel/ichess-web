@@ -1,4 +1,3 @@
-import { EventsPageParams } from "@/app/(app)/dashboard/events/page";
 import {
 	Pagination,
 	PaginationContent,
@@ -12,8 +11,6 @@ import { cn } from "@/lib/utils";
 
 interface Props {
 	pathname: string;
-	searchParams: EventsPageParams;
-	pageSize: number;
 	currentPage: number;
 	pageCount: number;
 }
@@ -22,22 +19,9 @@ const MAX_PAGINATION_PAGES = 5;
 
 export function DashboardPagination({
 	pathname,
-	searchParams,
 	currentPage,
 	pageCount,
 }: Props) {
-	// Remove the page parameter from the search params
-	const searchParamsWithoutPage = { ...searchParams };
-	delete searchParamsWithoutPage.pageIndex;
-
-	// We check if the searchParams object is empty
-	// If it is, we don't append the "?" to the URL
-	const searchParamsKeys = Object.keys(searchParamsWithoutPage);
-
-	const currentURL = `${pathname}?${new URLSearchParams(
-		searchParamsWithoutPage,
-	)}${searchParamsKeys.length > 0 ? "&" : ""}page=`;
-
 	const canGoBack = currentPage > 1;
 	const canGoForward = currentPage < pageCount;
 
@@ -51,7 +35,7 @@ export function DashboardPagination({
 				>
 					<PaginationPrevious
 						size={"icon"}
-						href={`${currentURL}${currentPage - 1}`}
+						href={`${pathname}${currentPage - 1}`}
 						className={cn({
 							"pointer-events-none opacity-50": !canGoBack,
 						})}
@@ -62,7 +46,7 @@ export function DashboardPagination({
 					(_, i) => (
 						<PaginationItem key={i}>
 							<PaginationLink
-								href={`${currentURL}${i + 1}`}
+								href={`${pathname}${i + 1}`}
 								isActive={currentPage === i + 1}
 							>
 								{i + 1}
@@ -77,7 +61,7 @@ export function DashboardPagination({
 						</PaginationItem>
 						<PaginationItem>
 							<PaginationLink
-								href={`${currentURL}${pageCount}`}
+								href={`${pathname}${pageCount}`}
 								isActive={currentPage === pageCount}
 							>
 								{pageCount}
@@ -92,7 +76,7 @@ export function DashboardPagination({
 				>
 					<PaginationNext
 						size={"icon"}
-						href={`${currentURL}${currentPage + 1}`}
+						href={`${pathname}${currentPage + 1}`}
 						className={cn({
 							"pointer-events-none opacity-50": !canGoForward,
 						})}
