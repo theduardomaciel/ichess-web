@@ -6,16 +6,17 @@ import { cn } from "@/lib/utils";
 import { DateDisplay } from "@/components/ui/calendar";
 import { AceLabel } from "@/components/dashboard/AceCard";
 
-// Utils
+// Types
+import type { RouterOutput } from "@ichess/api";
 
 interface Props {
-	event: any;
+	event: RouterOutput["getEvents"]["events"][0];
 	showResponsible?: boolean;
 }
 
 export function EventPreview({ event, showResponsible = true }: Props) {
-	const moderators = event.memberOnEvent
-		? event.memberOnEvent.filter((member) => member.role === "admin")
+	const moderators = event.membersOnEvent
+		? event.membersOnEvent.filter((member) => member.role === "admin")
 		: [];
 	const lastModerator = moderators.length > 1 ? moderators.pop() : null;
 

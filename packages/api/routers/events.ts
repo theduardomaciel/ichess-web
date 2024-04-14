@@ -48,55 +48,89 @@ const mutateEventParams = z.object({
 
 export const eventsRouter = createTRPCRouter({
 	getEvent: protectedProcedure
-		.input(z.object({ eventId: z.string().uuid() }))
-		.query(async ({ input }) => {
-			const { eventId } = input;
+		.input(
+			z.object({
+				eventId: z.string().uuid(),
+				projectId: z.string().uuid(),
+			}),
+		)
+		.query(async ({ input, ctx }) => {
+			const { eventId, projectId } = input;
 
-			const event = await db.query.event.findFirst({
-				with: {
-					membersOnEvent: {
-						with: {
-							member: true,
-						},
-					},
-				},
-				where(fields, { eq }) {
-					return eq(fields.id, eventId);
+			const userId = ctx.session.user.id;
+
+			if (!userId) {
+				throw new TRPCError({
+					message: "User not found.",
+					code: "BAD_REQUEST",
+				});
+			}
+
+			const member = await db.query.member.findFirst({
+				where(fields) {
+					return and(
+						eq(fields.projectId, projectId),
+						eq(fields.userId, userId),
+						// eq(fields.role, "admin"),
+					);
 				},
 			});
 
-			if (!event) {
+			/* if (!member) {
+				throw new TRPCError({
+					message: "User is not a member of the project.",
+					code: "BAD_REQUEST",
+				});
+			} */
+
+			const isAdmin = member?.role === "admin";
+
+			/* 
+				Limitamos os dados retornados para evitar que informações sensíveis sejam expostas
+				Usuários podem ser membros de um projeto, ou não. Além de membro, um usuário pode ser um administrador do projeto.
+
+				Portanto,
+				1. usuários que não são membros do projeto não podem ter acesso ao user
+				2. todos os membros podem ter acesso ao (name) e a (image) do user
+				3. somente membros com role === "admin" pode ter acesso a todos os dados do user
+			*/
+
+			// Precisamos obter o evento e retornar os dados com base no cargo do usuário
+
+			const selectedEvent = await db.query.event.findFirst({
+				where(fields) {
+					return eq(fields.id, eventId);
+				},
+				with: {
+					ace: true,
+					membersOnEvent: {
+						with: {
+							member: {
+								with: {
+									user: isAdmin
+										? true
+										: member && {
+												columns: {
+													name: true,
+													image: true,
+												},
+											},
+								},
+							},
+						},
+					},
+				},
+			});
+
+			if (!selectedEvent) {
 				throw new TRPCError({
 					message: "Event not found.",
 					code: "BAD_REQUEST",
 				});
 			}
 
-			const { membersOnEvent, ...rest } = event;
-
-			const users = await db.query.user.findMany({
-				where(fields, { inArray }) {
-					return inArray(
-						fields.id,
-						membersOnEvent.map((item) => item.memberId),
-					);
-				},
-			});
-
-			const members = membersOnEvent.map((item) => {
-				const user = users.find((user) => user.id === item.memberId);
-
-				return {
-					...item,
-					user,
-				};
-			});
-
 			return {
-				event: {
-					...rest,
-					members,
-				},
+				event: selectedEvent,
 			};
 		}),
 
@@ -161,7 +195,7 @@ export const eventsRouter = createTRPCRouter({
 				db
 					.select({
 						...eventColumns,
-						memberOnEvent: {
+						membersOnEvent: {
 							memberId: memberOnEvent.memberId,
 						},
 						ace: {
