@@ -1,7 +1,9 @@
-import { useId } from "react";
+import { useId, Suspense } from "react";
+import { Metadata } from "next";
+import { env } from "@ichess/env";
 
 import Link from "next/link";
-import Image from "next/image";
+import { unstable_noStore } from "next/cache";
 
 // Icons
 import ErrorFaceIcon from "@/public/icons/error_face.svg";
@@ -13,136 +15,102 @@ import SortBy from "@/components/dashboard/SortBy";
 import { EventPreview } from "@/components/events/EventPreview";
 import { DashboardPagination } from "@/components/dashboard/Pagination";
 import { Filter } from "@/components/dashboard/Filter";
-import { ParamsResponsiblePicker } from "@/components/ResponsiblePicker";
+import { ParamsResponsiblePicker } from "@/components/dashboard/ResponsiblePicker";
+
+// Validation
+import { z } from "zod";
+import { eventsParams } from "@ichess/api/routers/events";
+
+// API
+import { serverClient } from "@/lib/trpc/server";
 
 // Types
-import { ACEs } from "@/lib/validations/AddEventForm";
-import { PERIODS, events } from "@/lib/fake_data";
 
-const EVENTS_PER_PAGE = 3;
+export const metadata: Metadata = {
+	title: "Eventos",
+	description: "Veja todos os eventos cadastrados",
+};
 
-export default function EventsOverall({
+const eventsPageParams = eventsParams.extend({
+	r: z.string().optional(),
+});
+
+export type EventsPageParams = z.infer<typeof eventsPageParams>;
+
+export default async function EventsPage({
 	searchParams,
 }: {
-	searchParams: { [key: string]: string };
+	searchParams: EventsPageParams;
 }) {
-	const page = !isNaN(Number(searchParams.page))
-		? Number(searchParams.page)
-		: 1;
+	const {
+		pageIndex,
+		pageSize,
+		search,
+		sortBy,
+		periodsFilter,
+		acesFilter,
+		responsibleFilter,
+		r,
+	} = eventsPageParams.parse(searchParams);
 
-	const search = searchParams.search || undefined;
+	const { events, pageCount } = await serverClient.getEvents({
+		projectId: env.ICHESS_ID,
+		pageIndex,
+		pageSize,
+		search,
+		sortBy,
+		periodsFilter,
+		acesFilter,
+		responsibleFilter,
+	});
 
-	const sortBy = searchParams.sortBy || "recent";
-
-	const periods = searchParams.periods?.split(",");
-
-	const aces = searchParams.aces?.split(",");
-
-	const responsible = searchParams.responsible?.split(",");
-
-	const hasBeenReset = searchParams.r; // Resetamos o estado da barra de pesquisa quando o usuário clica em "Limpar filtros"
+	// O "r" equivale ao estado da barra de pesquisa quando o usuário clica em "Limpar filtros"
 	// Isso é feito por meio da mudança de key do componente SearchBar
 
 	console.log({ searchParams });
 
-	const filteredEvents = events
-		.slice((page - 1) * EVENTS_PER_PAGE, page * EVENTS_PER_PAGE)
-		.filter((event) => {
-			if (
-				(search &&
-					!event.name.toLowerCase().includes(search.toLowerCase())) ||
-				(search &&
-					!event.description
-						?.toLowerCase()
-						.includes(search.toLowerCase()))
-			) {
-				return false;
-			}
-
-			if (periods) {
-				const isValid = periods.some((period) => {
-					const periodObj = PERIODS.find((p) => p.id === period);
-					if (!periodObj) return false;
-
-					return (
-						event.dateFrom.getTime() >= periodObj.from.getTime() &&
-						event.dateFrom.getTime() <= periodObj.to.getTime()
-					);
-				});
-				if (!isValid) return false;
-			}
-
-			if (aces && !aces.includes(event.ace)) {
-				return false;
-			}
-
-			if (
-				responsible &&
-				!responsible.some((id) => event.responsible.includes(id))
-			) {
-				return false;
-			}
-
-			return true;
-		});
-
-	console.log({ filteredEvents });
-
 	return (
-		<main className="flex min-h-screen flex-col lg:flex-row items-start justify-start px-wrapper py-12 gap-[var(--wrapper)] lg:gap-12">
-			<div className="flex flex-col gap-4 items-start justify-center flex-1">
-				<div className="flex flex-col sm:flex-row items-start justify-start gap-4 sm:gap-9 w-full">
-					<SearchBar
-						key={hasBeenReset}
-						placeholder="Pesquisar eventos"
-					/>
-					<div className="flex flex-row items-center justify-between sm:justify-end gap-4 max-sm:w-full">
-						<span className="text-sm font-medium text-nowrap">
+		<main className="flex min-h-screen flex-col items-start justify-start gap-[var(--wrapper)] px-wrapper py-12 lg:flex-row lg:gap-12">
+			<div className="flex flex-1 flex-col items-start justify-center gap-4">
+				<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
+					<SearchBar key={r} placeholder="Pesquisar eventos" />
+					<div className="flex flex-row items-center justify-between gap-4 max-sm:w-full sm:justify-end">
+						<span className="text-nowrap text-sm font-medium">
 							Ordenar por
 						</span>
-						<SortBy />
+						<SortBy sortBy={sortBy} />
 					</div>
 				</div>
-				<ul className="flex flex-col items-start justify-start w-full gap-4">
-					{filteredEvents && filteredEvents.length > 0 ? (
-						filteredEvents
-							.sort((a, b) => {
-								if (sortBy === "recent") {
-									return (
-										b.dateFrom.getTime() -
-										a.dateFrom.getTime()
-									);
-								}
-								return (
-									a.dateFrom.getTime() - b.dateFrom.getTime()
-								);
-							})
-							.map((event) => (
-								<Link
-									key={event.id}
-									href={`/dashboard/events/${event.id}`}
-									className="w-full"
-								>
-									<EventPreview event={event} />
-								</Link>
-							))
+				<ul className="flex w-full flex-col items-start justify-start gap-4">
+					{events && events.length > 0 ? (
+						events.map((event) => (
+							<Link
+								key={event.id}
+								href={`/dashboard/events/${event.id}`}
+								className="w-full"
+							>
+								{/* <EventPreview event={event} /> */}
+							</Link>
+						))
 					) : (
 						<Empty />
 					)}
 				</ul>
-				{filteredEvents && filteredEvents.length > 0 && (
-					<DashboardPagination
-						pathname="/dashboard/events"
-						searchParams={searchParams}
-						total={events.length}
-						perPage={EVENTS_PER_PAGE}
-					/>
+				{events && events.length > 0 && (
+					<Suspense fallback={null}>
+						{/* <DashboardPagination
+							pathname="/dashboard/events"
+							searchParams={searchParams}
+							currentPage={pageIndex}
+							pageCount={pageCount}
+						/> */}
+					</Suspense>
 				)}
 			</div>
-			<div className="flex flex-col items-start justify-start gap-4 w-full min-w-60 lg:w-[35%] lg:max-w-[17.5vw]">
-				<div className="flex p-6 bg-gray-400 rounded-lg flex-col justify-start items-start gap-9 w-full ">
+			<div className="flex w-full min-w-60 flex-col items-start justify-start gap-4 lg:w-[35%] lg:max-w-[17.5vw]">
+				<div className="flex w-full flex-col items-start justify-start gap-9 rounded-lg bg-gray-400 p-6 ">
 					<h6>Filtros</h6>
-					<Filter
+					{/* <Filter
 						title="Filtrar por período"
 						prefix={"periods"}
 						items={PERIODS.map((period) => {
@@ -157,9 +125,9 @@ export default function EventsOverall({
 							value: ace.id,
 						}))}
 						linesAmount={2}
-					/>
-					<div className="flex flex-col justify-center items-start gap-4 w-full">
-						<p className="text-center text-neutral text-sm font-medium">
+					/> */}
+					<div className="flex w-full flex-col items-start justify-center gap-4">
+						<p className="text-center text-sm font-medium text-neutral">
 							Filtrar por responsável
 						</p>
 						<ParamsResponsiblePicker />
@@ -175,13 +143,13 @@ function Empty() {
 	// Math.floor(Math.random() * 1000);
 
 	return (
-		<div className="w-full px-8 py-16 rounded-2xl border border-dashed border-primary-200/50 flex-col justify-center items-center gap-4 inline-flex">
+		<div className="inline-flex w-full flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-primary-200/50 px-8 py-16">
 			<ErrorFaceIcon />
-			<p className="text-neutral text-base font-bold font-title text-center">
+			<p className="text-center font-title text-base font-bold text-neutral">
 				Parece que não encontramos nada com base em sua pesquisa e
 				filtros :(
 			</p>
-			<p className="sm:w-[50%] text-neutral text-sm font-normal text-center">
+			<p className="text-center text-sm font-normal text-neutral sm:w-[50%]">
 				Tente procurar por algo com outras palavras, ou remover alguns
 				filtros pra ver se você acha dessa vez!
 			</p>

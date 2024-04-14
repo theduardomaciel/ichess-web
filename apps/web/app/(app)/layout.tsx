@@ -1,6 +1,6 @@
 import { Fragment, ReactNode } from "react";
 
-import Footer from "@/components/Footer/Footer";
+import Footer from "@/components/footer";
 
 export default function AppLayout({
 	children,

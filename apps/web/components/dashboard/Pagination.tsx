@@ -1,3 +1,4 @@
+import { EventsPageParams } from "@/app/(app)/dashboard/events/page";
 import {
 	Pagination,
 	PaginationContent,
@@ -11,9 +12,10 @@ import { cn } from "@/lib/utils";
 
 interface Props {
 	pathname: string;
-	searchParams: { [key: string]: string };
-	total: number;
-	perPage: number;
+	searchParams: EventsPageParams;
+	pageSize: number;
+	currentPage: number;
+	pageCount: number;
 }
 
 const MAX_PAGINATION_PAGES = 5;
@@ -21,29 +23,23 @@ const MAX_PAGINATION_PAGES = 5;
 export function DashboardPagination({
 	pathname,
 	searchParams,
-	total,
-	perPage,
+	currentPage,
+	pageCount,
 }: Props) {
-	const PAGES_AMOUNT = Math.ceil(total / perPage);
-
 	// Remove the page parameter from the search params
 	const searchParamsWithoutPage = { ...searchParams };
-	delete searchParamsWithoutPage.page;
+	delete searchParamsWithoutPage.pageIndex;
 
 	// We check if the searchParams object is empty
 	// If it is, we don't append the "?" to the URL
 	const searchParamsKeys = Object.keys(searchParamsWithoutPage);
 
 	const currentURL = `${pathname}?${new URLSearchParams(
-		searchParamsWithoutPage
+		searchParamsWithoutPage,
 	)}${searchParamsKeys.length > 0 ? "&" : ""}page=`;
 
-	const currentPage = !isNaN(Number(searchParams.page))
-		? Number(searchParams.page)
-		: 1;
-
 	const canGoBack = currentPage > 1;
-	const canGoForward = currentPage < PAGES_AMOUNT;
+	const canGoForward = currentPage < pageCount;
 
 	return (
 		<Pagination>
@@ -62,7 +58,7 @@ export function DashboardPagination({
 					/>
 				</PaginationItem>
 				{Array.from(
-					{ length: Math.min(PAGES_AMOUNT, MAX_PAGINATION_PAGES) },
+					{ length: Math.min(pageCount, MAX_PAGINATION_PAGES) },
 					(_, i) => (
 						<PaginationItem key={i}>
 							<PaginationLink
@@ -72,19 +68,19 @@ export function DashboardPagination({
 								{i + 1}
 							</PaginationLink>
 						</PaginationItem>
-					)
+					),
 				)}
-				{PAGES_AMOUNT > MAX_PAGINATION_PAGES && (
+				{pageCount > MAX_PAGINATION_PAGES && (
 					<>
 						<PaginationItem>
 							<PaginationEllipsis />
 						</PaginationItem>
 						<PaginationItem>
 							<PaginationLink
-								href={`${currentURL}${PAGES_AMOUNT}`}
-								isActive={currentPage === PAGES_AMOUNT}
+								href={`${currentURL}${pageCount}`}
+								isActive={currentPage === pageCount}
 							>
-								{PAGES_AMOUNT}
+								{pageCount}
 							</PaginationLink>
 						</PaginationItem>
 					</>

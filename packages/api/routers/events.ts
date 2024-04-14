@@ -1,5 +1,6 @@
 import { db } from "@ichess/drizzle";
 import { event, EventTypes, user, memberOnEvent } from "@ichess/drizzle/schema";
+import { transformSingleToArray } from "../utils";
 import {
 	and,
 	count,
@@ -9,11 +10,32 @@ import {
 	inArray,
 	gte,
 	lte,
+	or,
+	ilike,
 } from "@ichess/drizzle/orm";
 import { z } from "zod";
 
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+
+export const eventsParams = z.object({
+	search: z.string().optional(),
+	sortBy: z.enum(["recent", "oldest"]).optional(),
+	periodsFilter: z
+		.union([z.array(z.string()), z.string()])
+		.optional()
+		.transform(transformSingleToArray),
+	acesFilter: z
+		.union([z.array(z.string()), z.string()])
+		.optional()
+		.transform(transformSingleToArray),
+	responsibleFilter: z
+		.union([z.array(z.string()), z.string()])
+		.optional()
+		.transform(transformSingleToArray),
+	pageIndex: z.coerce.number().default(0),
+	pageSize: z.coerce.number().default(10),
+});
 
 export const eventsRouter = createTRPCRouter({
 	getEvent: protectedProcedure
@@ -71,47 +93,17 @@ export const eventsRouter = createTRPCRouter({
 
 	getEvents: protectedProcedure
 		.input(
-			z.object({
+			eventsParams.extend({
 				projectId: z.string().uuid(),
-				periodsFilter: z
-					.union([z.array(z.string()), z.string()])
-					.optional()
-					.transform((value) => {
-						if (value === undefined || Array.isArray(value)) {
-							return value;
-						}
-
-						return [value];
-					}),
-				acesFilter: z
-					.union([z.array(z.string()), z.string()])
-					.optional()
-					.transform((value) => {
-						if (value === undefined || Array.isArray(value)) {
-							return value;
-						}
-
-						return [value];
-					}),
-				responsibleFilter: z
-					.union([z.array(z.string()), z.string()])
-					.optional()
-					.transform((value) => {
-						if (value === undefined || Array.isArray(value)) {
-							return value;
-						}
-
-						return [value];
-					}),
-				pageIndex: z.coerce.number().default(0),
-				pageSize: z.coerce.number().default(10),
 			}),
 		)
-		.query(async ({ input /* ctx */ }) => {
+		.query(async ({ input }) => {
 			const {
 				projectId,
 				pageIndex,
 				pageSize,
+				search,
+				sortBy,
 				acesFilter,
 				periodsFilter,
 				responsibleFilter,
@@ -123,32 +115,37 @@ export const eventsRouter = createTRPCRouter({
 				? acesFilter.map((aceId) => Number(aceId))
 				: undefined;
 
-			const aces = acesFilterConverted
-				? await db.query.ace.findMany({
-						where(fields) {
-							return inArray(fields.id, acesFilterConverted);
-						},
-						columns: {
-							id: true,
-						},
-					})
-				: [];
+			console.log(acesFilter);
 
-			const periods = periodsFilter
-				? await db.query.period.findMany({
-						where(fields) {
-							return inArray(fields.slug, periodsFilter);
-						},
-					})
-				: [];
+			const aces =
+				acesFilterConverted && acesFilterConverted.length > 0
+					? await db.query.ace.findMany({
+							where(fields) {
+								return inArray(fields.id, acesFilterConverted);
+							},
+							columns: {
+								id: true,
+							},
+						})
+					: undefined;
+
+			const periods =
+				periodsFilter && periodsFilter.length > 0
+					? await db.query.period.findMany({
+							where(fields) {
+								return inArray(fields.slug, periodsFilter);
+							},
+						})
+					: undefined;
 
 			const dateFrom = periods
-				.map((period) => period.from)
+				?.map((period) => period.from)
 				.reduce((acc, date) => {
 					return acc < date ? acc : date;
 				});
+
 			const dateTo = periods
-				.map((period) => period.to)
+				?.map((period) => period.to)
 				.reduce((acc, date) => {
 					return acc > date ? acc : date;
 				});
@@ -174,7 +171,7 @@ export const eventsRouter = createTRPCRouter({
 					.where(
 						and(
 							eq(event.projectId, projectId),
-							periodsFilter
+							dateFrom && dateTo
 								? and(
 										gte(event.dateFrom, dateFrom),
 										lte(event.dateTo, dateTo),
@@ -187,15 +184,27 @@ export const eventsRouter = createTRPCRouter({
 									)
 								: undefined,
 							// É necessário fazer uma junção pois os responsáveis são membros com o "role" === "admin"
-							responsibleFilter
+							responsibleFilter && responsibleFilter.length > 0
 								? inArray(
 										memberOnEvent.memberId,
 										responsibleFilter,
 									)
 								: undefined,
+							or(
+								search
+									? ilike(event.name, `%${search}%`)
+									: undefined,
+								search
+									? ilike(event.description, `%${search}%`)
+									: undefined,
+							),
 						),
 					)
-					.orderBy(desc(event.createdAt))
+					.orderBy(
+						sortBy === "recent"
+							? desc(event.dateFrom)
+							: event.dateFrom,
+					)
 					.offset(pageIndex * pageSize)
 					.limit(pageSize),
 				db
@@ -204,26 +213,37 @@ export const eventsRouter = createTRPCRouter({
 					.where(
 						and(
 							eq(event.projectId, projectId),
-							periodsFilter
+							dateFrom && dateTo
 								? and(
 										gte(event.dateFrom, dateFrom),
 										lte(event.dateTo, dateTo),
 									)
 								: undefined,
-							acesFilterConverted
-								? inArray(event.aceId, acesFilterConverted)
+							aces
+								? inArray(
+										event.aceId,
+										aces.map((ace) => ace.id),
+									)
 								: undefined,
-							responsibleFilter
+							// É necessário fazer uma junção pois os responsáveis são membros com o "role" === "admin"
+							responsibleFilter && responsibleFilter.length > 0
 								? inArray(
 										memberOnEvent.memberId,
-										Array.isArray(responsibleFilter)
-											? responsibleFilter
-											: [responsibleFilter],
+										responsibleFilter,
+									)
+								: undefined,
+							search
+								? or(
+										ilike(event.name, `%${search}%`),
+										ilike(event.description, `%${search}%`),
 									)
 								: undefined,
 						),
 					),
 			]);
+
+			console.log(events);
+			console.log("Amount: ", amount);
 
 			const pageCount = Math.ceil(amount / pageSize);
 

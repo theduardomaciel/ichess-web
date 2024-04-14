@@ -24,7 +24,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { FormResponsiblePicker } from "@/components/ResponsiblePicker";
+import { FormResponsiblePicker } from "@/components/dashboard/ResponsiblePicker";
 
 import { ptBR } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
@@ -38,13 +38,13 @@ const sectionClassName =
 
 export default function AddEventFormContent({ form }: FormProps) {
 	return (
-		<div className="flex flex-col items-start justify-start gap-9 w-full">
+		<div className="flex w-full flex-col items-start justify-start gap-9">
 			<div
 				className={
-					"flex flex-col md:flex-row items-start justify-start gap-9 w-full"
+					"flex w-full flex-col items-start justify-start gap-9 md:flex-row"
 				}
 			>
-				<div className="flex flex-col items-start justify-start gap-9 w-full">
+				<div className="flex w-full flex-col items-start justify-start gap-9">
 					<FormField
 						control={form.control}
 						name="name"
@@ -91,8 +91,8 @@ export default function AddEventFormContent({ form }: FormProps) {
 				</div>
 				<div
 					className={cn(
-						"flex flex-col items-start justify-start gap-9 w-full",
-						sectionClassName
+						"flex w-full flex-col items-start justify-start gap-9",
+						sectionClassName,
 					)}
 				>
 					<FormField
@@ -125,9 +125,9 @@ export default function AddEventFormContent({ form }: FormProps) {
 							</FormItem>
 						)}
 					/>
-					<div className="flex flex-col items-start justify-start gap-2 w-full">
+					<div className="flex w-full flex-col items-start justify-start gap-2">
 						<FormLabel>Horário</FormLabel>
-						<div className="flex flex-row items-center justify-between w-full gap-3">
+						<div className="flex w-full flex-row items-center justify-between gap-3">
 							<FormField
 								control={form.control}
 								name="timeFrom"
@@ -142,8 +142,8 @@ export default function AddEventFormContent({ form }: FormProps) {
 									</FormItem>
 								)}
 							/>
-							<div className="w-[15px] h-0.5 bg-gray-400 rounded-full" />
-							<div className="flex flex-row items-center justify-between w-full">
+							<div className="h-0.5 w-[15px] rounded-full bg-gray-400" />
+							<div className="flex w-full flex-row items-center justify-between">
 								<FormField
 									control={form.control}
 									name="timeTo"
@@ -169,7 +169,7 @@ export default function AddEventFormContent({ form }: FormProps) {
 					name="ace"
 					render={({ field }) => {
 						const currentACE = ACEs.find(
-							(ace) => ace.id === field.value
+							(ace) => ace.id === field.value,
 						);
 
 						return (
@@ -208,9 +208,9 @@ export default function AddEventFormContent({ form }: FormProps) {
 					}}
 				/>
 			</div>
-			<div className="flex flex-row items-center justify-end w-full">
+			<div className="flex w-full flex-row items-center justify-end">
 				<Button
-					className="px-9 h-12 text-white font-extrabold bg-primary-200 w-full md:w-fit"
+					className="h-12 w-full bg-primary-200 px-9 font-extrabold text-white md:w-fit"
 					type="submit"
 				>
 					<CloudIcon />

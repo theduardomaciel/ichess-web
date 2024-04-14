@@ -73,15 +73,13 @@ export function FormResponsiblePicker({
 	const isDesktop = useMediaQuery("(min-width: 768px)");
 
 	const handleSelect = (id: string) => {
-		{
-			if (field.value.includes(id)) {
-				form.setValue(
-					"responsible",
-					field.value.filter((id) => id !== id)
-				);
-			} else {
-				form.setValue("responsible", [...field.value, id]);
-			}
+		if (field.value.includes(id)) {
+			form.setValue(
+				"responsible",
+				field.value.filter((id) => id !== id),
+			);
+		} else {
+			form.setValue("responsible", [...field.value, id]);
 		}
 	};
 
@@ -202,7 +200,7 @@ function ModeratorPreview({
 }) {
 	return (
 		<div
-			className={cn("flex items-center justify-between w-full", {
+			className={cn("flex w-full items-center justify-between", {
 				"opacity-50": isActive,
 			})}
 		>
@@ -212,14 +210,14 @@ function ModeratorPreview({
 					height={32}
 					src={moderator.image_url}
 					alt={moderator.name}
-					className="w-8 h-8 rounded-full"
+					className="h-8 w-8 rounded-full"
 				/>
 				<span>{moderator.name}</span>
 			</div>
 			<Check
 				className={cn(
 					"h-4 w-4",
-					isActive ? "opacity-100" : "opacity-0"
+					isActive ? "opacity-100" : "opacity-0",
 				)}
 			/>
 		</div>
@@ -228,16 +226,16 @@ function ModeratorPreview({
 
 function Tag({ moderator }: { moderator: any }) {
 	return (
-		<li className="flex justify-start items-center pl-1 pr-2 py-1 bg-gray-600 border border-primary-200/50 gap-2 rounded-full">
+		<li className="flex items-center justify-start gap-2 rounded-full border border-primary-200/50 bg-gray-600 py-1 pl-1 pr-2">
 			<div className="flex items-center gap-3">
 				<Image
 					width={24}
 					height={24}
 					src={moderator.image_url}
 					alt={moderator.name}
-					className="w-6 h-6 rounded-full"
+					className="h-6 w-6 rounded-full"
 				/>
-				<span className="text-neutral text-xs font-bold max-w-full overflow-hidden whitespace-nowrap overflow-ellipsis">
+				<span className="max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-xs font-bold text-neutral">
 					{moderator.name}
 				</span>
 			</div>
@@ -260,11 +258,11 @@ const SelectorTrigger = forwardRef<
 		role="combobox"
 		type="button"
 		className={cn(
-			"w-full justify-between h-fit font-normal hover:bg-gray-300 hover:text-neutral text-sm lg:text-base min-h-[52px] px-3 lg:px-4",
+			"h-fit min-h-[52px] w-full justify-between px-3 text-sm font-normal hover:bg-gray-300 hover:text-neutral lg:px-4 lg:text-base",
 			!moderatorsIds ||
 				(moderatorsIds &&
 					moderatorsIds.length === 0 &&
-					"text-muted-foreground")
+					"text-muted-foreground"),
 		)}
 		{...props}
 	>
@@ -278,7 +276,7 @@ const SelectorTrigger = forwardRef<
 				})}
 			</ul>
 		) : (
-			<p className="overflow-hidden whitespace-nowrap overflow-ellipsis">
+			<p className="overflow-hidden overflow-ellipsis whitespace-nowrap">
 				Selecione um moderador...
 			</p>
 		)}
