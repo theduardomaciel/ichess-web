@@ -13,11 +13,17 @@ export const acesRouter = createTRPCRouter({
 	}),
 
 	getAce: protectedProcedure
-		.input(z.number().int())
+		.input(
+			z.object({
+				aceId: z.number().int(),
+			}),
+		)
 		.query(async ({ input }) => {
+			const { aceId } = input;
+
 			const ace = await db.query.ace.findFirst({
 				where(fields, { eq }) {
-					return eq(fields.id, input);
+					return eq(fields.id, aceId);
 				},
 			});
 

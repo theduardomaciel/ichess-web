@@ -80,8 +80,10 @@ export const authConfig = {
 		authorized({ auth, request: { nextUrl } }) {
 			// console.log("Auth: " + JSON.stringify(auth?.user));
 			const isLoggedIn = !!auth?.user;
-			const isMember = auth?.projectsIds?.includes(env.ICHESS_ID);
-			const isAdmin = auth?.projectsWithAdminIds?.includes(env.ICHESS_ID);
+			const isMember = auth?.projectsIds?.includes(env.PROJECT_ID);
+			const isAdmin = auth?.projectsWithAdminIds?.includes(
+				env.PROJECT_ID,
+			);
 
 			console.log("Is member: " + isMember);
 			console.log("Is admin: " + isAdmin);

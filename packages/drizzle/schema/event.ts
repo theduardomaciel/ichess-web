@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import {
+	pgEnum,
 	pgTable,
 	smallserial,
 	text,
@@ -11,16 +12,15 @@ import { ace, memberOnEvent, project, user } from ".";
 
 export const EventTypes = ["internal", "external"] as const;
 
+const typeEnum = pgEnum("type", EventTypes);
+
 export const event = pgTable("events", {
 	id: uuid("id").primaryKey().defaultRandom(),
 	name: text("name").notNull(),
 	description: text("description"),
 	dateFrom: timestamp("date_from").notNull(),
 	dateTo: timestamp("date_to").notNull(),
-	type: text("type")
-		.$type<(typeof EventTypes)[number]>()
-		.default("internal")
-		.notNull(),
+	type: typeEnum("type").notNull().default("internal"),
 	aceId: smallserial("ace_id").references(() => ace.id, {
 		onDelete: "set null",
 		onUpdate: "cascade",

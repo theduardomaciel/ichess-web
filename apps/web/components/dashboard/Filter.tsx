@@ -1,6 +1,8 @@
 "use client";
 
+import { Dispatch, SetStateAction, useState } from "react";
 import { useQueryString } from "@/hooks/use-query-string";
+import { useRouter } from "next/navigation";
 
 // Icons
 import ChevronUp from "@/public/icons/chevron_up.svg";
@@ -8,9 +10,6 @@ import ChevronUp from "@/public/icons/chevron_up.svg";
 // Components
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
-import { cn } from "@/lib/utils";
 
 interface FilterProps {
 	title: string;
@@ -35,7 +34,7 @@ const heightFormula = (linesAmount: number) => {
 
 export function Filter({ title, prefix, items, linesAmount = 1 }: FilterProps) {
 	const router = useRouter();
-	const { query, setQuery, deleteQuery, toUrl } = useQueryString();
+	const { query, toUrl } = useQueryString();
 
 	const filters = query.get(prefix)?.split(",") ?? [];
 
@@ -45,9 +44,12 @@ export function Filter({ title, prefix, items, linesAmount = 1 }: FilterProps) {
 			: filters.filter((f) => f !== value);
 
 		if (newFilters.length === 0) {
-			router.push(toUrl(deleteQuery(prefix)), { scroll: false });
+			// router.push(toUrl(deleteQuery(prefix)), { scroll: false });
+			router.push(toUrl({ [`${prefix}`]: undefined }), {
+				scroll: false,
+			});
 		} else {
-			router.push(toUrl(setQuery(prefix, newFilters.join(","))), {
+			router.push(toUrl({ [`${prefix}`]: newFilters.join(",") }), {
 				scroll: false,
 			});
 		}
@@ -56,13 +58,13 @@ export function Filter({ title, prefix, items, linesAmount = 1 }: FilterProps) {
 	const [isExpanded, setIsExpanded] = useState(false);
 
 	return (
-		<div className="flex flex-col justify-center items-start gap-4">
-			<p className="text-center text-neutral text-sm font-medium">
+		<div className="flex flex-col items-start justify-center gap-4">
+			<p className="text-center text-sm font-medium text-neutral">
 				{title}
 			</p>
 			<ul
 				className={
-					"flex flex-col justify-start items-start gap-4 overflow-hidden max-h-[50rem] transition-[max-height] duration-300 ease-in-out"
+					"flex max-h-[50rem] flex-col items-start justify-start gap-4 overflow-hidden transition-[max-height] duration-300 ease-in-out"
 				}
 				style={{
 					maxHeight: isExpanded
@@ -72,14 +74,14 @@ export function Filter({ title, prefix, items, linesAmount = 1 }: FilterProps) {
 								// para linesAmount = 1 -> GAP / 2
 								// para linesAmount = 2 -> GAP * 2
 								// Como tornar isso em uma fórmula?
-						  }px`,
+							}px`,
 				}}
 			>
 				{items.map((item, index) => (
 					<li
 						key={index}
 						className={
-							"flex justify-start items-center gap-2 w-full"
+							"flex w-full items-center justify-start gap-2"
 						}
 					>
 						<Checkbox
@@ -92,12 +94,12 @@ export function Filter({ title, prefix, items, linesAmount = 1 }: FilterProps) {
 									item.value,
 									checked === "indeterminate"
 										? false
-										: checked
+										: checked,
 								);
 							}}
 						/>
 						<Label
-							className="lg:text-sm leading-tight text-ellipsis overflow-hidden line-clamp-2"
+							className="line-clamp-2 overflow-hidden text-ellipsis leading-tight lg:text-sm"
 							style={{
 								maxHeight: ITEM_HEIGHT - 4,
 							}}

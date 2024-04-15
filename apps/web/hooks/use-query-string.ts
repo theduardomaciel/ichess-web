@@ -1,59 +1,31 @@
 import * as React from "react";
-import {
-	ReadonlyURLSearchParams,
-	usePathname,
-	useSearchParams,
-} from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+
+type Params = Record<string, string | undefined>;
 
 export function useQueryString() {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
-	const setQuery = React.useCallback(
-		(
-			name: string,
-			value: string,
-			currentSearchParams?: ReadonlyURLSearchParams
-		) => {
-			const params = new URLSearchParams(
-				currentSearchParams
-					? currentSearchParams.toString()
-					: searchParams.toString()
-			);
-
-			params.set(name, value);
-
-			return params as ReadonlyURLSearchParams;
-		},
-		[searchParams]
-	);
-
-	const deleteQuery = React.useCallback(
-		(name: string, currentSearchParams?: ReadonlyURLSearchParams) => {
-			const params = new URLSearchParams(
-				currentSearchParams
-					? currentSearchParams.toString()
-					: searchParams.toString()
-			);
-
-			params.delete(name);
-
-			return params as ReadonlyURLSearchParams;
-		},
-		[searchParams]
-	);
-
 	const toUrl = React.useCallback(
-		(params: ReadonlyURLSearchParams) => {
-			return pathname + "?" + params.toString();
+		({ ...parameters }: Params): string => {
+			const params = new URLSearchParams(searchParams);
+
+			for (const [key, value] of Object.entries(parameters)) {
+				if (value) {
+					params.set(key, value);
+				} else {
+					params.delete(key);
+				}
+			}
+
+			return `${pathname}?${params.toString()}`;
 		},
-		[pathname]
+		[pathname, searchParams],
 	);
 
 	return {
 		query: searchParams,
-		setQuery,
-		deleteQuery,
 		toUrl,
 	};
 }

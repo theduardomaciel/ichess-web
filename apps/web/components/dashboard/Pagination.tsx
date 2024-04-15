@@ -1,3 +1,5 @@
+"use client";
+
 import {
 	Pagination,
 	PaginationContent,
@@ -7,6 +9,7 @@ import {
 	PaginationNext,
 	PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useQueryString } from "@/hooks/use-query-string";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -22,6 +25,8 @@ export function DashboardPagination({
 	currentPage,
 	pageCount,
 }: Props) {
+	const { toUrl } = useQueryString();
+
 	const canGoBack = currentPage > 1;
 	const canGoForward = currentPage < pageCount;
 
@@ -46,7 +51,7 @@ export function DashboardPagination({
 					(_, i) => (
 						<PaginationItem key={i}>
 							<PaginationLink
-								href={`${pathname}${i + 1}`}
+								href={toUrl({ page: (i + 1).toString() })}
 								isActive={currentPage === i + 1}
 							>
 								{i + 1}
@@ -61,7 +66,7 @@ export function DashboardPagination({
 						</PaginationItem>
 						<PaginationItem>
 							<PaginationLink
-								href={`${pathname}${pageCount}`}
+								href={toUrl({ page: pageCount.toString() })}
 								isActive={currentPage === pageCount}
 							>
 								{pageCount}

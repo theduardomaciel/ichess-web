@@ -6,7 +6,7 @@ import { z } from "zod";
 export const env = createEnv({
 	server: {
 		NODE_ENV: z.enum(["development", "production", "test"]),
-		ICHESS_ID: z.string().min(1),
+		PROJECT_ID: z.string().min(1),
 		DATABASE_URL: z.string().min(1),
 		NEXTAUTH_SECRET: z.string().min(1),
 		GOOGLE_CLIENT_ID: z.string().min(1),
@@ -18,7 +18,7 @@ export const env = createEnv({
 	},
 	runtimeEnv: {
 		NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
-		ICHESS_ID: process.env.ICHESS_ID,
+		PROJECT_ID: process.env.PROJECT_ID,
 		NODE_ENV: process.env.NODE_ENV,
 		VERCEL_URL: process.env.VERCEL_URL,
 		DATABASE_URL: process.env.DATABASE_URL,

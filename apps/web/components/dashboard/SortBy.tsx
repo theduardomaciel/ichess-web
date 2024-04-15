@@ -14,15 +14,15 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 
-export default function SortBy({ sortBy }: { sortBy?: string }) {
+export function SortBy({ sortBy }: { sortBy?: string }) {
 	const router = useRouter();
-	const { setQuery, toUrl } = useQueryString();
+	const { toUrl } = useQueryString();
 
 	const onValueChange = useCallback(
 		(value: string) => {
-			router.push(toUrl(setQuery("sortBy", value)));
+			router.push(toUrl({ sortBy: value }));
 		},
-		[router, setQuery, toUrl],
+		[router, toUrl],
 	);
 
 	return (

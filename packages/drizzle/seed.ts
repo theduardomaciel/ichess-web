@@ -17,7 +17,7 @@ export async function seedAces() {
 			id: i,
 			hours: faker.number.int({ min: 10, max: 25 }),
 			description: faker.lorem.sentence({ min: 3, max: 6 }),
-			projectId: env.ICHESS_ID,
+			projectId: env.PROJECT_ID,
 		});
 	}
 
@@ -45,7 +45,7 @@ export async function seedEvents() {
 			dateTo: faker.date.future(),
 			type: randomType,
 			aceId: faker.number.int({ min: 0, max: 9 }),
-			projectId: env.ICHESS_ID,
+			projectId: env.PROJECT_ID,
 		});
 	}
 

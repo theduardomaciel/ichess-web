@@ -1,5 +1,11 @@
 import { db } from "@ichess/drizzle";
-import { event, EventTypes, memberOnEvent, ace } from "@ichess/drizzle/schema";
+import {
+	event,
+	EventTypes,
+	memberOnEvent,
+	ace,
+	member,
+} from "@ichess/drizzle/schema";
 import { transformSingleToArray } from "../utils";
 import {
 	and,
@@ -12,6 +18,7 @@ import {
 	lte,
 	or,
 	ilike,
+	sql,
 } from "@ichess/drizzle/orm";
 import { z } from "zod";
 
@@ -21,19 +28,19 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 export const getEventsParams = z.object({
 	search: z.string().optional(),
 	sortBy: z.enum(["recent", "oldest"]).optional(),
-	periodsFilter: z
+	periods: z
 		.union([z.array(z.string()), z.string()])
 		.optional()
 		.transform(transformSingleToArray),
-	acesFilter: z
+	aces: z
 		.union([z.array(z.string()), z.string()])
 		.optional()
 		.transform(transformSingleToArray),
-	responsibleFilter: z
+	moderators: z
 		.union([z.array(z.string()), z.string()])
 		.optional()
 		.transform(transformSingleToArray),
-	pageIndex: z.coerce.number().default(0),
+	page: z.coerce.number().default(0),
 	pageSize: z.coerce.number().default(10),
 });
 
@@ -127,6 +134,11 @@ export const eventsRouter = createTRPCRouter({
 					message: "Event not found.",
 					code: "BAD_REQUEST",
 				});
+			} else if (!member && selectedEvent.type === "internal") {
+				throw new TRPCError({
+					message: "User is not a member of the project.",
+					code: "FORBIDDEN",
+				});
 			}
 
 			return {
@@ -143,16 +155,14 @@ export const eventsRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const {
 				projectId,
-				pageIndex,
+				page: pageIndex,
 				pageSize,
 				search,
 				sortBy,
-				acesFilter,
-				periodsFilter,
-				responsibleFilter,
+				aces: acesFilter,
+				periods: periodsFilter,
+				moderators: moderatorsFilter,
 			} = input;
-
-			const eventColumns = getTableColumns(event);
 
 			const acesFilterConverted = acesFilter
 				? acesFilter.map((aceId) => Number(aceId))
@@ -191,19 +201,68 @@ export const eventsRouter = createTRPCRouter({
 					return acc > date ? acc : date;
 				});
 
-			const [events, [{ amount }]] = await Promise.all([
+			/* const [events, [{ amount }]] = await Promise.all([
+				db.query.event.findMany({
+					where(fields) {
+						return and(
+							eq(fields.projectId, projectId),
+							dateFrom && dateTo
+								? and(
+										gte(fields.dateFrom, dateFrom),
+										lte(fields.dateTo, dateTo),
+									)
+								: undefined,
+							aces
+								? inArray(
+										fields.aceId,
+										aces.map((ace) => ace.id),
+									)
+								: undefined,
+							search
+								? or(
+										ilike(fields.name, `%${search}%`),
+										ilike(fields.description, `%${search}%`),
+									)
+								: undefined,
+						);
+					},
+					with: {
+						ace: true,
+						membersOnEvent: true,
+					},
+					orderBy:
+						sortBy === "recent" ? desc(event.dateFrom) : event.dateFrom,
+					offset: (pageIndex - 1) * pageSize,
+					limit: pageSize,
+				}),
+				db.select({ amount: count() }).from(event).where(
+					and(
+						eq(event.projectId, projectId),
+						dateFrom && dateTo
+							? and(
+									gte(event.dateFrom, dateFrom),
+									lte(event.dateTo, dateTo),
+								)
+							: undefined,
+						aces
+							? inArray(
+									event.aceId,
+									aces.map((ace) => ace.id),
+								)
+							: undefined,
+						search
+							? or(
+									ilike(event.name, `%${search}%`),
+									ilike(event.description, `%${search}%`),
+								)
+							: undefined,
+					),
+				),
+			]); */
+
+			/* const [events, [{ amount }]] = await Promise.all([
 				db
-					.select({
-						...eventColumns,
-						membersOnEvent: {
-							memberId: memberOnEvent.memberId,
-						},
-						ace: {
-							id: ace.id,
-							description: ace.description,
-							hours: ace.hours,
-						},
-					})
+					.select()
 					.from(event)
 					.leftJoin(
 						memberOnEvent,
@@ -225,13 +284,6 @@ export const eventsRouter = createTRPCRouter({
 										aces.map((ace) => ace.id),
 									)
 								: undefined,
-							// É necessário fazer uma junção pois os responsáveis são membros com o "role" === "admin"
-							responsibleFilter && responsibleFilter.length > 0
-								? inArray(
-										memberOnEvent.memberId,
-										responsibleFilter,
-									)
-								: undefined,
 							or(
 								search
 									? ilike(event.name, `%${search}%`)
@@ -244,10 +296,11 @@ export const eventsRouter = createTRPCRouter({
 					)
 					.orderBy(
 						sortBy === "recent"
-							? desc(event.dateFrom)
-							: event.dateFrom,
+						? desc(event.dateFrom)
+						: event.dateFrom,
 					)
 					.offset(pageIndex * pageSize)
+					
 					.limit(pageSize),
 				db
 					.select({ amount: count() })
@@ -267,13 +320,6 @@ export const eventsRouter = createTRPCRouter({
 										aces.map((ace) => ace.id),
 									)
 								: undefined,
-							// É necessário fazer uma junção pois os responsáveis são membros com o "role" === "admin"
-							responsibleFilter && responsibleFilter.length > 0
-								? inArray(
-										memberOnEvent.memberId,
-										responsibleFilter,
-									)
-								: undefined,
 							search
 								? or(
 										ilike(event.name, `%${search}%`),
@@ -282,44 +328,19 @@ export const eventsRouter = createTRPCRouter({
 								: undefined,
 						),
 					),
-			]);
+			]) */
+			const events = await db
+				.select({
+					membersOnEvent: memberOnEvent,
+				})
+				.from(event)
+				.leftJoin(memberOnEvent, eq(memberOnEvent.eventId, event.id));
 
-			// console.log(events);
-			// console.log("Amount: ", amount);
+			console.log(events);
 
-			const pageCount = Math.ceil(amount / pageSize);
+			/* const pageCount = Math.ceil(amount / pageSize); */
 
-			/* const eventsWithAce = await Promise.all(
-				events.map(async (event) => {
-					let ace = acesFilter
-						? aces?.find((ace) => ace.id === event.aceId)
-						: undefined;
-
-					if (!ace) {
-						const acesIds = events
-							.map((event) => event.aceId)
-							.filter(
-								(aceId, index, self) =>
-									self.indexOf(aceId) === index,
-							); // Remove duplicates
-
-						const eventsAces = await db.query.ace.findMany({
-							where(fields) {
-								return inArray(fields.id, acesIds);
-							},
-						});
-
-						ace = eventsAces.find((ace) => ace.id === event.aceId);
-					}
-
-					return {
-						...event,
-						ace,
-					};
-				}),
-			); */
-
-			return { events, pageCount };
+			return { events, pageCount: 2 };
 		}),
 
 	createEvent: protectedProcedure

@@ -9,13 +9,15 @@ import Link from "next/link";
 import ErrorFaceIcon from "@/public/icons/error_face.svg";
 
 // Components
-import SearchBar from "@/components/dashboard/SearchBar";
-import SortBy from "@/components/dashboard/SortBy";
-
 import { EventPreview } from "@/components/events/EventPreview";
 import { DashboardPagination } from "@/components/dashboard/Pagination";
-import { Filter } from "@/components/dashboard/Filter";
 import { ParamsResponsiblePicker } from "@/components/dashboard/ResponsiblePicker";
+
+// Filters and Sorting
+import { SearchBar } from "@/components/dashboard/SearchBar";
+import { SortBy } from "@/components/dashboard/SortBy";
+import { PeriodFilter } from "@/components/dashboard/PeriodFilter";
+import { AceFilter } from "@/components/dashboard/AceFilter";
 
 // Validation
 import { z } from "zod";
@@ -23,8 +25,6 @@ import { getEventsParams } from "@ichess/api/routers/events";
 
 // API
 import { serverClient } from "@/lib/trpc/server";
-
-// Types
 
 export const metadata: Metadata = {
 	title: "Eventos",
@@ -42,34 +42,22 @@ export default async function EventsPage({
 }: {
 	searchParams: EventsPageParams;
 }) {
-	const {
-		pageIndex,
-		pageSize,
-		search,
-		sortBy,
-		periodsFilter,
-		acesFilter,
-		responsibleFilter,
-		r,
-	} = eventsPageParams.parse(searchParams);
+	const { page, pageSize, search, sortBy, periods, aces, moderators, r } =
+		eventsPageParams.parse(searchParams);
 
 	const { events, pageCount } = await serverClient.getEvents({
-		projectId: env.ICHESS_ID,
-		pageIndex,
+		projectId: env.PROJECT_ID,
+		page,
 		pageSize,
 		search,
 		sortBy,
-		periodsFilter,
-		acesFilter,
-		responsibleFilter,
+		periods,
+		aces,
+		moderators,
 	});
 
 	// O "r" equivale ao estado da barra de pesquisa quando o usuário clica em "Limpar filtros"
 	// Isso é feito por meio da mudança de key do componente SearchBar
-
-	console.log(
-		events && events.length > 0 ? events[0] : "Nenhum evento encontrado",
-	);
 
 	return (
 		<main className="flex min-h-screen flex-col items-start justify-start gap-[var(--wrapper)] px-wrapper py-12 lg:flex-row lg:gap-12">
@@ -83,7 +71,7 @@ export default async function EventsPage({
 						<SortBy sortBy={sortBy} />
 					</div>
 				</div>
-				<ul className="flex w-full flex-col items-start justify-start gap-4">
+				{/* <ul className="flex w-full flex-col items-start justify-start gap-4">
 					{events && events.length > 0 ? (
 						events.map((event) => (
 							<Link
@@ -97,12 +85,12 @@ export default async function EventsPage({
 					) : (
 						<Empty />
 					)}
-				</ul>
+				</ul> */}
 				{events && events.length > 0 && (
 					<Suspense fallback={null}>
 						<DashboardPagination
 							pathname="/dashboard/events"
-							currentPage={pageIndex}
+							currentPage={page}
 							pageCount={pageCount}
 						/>
 					</Suspense>
@@ -111,22 +99,8 @@ export default async function EventsPage({
 			<div className="flex w-full min-w-60 flex-col items-start justify-start gap-4 lg:w-[35%] lg:max-w-[17.5vw]">
 				<div className="flex w-full flex-col items-start justify-start gap-9 rounded-lg bg-gray-400 p-6 ">
 					<h6>Filtros</h6>
-					{/* <Filter
-						title="Filtrar por período"
-						prefix={"periods"}
-						items={PERIODS.map((period) => {
-							return { name: period.id, value: period.id };
-						})}
-					/>
-					<Filter
-						title="Filtrar por ACE"
-						prefix={"aces"}
-						items={ACEs.map((ace) => ({
-							name: ace.name,
-							value: ace.id,
-						}))}
-						linesAmount={2}
-					/> */}
+					<PeriodFilter />
+					<AceFilter />
 					<div className="flex w-full flex-col items-start justify-center gap-4">
 						<p className="text-center text-sm font-medium text-neutral">
 							Filtrar por responsável

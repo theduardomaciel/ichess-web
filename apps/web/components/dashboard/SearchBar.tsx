@@ -3,48 +3,43 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { cn } from "@/lib/utils";
+
 // Icons
+import { X } from "lucide-react";
 import SearchIcon from "@/public/icons/search.svg";
 
 // Components
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+
+// Utils
 import { useQueryString } from "@/hooks/use-query-string";
-import { X } from "lucide-react";
 
 interface SearchBarProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-export default function SearchBar({
-	className,
-	onChange,
-	...props
-}: SearchBarProps) {
+export function SearchBar({ className, onChange, ...props }: SearchBarProps) {
 	const router = useRouter();
-	const { query, setQuery, deleteQuery, toUrl } = useQueryString();
+	const { query, toUrl } = useQueryString();
 
 	const [value, setValue] = useState(query.get("search") || "");
 
 	useEffect(() => {
 		const delayDebounce = setTimeout(() => {
-			let params;
-
-			if (value) {
-				params = setQuery("search", value);
-
-				params = deleteQuery("page", params);
-			} else {
-				params = deleteQuery("search");
-			}
-
-			router.push(toUrl(params));
+			router.push(
+				toUrl(
+					value
+						? { search: value, page: undefined }
+						: { search: undefined },
+				),
+			);
 		}, 250);
 
 		return () => clearTimeout(delayDebounce);
-	}, [value]);
+	}, [value, toUrl, router]);
 
 	return (
-		<div className="w-full relative">
-			<SearchIcon className="absolute w-4 h-4 left-4 top-1/2 -translate-y-1/2 text-muted" />
+		<div className="relative w-full">
+			<SearchIcon className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
 			<Input
 				className={cn("px-12 lg:px-12", className)}
 				value={value}
@@ -56,10 +51,10 @@ export default function SearchBar({
 			/>
 			{value && (
 				<X
-					className="absolute w-4 h-4 right-4 top-1/2 -translate-y-1/2 text-muted cursor-pointer"
+					className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer text-muted"
 					onClick={() => {
 						setValue("");
-						router.push(toUrl(deleteQuery("search")));
+						router.push(toUrl({ search: undefined }));
 					}}
 				/>
 			)}

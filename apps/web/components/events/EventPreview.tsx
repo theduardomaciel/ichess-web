@@ -15,11 +15,6 @@ interface Props {
 }
 
 export function EventPreview({ event, showResponsible = true }: Props) {
-	const moderators = event.membersOnEvent
-		? event.membersOnEvent.filter((member) => member.role === "admin")
-		: [];
-	const lastModerator = moderators.length > 1 ? moderators.pop() : null;
-
 	return (
 		<li className="flex w-full flex-col items-start justify-start gap-4 rounded-lg bg-gray-300 p-9 outline-gray-200 transition-[background-color,outline] hover:bg-gray-400 hover:outline">
 			<div className="flex w-full flex-row flex-wrap items-center justify-between gap-2">
@@ -46,9 +41,9 @@ export function EventPreview({ event, showResponsible = true }: Props) {
 					{/* <span className="text-sm font-medium">{event.timeFrom}</span> */}
 				</div>
 			</div>
-			{showResponsible && moderators.length > 0 && (
+			{showResponsible /* && moderators.length > 0 */ && (
 				<div className="flex w-full flex-row flex-wrap items-center justify-between gap-4 border-t border-t-gray-100 pt-4">
-					<div className="flex flex-row items-center justify-start gap-2 max-sm:w-full">
+					{/* <div className="flex flex-row items-center justify-start gap-2 max-sm:w-full">
 						<ProfileImages
 							image_urls={moderators
 								.map((mod) => mod!.image_url)
@@ -59,7 +54,7 @@ export function EventPreview({ event, showResponsible = true }: Props) {
 							{moderators.map((mod) => mod?.name).join(", ")}{" "}
 							{lastModerator && "e"} {lastModerator?.name}
 						</span>
-					</div>
+					</div> */}
 					<p className="text-right text-sm font-semibold text-neutral">
 						+ de <span className="underline">10 membros</span>{" "}
 						participaram

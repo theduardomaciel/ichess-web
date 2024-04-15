@@ -1,7 +1,9 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { pgEnum, pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 import { memberOnEvent, project, user } from ".";
+
+const roleEnum = pgEnum("role", ["member", "admin"]);
 
 export const member = pgTable(
 	"members",
@@ -20,10 +22,7 @@ export const member = pgTable(
 				onUpdate: "cascade",
 			}),
 		username: text("username").notNull(),
-		role: text("role")
-			.$type<"member" | "admin">()
-			.default("member")
-			.notNull(),
+		role: roleEnum("role").notNull().default("member"),
 	},
 	(table) => {
 		return {
