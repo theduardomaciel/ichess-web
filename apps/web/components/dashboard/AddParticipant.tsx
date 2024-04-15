@@ -21,10 +21,13 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
-import SearchBar from "@/components/dashboard/SearchBar";
+import { SearchBar } from "@/components/dashboard/SearchBar";
+
+// Types
+import type { RouterOutput } from "@ichess/api";
 
 interface AddParticipantProps {
-	members: any[];
+	members: RouterOutput["getEvent"]["event"]["membersOnEvent"];
 }
 
 export function AddParticipant({ members }: AddParticipantProps) {
@@ -32,12 +35,19 @@ export function AddParticipant({ members }: AddParticipantProps) {
 
 	const search = useSearchParams().get("search");
 	const filteredMembers = search
-		? members?.filter((member) =>
-				member.name.toLowerCase().includes(search.toLowerCase())
-		  )
+		? members?.filter(
+				(member) =>
+					member.user?.name
+						?.toLowerCase()
+						.includes(search.toLowerCase()) ||
+					member.username
+						.toLowerCase()
+						.includes(search.toLowerCase()),
+			)
 		: members;
 
 	useEffect(() => {
+		// Timer to refresh codes every 1 second
 		const interval = setInterval(() => {
 			setTime(new Date());
 		}, 1000);
@@ -49,11 +59,11 @@ export function AddParticipant({ members }: AddParticipantProps) {
 			<DialogTrigger asChild>
 				<Button type="button" size={"lg"} className="w-full">
 					Adicionar participante
-					<AddIcon className="w-6 h-6" />
+					<AddIcon className="h-6 w-6" />
 				</Button>
 			</DialogTrigger>
 			<DialogContent
-				className="sm:max-w-lg w-full"
+				className="w-full sm:max-w-lg"
 				hasCloseButton={false}
 			>
 				<DialogHeader>
@@ -74,39 +84,45 @@ export function AddParticipant({ members }: AddParticipantProps) {
 					action=""
 					className="flex flex-col items-start justify-start gap-9"
 				>
-					<div className="flex flex-col items-center justify-start w-full gap-9">
+					<div className="flex w-full flex-col items-center justify-start gap-9">
 						<SearchBar
 							className="w-full bg-gray-200"
 							placeholder="Pesquisar membros"
 						/>
 						{filteredMembers && filteredMembers.length > 0 ? (
-							<ScrollArea className="w-full max-h-[50vh]">
-								<ul className="flex flex-col items-start justify-start gap-4 w-full h-full">
-									{members.map((member, i) => (
+							<ScrollArea className="max-h-[50vh] w-full">
+								<ul className="flex h-full w-full flex-col items-start justify-start gap-4">
+									{filteredMembers.map((member, i) => (
 										<li
 											key={i}
-											className="flex flex-row items-center justify-between w-full"
+											className="flex w-full flex-row items-center justify-between"
 										>
 											<div className="flex flex-row items-center justify-start gap-4">
 												<Image
-													src={`https://github.com/marquinhos.png`}
+													src={
+														member.user.image ??
+														"https://github.com/marquinhos.png"
+													}
 													width={36}
 													height={36}
 													className="rounded-full"
 													alt="Member profile picture"
 												/>
-												<span className="text-left text-neutral text-base font-semibold leading-tight">
-													{member.name}
+												<span className="text-left text-base font-semibold leading-tight text-neutral">
+													{member.user.name ??
+														`@${member.username}`}
 												</span>
 											</div>
 											<div className="flex flex-row items-center justify-end gap-4">
-												<span className="opacity-50 text-neutral text-xs font-semibold leading-none hidden md:flex">
-													@{member.username}
-												</span>
+												{member.user.name && (
+													<span className="hidden text-xs font-semibold leading-none text-neutral opacity-50 md:flex">
+														@{member.username}
+													</span>
+												)}
 												<Checkbox
 													id={`member-${i}`}
 													name={`member-${i}`}
-													className="w-6 h-6"
+													className="h-6 w-6"
 												/>
 											</div>
 										</li>
@@ -117,7 +133,7 @@ export function AddParticipant({ members }: AddParticipantProps) {
 							<p>Nenhum membro encontrado.</p>
 						)}
 					</div>
-					<DialogFooter className="sm:justify-start w-full gap-2">
+					<DialogFooter className="w-full gap-2 sm:justify-start">
 						<DialogClose asChild>
 							<Button
 								className="w-full md:h-12"
@@ -134,7 +150,7 @@ export function AddParticipant({ members }: AddParticipantProps) {
 							type="button"
 						>
 							Adicionar
-							<AddIcon className="w-6 h-6" />
+							<AddIcon className="h-6 w-6" />
 						</Button>
 					</DialogFooter>
 				</form>

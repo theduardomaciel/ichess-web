@@ -1,26 +1,18 @@
 import { db } from "@ichess/drizzle";
-import {
-	event,
-	EventTypes,
-	memberOnEvent,
-	ace,
-	member,
-} from "@ichess/drizzle/schema";
+import { event, EventTypes, memberOnEvent } from "@ichess/drizzle/schema";
 import { transformSingleToArray } from "../utils";
 import {
 	and,
 	count,
 	desc,
 	eq,
-	getTableColumns,
 	inArray,
 	gte,
 	lte,
 	or,
 	ilike,
-	sql,
 } from "@ichess/drizzle/orm";
-import { object, z } from "zod";
+import { z } from "zod";
 
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
@@ -141,8 +133,29 @@ export const eventsRouter = createTRPCRouter({
 				});
 			}
 
+			const formattedEvent = {
+				...selectedEvent,
+				membersOnEvent: selectedEvent.membersOnEvent.map(
+					(memberOnEvent) => {
+						const { member } = memberOnEvent;
+
+						return {
+							...{
+								...member,
+								user: isAdmin
+									? member.user
+									: {
+											name: member.user.name,
+											image: member.user.image,
+										},
+							},
+						};
+					},
+				),
+			};
+
 			return {
-				event: selectedEvent,
+				event: formattedEvent,
 			};
 		}),
 
@@ -201,7 +214,7 @@ export const eventsRouter = createTRPCRouter({
 					return acc > date ? acc : date;
 				});
 
-			/* const [events, [{ amount }]] = await Promise.all([
+			const [events, [{ amount }]] = await Promise.all([
 				db.query.event.findMany({
 					where(fields) {
 						return and(
@@ -221,92 +234,38 @@ export const eventsRouter = createTRPCRouter({
 							search
 								? or(
 										ilike(fields.name, `%${search}%`),
-										ilike(fields.description, `%${search}%`),
+										ilike(
+											fields.description,
+											`%${search}%`,
+										),
 									)
 								: undefined,
 						);
 					},
 					with: {
 						ace: true,
-						membersOnEvent: true,
+						membersOnEvent: {
+							with: {
+								member: {
+									with: {
+										user: {
+											columns: {
+												name: true,
+												image: true,
+											},
+										},
+									},
+								},
+							},
+						},
 					},
 					orderBy:
-						sortBy === "recent" ? desc(event.dateFrom) : event.dateFrom,
-					offset: (pageIndex - 1) * pageSize,
-					limit: pageSize,
-				}),
-				db.select({ amount: count() }).from(event).where(
-					and(
-						eq(event.projectId, projectId),
-						dateFrom && dateTo
-							? and(
-									gte(event.dateFrom, dateFrom),
-									lte(event.dateTo, dateTo),
-								)
-							: undefined,
-						aces
-							? inArray(
-									event.aceId,
-									aces.map((ace) => ace.id),
-								)
-							: undefined,
-						search
-							? or(
-									ilike(event.name, `%${search}%`),
-									ilike(event.description, `%${search}%`),
-								)
-							: undefined,
-					),
-				),
-			]); */
-
-			/* const [events, [{ amount }]] = await Promise.all([
-				db
-					.select({
-						...getTableColumns(event),
-						membersOnEvent: memberOnEvent,
-						ace: {
-							id: ace.id,
-							description: ace.description,
-							hours: ace.hours,
-						},
-					})
-					.from(event)
-					.leftJoin(
-						memberOnEvent,
-						eq(memberOnEvent.eventId, event.id),
-					)
-					.leftJoin(ace, eq(event.aceId, ace.id))
-					.where(
-						and(
-							eq(event.projectId, projectId),
-							dateFrom && dateTo
-								? and(
-										gte(event.dateFrom, dateFrom),
-										lte(event.dateTo, dateTo),
-									)
-								: undefined,
-							aces
-								? inArray(
-										event.aceId,
-										aces.map((ace) => ace.id),
-									)
-								: undefined,
-							search
-								? or(
-										ilike(event.name, `%${search}%`),
-										ilike(event.description, `%${search}%`),
-									)
-								: undefined,
-						),
-					)
-					.orderBy(
 						sortBy === "recent"
 							? desc(event.dateFrom)
 							: event.dateFrom,
-					)
-					.offset(pageIndex * pageSize)
-					.limit(pageSize),
+					offset: (pageIndex - 1) * pageSize,
+					limit: pageSize,
+				}),
 				db
 					.select({ amount: count() })
 					.from(event)
@@ -333,44 +292,44 @@ export const eventsRouter = createTRPCRouter({
 								: undefined,
 						),
 					),
-			]); */
+			]);
 
-			const events = await db
-				.select({
-					event: {
-						id: event.id,
-					},
-					membersOnEvent: memberOnEvent,
-				})
-				.from(event)
-				.leftJoin(memberOnEvent, eq(memberOnEvent.eventId, event.id));
-
-			const aggregatedEvents = (events) => {
-				let aggregatedEvents = [];
-
-				for (const row of events) {
-					const event = aggregatedEvents.find(
-						(item) => item.id === row.event.id,
+			const filteredEvents = events.filter((event) => {
+				if (moderatorsFilter && moderatorsFilter.length > 0) {
+					return event.membersOnEvent.some(
+						(memberOnEvent) =>
+							memberOnEvent.member.role === "admin" &&
+							moderatorsFilter.includes(memberOnEvent.memberId),
 					);
-
-					if (event) {
-						event.membersOnEvent.push(row.membersOnEvent);
-					} else {
-						aggregatedEvents.push({
-							...row.event,
-							membersOnEvent: [row.membersOnEvent],
-						});
-					}
+				} else {
+					return true;
 				}
+			});
 
-				return aggregatedEvents;
-			};
+			const formattedEvents = filteredEvents.map((event) => {
+				return {
+					...event,
+					membersOnEvent: event.membersOnEvent.map(
+						(memberOnEvent) => {
+							const { member } = memberOnEvent;
 
-			console.log(aggregatedEvents(events));
+							return {
+								...{
+									...member,
+									user: {
+										name: member.user.name,
+										image: member.user.image,
+									},
+								},
+							};
+						},
+					),
+				};
+			});
 
-			/* const pageCount = Math.ceil(amount / pageSize); */
+			const pageCount = Math.ceil(amount / pageSize);
 
-			return { events, pageCount: 2 };
+			return { events: formattedEvents, pageCount };
 		}),
 
 	createEvent: protectedProcedure

@@ -71,21 +71,23 @@ export default async function EventsPage({
 						<SortBy sortBy={sortBy} />
 					</div>
 				</div>
-				{/* <ul className="flex w-full flex-col items-start justify-start gap-4">
-					{events && events.length > 0 ? (
-						events.map((event) => (
-							<Link
-								key={event.id}
-								href={`/dashboard/events/${event.id}`}
-								className="w-full"
-							>
-								<EventPreview event={event} />
-							</Link>
-						))
-					) : (
-						<Empty />
-					)}
-				</ul> */}
+				{
+					<ul className="flex w-full flex-col items-start justify-start gap-4">
+						{events && events.length > 0 ? (
+							events.map((event) => (
+								<Link
+									key={event.id}
+									href={`/dashboard/events/${event.id}`}
+									className="w-full"
+								>
+									<EventPreview event={event} />
+								</Link>
+							))
+						) : (
+							<Empty />
+						)}
+					</ul>
+				}
 				{events && events.length > 0 && (
 					<Suspense fallback={null}>
 						<DashboardPagination
