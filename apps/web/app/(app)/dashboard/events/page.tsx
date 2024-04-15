@@ -1,17 +1,14 @@
-import { useId, Suspense } from "react";
+import { Suspense } from "react";
 import { Metadata } from "next";
-import { env } from "@ichess/env";
 
 import Link from "next/link";
 // import { unstable_noStore } from "next/cache";
-
-// Icons
-import ErrorFaceIcon from "@/public/icons/error_face.svg";
 
 // Components
 import { EventPreview } from "@/components/events/EventPreview";
 import { DashboardPagination } from "@/components/dashboard/Pagination";
 import { ParamsResponsiblePicker } from "@/components/dashboard/ResponsiblePicker";
+import { Empty } from "@/components/Empty";
 
 // Filters and Sorting
 import { SearchBar } from "@/components/dashboard/SearchBar";
@@ -24,6 +21,7 @@ import { z } from "zod";
 import { getEventsParams } from "@ichess/api/routers/events";
 
 // API
+import { env } from "@ichess/env";
 import { serverClient } from "@/lib/trpc/server";
 
 export const metadata: Metadata = {
@@ -112,30 +110,5 @@ export default async function EventsPage({
 				</div>
 			</div>
 		</main>
-	);
-}
-
-function Empty() {
-	const randomId = useId();
-	// Math.floor(Math.random() * 1000);
-
-	return (
-		<div className="inline-flex w-full flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-primary-200/50 px-8 py-16">
-			<ErrorFaceIcon />
-			<p className="text-center font-title text-base font-bold text-neutral">
-				Parece que não encontramos nada com base em sua pesquisa e
-				filtros :(
-			</p>
-			<p className="text-center text-sm font-normal text-neutral sm:w-[50%]">
-				Tente procurar por algo com outras palavras, ou remover alguns
-				filtros pra ver se você acha dessa vez!
-			</p>
-			<Link
-				href={`/dashboard/events?r=${randomId}`}
-				className="text-tertiary-200 underline"
-			>
-				Limpar filtros
-			</Link>
-		</div>
 	);
 }

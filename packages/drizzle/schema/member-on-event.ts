@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 import { member, event } from ".";
 
@@ -18,6 +18,7 @@ export const memberOnEvent = pgTable(
 				onDelete: "cascade",
 				onUpdate: "cascade",
 			}),
+		joinedAt: timestamp("joined_at").notNull().defaultNow(),
 	},
 	(table) => {
 		return {

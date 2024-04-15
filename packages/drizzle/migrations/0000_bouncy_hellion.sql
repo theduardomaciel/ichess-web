@@ -1,3 +1,27 @@
+DO $$ BEGIN
+ CREATE TYPE "type" AS ENUM('internal', 'external');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "course" AS ENUM('cc', 'ec');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "period" AS ENUM('1', '2', '3', '4', '5', '6', '7', '8');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "role" AS ENUM('member', 'admin');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "accounts" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
@@ -19,7 +43,7 @@ CREATE TABLE IF NOT EXISTS "events" (
 	"description" text,
 	"date_from" timestamp NOT NULL,
 	"date_to" timestamp NOT NULL,
-	"type" text DEFAULT 'internal' NOT NULL,
+	"type" "type" DEFAULT 'internal' NOT NULL,
 	"ace_id" "smallserial" NOT NULL,
 	"author_id" uuid,
 	"project_id" uuid NOT NULL,
@@ -44,9 +68,10 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"email" text NOT NULL,
 	"emailVerified" timestamp,
 	"image" text,
-	"course" text,
+	"course" "course",
 	"registration_id" text,
-	"period" text
+	"period" "period",
+	CONSTRAINT "users_registration_id_unique" UNIQUE("registration_id")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "members" (
@@ -54,7 +79,8 @@ CREATE TABLE IF NOT EXISTS "members" (
 	"user_id" uuid NOT NULL,
 	"project_id" uuid NOT NULL,
 	"username" text NOT NULL,
-	"role" text DEFAULT 'member' NOT NULL
+	"role" "role" DEFAULT 'member' NOT NULL,
+	"joined_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "verification_tokens" (
@@ -65,8 +91,7 @@ CREATE TABLE IF NOT EXISTS "verification_tokens" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "periods" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"slug" text NOT NULL,
+	"slug" text PRIMARY KEY NOT NULL,
 	"from" timestamp NOT NULL,
 	"to" timestamp NOT NULL,
 	CONSTRAINT "periods_slug_unique" UNIQUE("slug")
@@ -81,11 +106,13 @@ CREATE TABLE IF NOT EXISTS "aces" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "member_events" (
 	"member_id" uuid NOT NULL,
-	"event_id" uuid NOT NULL
+	"event_id" uuid NOT NULL,
+	"joined_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "accounts_provider_provider_account_id_index" ON "accounts" ("provider","provider_account_id");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "users_email_index" ON "users" ("email");--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "users_registration_id_index" ON "users" ("registration_id");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "members_user_id_role_index" ON "members" ("user_id","role");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "verification_tokens_token_index" ON "verification_tokens" ("token");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "member_events_member_id_event_id_index" ON "member_events" ("member_id","event_id");--> statement-breakpoint

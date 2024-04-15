@@ -1,5 +1,5 @@
 import { db } from "@ichess/drizzle";
-import { event, EventTypes, memberOnEvent } from "@ichess/drizzle/schema";
+import { event, eventTypes, memberOnEvent } from "@ichess/drizzle/schema";
 import { transformSingleToArray } from "../utils";
 import {
 	and,
@@ -20,6 +20,8 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 export const getEventsParams = z.object({
 	search: z.string().optional(),
 	sortBy: z.enum(["recent", "oldest"]).optional(),
+	page: z.coerce.number().default(0),
+	pageSize: z.coerce.number().default(10),
 	periods: z
 		.union([z.array(z.string()), z.string()])
 		.optional()
@@ -32,8 +34,6 @@ export const getEventsParams = z.object({
 		.union([z.array(z.string()), z.string()])
 		.optional()
 		.transform(transformSingleToArray),
-	page: z.coerce.number().default(0),
-	pageSize: z.coerce.number().default(10),
 });
 
 const mutateEventParams = z.object({
@@ -41,7 +41,7 @@ const mutateEventParams = z.object({
 	description: z.string().nullable(),
 	dateFrom: z.string().transform((value) => new Date(value)),
 	dateTo: z.string().transform((value) => new Date(value)),
-	type: z.enum(EventTypes),
+	type: z.enum(eventTypes),
 	aceId: z.string().uuid(),
 });
 

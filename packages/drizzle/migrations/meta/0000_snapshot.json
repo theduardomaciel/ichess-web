@@ -1,5 +1,5 @@
 {
-  "id": "c951121c-c083-479e-8bff-7c831e4858bc",
+  "id": "e900aabd-68c1-4470-89f2-3aa21641579a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -147,7 +147,7 @@
         },
         "type": {
           "name": "type",
-          "type": "text",
+          "type": "type",
           "primaryKey": false,
           "notNull": true,
           "default": "'internal'"
@@ -332,7 +332,7 @@
         },
         "course": {
           "name": "course",
-          "type": "text",
+          "type": "course",
           "primaryKey": false,
           "notNull": false
         },
@@ -344,7 +344,7 @@
         },
         "period": {
           "name": "period",
-          "type": "text",
+          "type": "period",
           "primaryKey": false,
           "notNull": false
         }
@@ -356,11 +356,26 @@
             "email"
           ],
           "isUnique": true
+        },
+        "users_registration_id_index": {
+          "name": "users_registration_id_index",
+          "columns": [
+            "registration_id"
+          ],
+          "isUnique": true
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "users_registration_id_unique": {
+          "name": "users_registration_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "registration_id"
+          ]
+        }
+      }
     },
     "members": {
       "name": "members",
@@ -393,10 +408,17 @@
         },
         "role": {
           "name": "role",
-          "type": "text",
+          "type": "role",
           "primaryKey": false,
           "notNull": true,
           "default": "'member'"
+        },
+        "joined_at": {
+          "name": "joined_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {
@@ -488,17 +510,10 @@
       "name": "periods",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
         "slug": {
           "name": "slug",
           "type": "text",
-          "primaryKey": false,
+          "primaryKey": true,
           "notNull": true
         },
         "from": {
@@ -590,6 +605,13 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "joined_at": {
+          "name": "joined_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {
@@ -634,7 +656,42 @@
       "uniqueConstraints": {}
     }
   },
-  "enums": {},
+  "enums": {
+    "type": {
+      "name": "type",
+      "values": {
+        "internal": "internal",
+        "external": "external"
+      }
+    },
+    "course": {
+      "name": "course",
+      "values": {
+        "cc": "cc",
+        "ec": "ec"
+      }
+    },
+    "period": {
+      "name": "period",
+      "values": {
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5",
+        "6": "6",
+        "7": "7",
+        "8": "8"
+      }
+    },
+    "role": {
+      "name": "role",
+      "values": {
+        "member": "member",
+        "admin": "admin"
+      }
+    }
+  },
   "schemas": {},
   "_meta": {
     "columns": {},

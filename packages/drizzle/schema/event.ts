@@ -10,9 +10,8 @@ import {
 
 import { ace, memberOnEvent, project, user } from ".";
 
-export const EventTypes = ["internal", "external"] as const;
-
-const typeEnum = pgEnum("type", EventTypes);
+export const eventTypes = ["internal", "external"] as const;
+export const typeEnum = pgEnum("type", eventTypes);
 
 export const event = pgTable("events", {
 	id: uuid("id").primaryKey().defaultRandom(),

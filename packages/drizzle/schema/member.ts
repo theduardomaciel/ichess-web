@@ -1,9 +1,17 @@
 import { relations } from "drizzle-orm";
-import { pgEnum, pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import {
+	pgEnum,
+	pgTable,
+	text,
+	timestamp,
+	uniqueIndex,
+	uuid,
+} from "drizzle-orm/pg-core";
 
 import { memberOnEvent, project, user } from ".";
 
-const roleEnum = pgEnum("role", ["member", "admin"]);
+export const memberRoles = ["member", "admin"] as const;
+export const roleEnum = pgEnum("role", memberRoles);
 
 export const member = pgTable(
 	"members",
@@ -23,6 +31,7 @@ export const member = pgTable(
 			}),
 		username: text("username").notNull(),
 		role: roleEnum("role").notNull().default("member"),
+		joinedAt: timestamp("joined_at").notNull().defaultNow(),
 	},
 	(table) => {
 		return {

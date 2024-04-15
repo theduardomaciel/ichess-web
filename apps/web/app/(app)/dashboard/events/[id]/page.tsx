@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { cn } from "@/lib/utils";
+import { cn, isDateDifferent } from "@/lib/utils";
 
 // Icons
 import PersonCheckIcon from "@/public/icons/person_check.svg";
@@ -46,7 +46,7 @@ export default async function EventPage({
 		day: "2-digit",
 		year: event.dateTo ? undefined : "numeric",
 	})}${
-		event.dateTo
+		isDateDifferent(event.dateFrom, event.dateTo)
 			? ` - ${event.dateTo.toLocaleDateString("pt-BR", {
 					year: "numeric",
 					month: "2-digit",
@@ -60,7 +60,7 @@ export default async function EventPage({
 		minute: "2-digit",
 	});
 
-	const timeTo = event.dateTo?.toLocaleTimeString("pt-BR", {
+	const timeTo = event.dateTo.toLocaleTimeString("pt-BR", {
 		hour: "2-digit",
 		minute: "2-digit",
 	});
@@ -80,8 +80,7 @@ export default async function EventPage({
 					<DateDisplay dateString={dateString} />
 					<div className="h-1 w-1 rounded-full bg-neutral" />
 					<p className="text-base font-medium">
-						{timeFrom}
-						{timeTo ? ` às ${timeTo}` : ""}
+						{timeFrom} às {timeTo}
 					</p>
 				</div>
 				<h2 className="text-base font-semibold leading-normal text-neutral">

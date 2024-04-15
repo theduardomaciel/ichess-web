@@ -4,10 +4,25 @@ import { faker } from "@faker-js/faker";
 import { neon, NeonQueryFunction } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 
-import { ace, event } from "./schema";
+import {
+	ace,
+	event,
+	eventTypes,
+	period,
+	user,
+	member,
+	userCourses,
+	memberRoles,
+	userPeriods,
+	memberOnEvent,
+} from "./schema";
+
+import * as schema from "./schema";
 
 const connection = neon(env.DATABASE_URL);
-const db = drizzle(connection as NeonQueryFunction<boolean, boolean>);
+const db = drizzle(connection as NeonQueryFunction<boolean, boolean>, {
+	schema,
+});
 
 export async function seedAces() {
 	const data: (typeof ace.$inferInsert)[] = [];
@@ -26,17 +41,74 @@ export async function seedAces() {
 	console.log("✅ Banco de dados semeado com Aces!");
 }
 
-type EventTypes = "internal" | "external";
+export async function seedPeriods() {
+	const data: (typeof period.$inferInsert)[] = [];
+
+	const semester = Math.random() > 0.5 ? "1" : "2";
+
+	for (let i = 0; i < 10; i++) {
+		data.push({
+			slug: `202${i}.${semester}`,
+			from: faker.date.recent({ days: 365 }),
+			to: faker.date.future({ years: 1 }),
+		});
+	}
+
+	console.log("🌱 Semeando o banco de dados... [Period]");
+	await db.insert(period).values(data);
+	console.log("✅ Banco de dados semeado com períodos!");
+}
+
+export async function seedUsersAndMembers() {
+	const data: (typeof user.$inferInsert)[] = [];
+	const memberData: (typeof member.$inferInsert)[] = [];
+
+	for (let i = 0; i < 10; i++) {
+		const email = faker.internet.email();
+
+		const randomCourse =
+			userCourses[Math.floor(Math.random() * userCourses.length)];
+		const randomPeriod =
+			userPeriods[Math.floor(Math.random() * userPeriods.length)];
+
+		const randomRole =
+			memberRoles[Math.floor(Math.random() * memberRoles.length)];
+
+		data.push({
+			id: faker.string.uuid(),
+			name: faker.person.fullName(),
+			email,
+			emailVerified: faker.date.recent(),
+			image: faker.image.avatar(),
+			course: randomCourse,
+			registrationId: faker.string.numeric({ length: 8 }),
+			period: randomPeriod,
+		});
+
+		memberData.push({
+			userId: data[i].id!,
+			projectId: env.PROJECT_ID,
+			username: faker.internet.userName(),
+			role: randomRole,
+			joinedAt: faker.date.recent(),
+		});
+	}
+
+	console.log("🌱 Semeando o banco de dados... [User]");
+	await db.insert(user).values(data);
+	console.log("✅ Banco de dados semeado com usuários!");
+
+	console.log("🌱 Semeando o banco de dados... [Member]");
+	await db.insert(member).values(memberData);
+	console.log("✅ Banco de dados semeado com membros!");
+}
 
 export async function seedEvents() {
 	const data: (typeof event.$inferInsert)[] = [];
 
-	const types = ["internal", "external", undefined] as EventTypes[];
-
 	for (let i = 0; i < 20; i++) {
-		const randomType = types[
-			Math.floor(Math.random() * types.length)
-		] as EventTypes;
+		const randomType =
+			eventTypes[Math.floor(Math.random() * eventTypes.length)];
 
 		data.push({
 			name: faker.lorem.words(),
@@ -54,5 +126,44 @@ export async function seedEvents() {
 	console.log("✅ Banco de dados semeado com eventos!");
 }
 
-// seedAces();
-seedEvents();
+export async function seedMembersOnEvents() {
+	const members = await db.query.member.findMany({
+		where(fields, { eq }) {
+			return eq(fields.projectId, env.PROJECT_ID);
+		},
+	});
+
+	const data: (typeof memberOnEvent.$inferInsert)[] = [];
+
+	for (const member of members) {
+		const events = await db.query.event.findMany({
+			where(fields, { eq }) {
+				return eq(fields.projectId, env.PROJECT_ID);
+			},
+		});
+
+		for (const event of events) {
+			data.push({
+				memberId: member.id!,
+				eventId: event.id!,
+			});
+		}
+	}
+
+	console.log("🌱 Semeando o banco de dados... [MemberOnEvent]");
+	await db.insert(memberOnEvent).values(data);
+	console.log("✅ Banco de dados semeado com membros em eventos!");
+}
+
+export async function seed() {
+	await seedAces();
+	await seedPeriods();
+	await seedUsersAndMembers();
+	await seedEvents();
+	await seedMembersOnEvents();
+}
+
+seed().catch((error) => {
+	console.error("❌ Erro ao semear o banco de dados:", error);
+	process.exit(1);
+});
