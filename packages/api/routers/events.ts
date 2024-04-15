@@ -20,7 +20,7 @@ import {
 	ilike,
 	sql,
 } from "@ichess/drizzle/orm";
-import { z } from "zod";
+import { object, z } from "zod";
 
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
@@ -262,7 +262,15 @@ export const eventsRouter = createTRPCRouter({
 
 			/* const [events, [{ amount }]] = await Promise.all([
 				db
-					.select()
+					.select({
+						...getTableColumns(event),
+						membersOnEvent: memberOnEvent,
+						ace: {
+							id: ace.id,
+							description: ace.description,
+							hours: ace.hours,
+						},
+					})
 					.from(event)
 					.leftJoin(
 						memberOnEvent,
@@ -284,23 +292,20 @@ export const eventsRouter = createTRPCRouter({
 										aces.map((ace) => ace.id),
 									)
 								: undefined,
-							or(
-								search
-									? ilike(event.name, `%${search}%`)
-									: undefined,
-								search
-									? ilike(event.description, `%${search}%`)
-									: undefined,
-							),
+							search
+								? or(
+										ilike(event.name, `%${search}%`),
+										ilike(event.description, `%${search}%`),
+									)
+								: undefined,
 						),
 					)
 					.orderBy(
 						sortBy === "recent"
-						? desc(event.dateFrom)
-						: event.dateFrom,
+							? desc(event.dateFrom)
+							: event.dateFrom,
 					)
 					.offset(pageIndex * pageSize)
-					
 					.limit(pageSize),
 				db
 					.select({ amount: count() })
@@ -328,15 +333,40 @@ export const eventsRouter = createTRPCRouter({
 								: undefined,
 						),
 					),
-			]) */
+			]); */
+
 			const events = await db
 				.select({
+					event: {
+						id: event.id,
+					},
 					membersOnEvent: memberOnEvent,
 				})
 				.from(event)
 				.leftJoin(memberOnEvent, eq(memberOnEvent.eventId, event.id));
 
-			console.log(events);
+			const aggregatedEvents = (events) => {
+				let aggregatedEvents = [];
+
+				for (const row of events) {
+					const event = aggregatedEvents.find(
+						(item) => item.id === row.event.id,
+					);
+
+					if (event) {
+						event.membersOnEvent.push(row.membersOnEvent);
+					} else {
+						aggregatedEvents.push({
+							...row.event,
+							membersOnEvent: [row.membersOnEvent],
+						});
+					}
+				}
+
+				return aggregatedEvents;
+			};
+
+			console.log(aggregatedEvents(events));
 
 			/* const pageCount = Math.ceil(amount / pageSize); */
 
