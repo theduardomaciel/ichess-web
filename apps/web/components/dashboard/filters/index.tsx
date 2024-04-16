@@ -3,7 +3,7 @@
 import {
 	Dispatch,
 	SetStateAction,
-	useRef,
+	useEffect,
 	useState,
 	useTransition,
 } from "react";
@@ -19,6 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 // Utils
 import { cn } from "@/lib/utils";
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface FilterProps {
 	title: string;
@@ -50,10 +51,10 @@ export function Filter({ title, prefix, items, linesAmount = 1 }: FilterProps) {
 	const [isPendingFilterTransition, startTransition] = useTransition();
 
 	const [filters, setFilters] = useState<string[]>(
-		query.getAll(prefix) ?? [],
+		query.get(prefix)?.split(",") ?? [],
 	);
 
-	const hasDebounce = useRef(false);
+	const debouncedValue = useDebounce(filters, 750);
 
 	const handleFilterChange = (value: string, checked: boolean) => {
 		const newFilters: string[] | undefined = checked
@@ -61,28 +62,23 @@ export function Filter({ title, prefix, items, linesAmount = 1 }: FilterProps) {
 			: filters.filter((f) => f !== value);
 
 		setFilters(newFilters);
-
-		const delayDebounce = setTimeout(() => {
-			if (hasDebounce.current) {
-				console.log("Filtrando...");
-				startTransition(() => {
-					router.push(
-						toUrl({
-							[`${prefix}`]:
-								filters.length === 0 ? undefined : filters,
-						}),
-						{
-							scroll: false,
-						},
-					);
-				});
-			}
-			hasDebounce.current = false;
-			clearTimeout(delayDebounce);
-		}, 1000);
-
-		hasDebounce.current = true;
 	};
+
+	useEffect(() => {
+		startTransition(() => {
+			router.push(
+				toUrl({
+					[`${prefix}`]:
+						debouncedValue.length === 0
+							? undefined
+							: debouncedValue.join(","),
+				}),
+				{
+					scroll: false,
+				},
+			);
+		});
+	}, [debouncedValue, prefix, toUrl, router]);
 
 	return (
 		<div className="flex flex-col items-start justify-center gap-4">
@@ -110,7 +106,7 @@ export function Filter({ title, prefix, items, linesAmount = 1 }: FilterProps) {
 						className={cn(
 							"flex w-full items-center justify-start gap-2",
 							{
-								"pointer-events-none select-none opacity-50":
+								"pointer-events-none animate-pulse select-none":
 									isPendingFilterTransition,
 							},
 						)}

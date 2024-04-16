@@ -1,9 +1,10 @@
-export const transformSingleToArray = <T>(
-	value: T | T[] | undefined,
-): T[] | undefined => {
-	if (Array.isArray(value)) {
-		return value;
-	}
+export const transformSingleToArray = (
+	value: string | undefined,
+): string[] | undefined => {
+	const splitted = value
+		?.toString()
+		.split(",")
+		.map((v) => v.trim());
 
-	return value ? [value] : undefined;
+	return splitted ?? undefined;
 };

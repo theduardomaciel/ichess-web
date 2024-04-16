@@ -175,7 +175,7 @@ export const eventsRouter = createTRPCRouter({
 				? rawAcesFilter.map((aceId) => Number(aceId))
 				: undefined;
 
-			console.log("Aces:", aces);
+			// console.log("Aces:", aces);
 
 			// console.log("Periods filter:", periodsFilter);
 

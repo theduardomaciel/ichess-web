@@ -11,10 +11,10 @@ import type { RouterOutput } from "@ichess/api";
 
 interface Props {
 	event: RouterOutput["getEvents"]["events"][0];
-	showResponsible?: boolean;
+	showmoderators?: boolean;
 }
 
-export function EventPreview({ event, showResponsible = true }: Props) {
+export function EventPreview({ event, showmoderators = true }: Props) {
 	const moderators = event.membersOnEvent.filter((m) => m.role === "admin");
 	const moderatorsImages = moderators
 		.filter((m) => m.user.image)
@@ -48,7 +48,7 @@ export function EventPreview({ event, showResponsible = true }: Props) {
 					{/* <span className="text-sm font-medium">{event.timeFrom}</span> */}
 				</div>
 			</div>
-			{showResponsible && moderators.length > 0 && (
+			{showmoderators && moderators.length > 0 && (
 				<div className="flex w-full flex-row flex-wrap items-center justify-between gap-4 border-t border-t-gray-100 pt-4">
 					<div className="flex flex-row items-center justify-start gap-2 max-sm:w-full">
 						<ProfileImages image_urls={moderatorsImages} />

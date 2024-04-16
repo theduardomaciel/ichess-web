@@ -5,6 +5,7 @@ import { event, project } from ".";
 
 export const ace = pgTable("aces", {
 	id: smallserial("id").primaryKey(),
+	name: text("name").notNull(),
 	description: text("description").notNull(),
 	hours: integer("hours").notNull(),
 	projectId: uuid("project_id")

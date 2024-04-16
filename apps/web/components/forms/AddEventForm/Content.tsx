@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import CloudIcon from "@/public/icons/cloud.svg";
 
 // Components
-import { Panel, type FormProps } from "@/components/forms";
+import { Panel } from "@/components/forms";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,19 +24,29 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { FormResponsiblePicker } from "@/components/dashboard/ResponsiblePicker";
+import { ModeratorPicker } from "@/components/dashboard/ModeratorPicker";
 
+// Date and Time
 import { ptBR } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
 import { TimePicker } from "@/components/TimePicker";
 
-// Utils
-import { ACEs } from "@/lib/validations/AddEventForm";
+// Types
+import type { AddEventFormSchema } from "@/lib/validations/AddEventForm";
+import type { UseFormReturn } from "react-hook-form";
+import { trpc } from "@/lib/trpc/react";
 
 const sectionClassName =
 	"md:p-9 w-full md:rounded-2xl md:border border-gray-200";
 
-export default function AddEventFormContent({ form }: FormProps) {
+interface Props {
+	form: UseFormReturn<AddEventFormSchema>;
+	projectId: string;
+}
+
+export default function AddEventFormContent({ form, projectId }: Props) {
+	const aces = trpc.getAces.useQuery().data?.aces;
+
 	return (
 		<div className="flex w-full flex-col items-start justify-start gap-9">
 			<div
@@ -76,14 +86,11 @@ export default function AddEventFormContent({ form }: FormProps) {
 					/>
 					<FormField
 						control={form.control}
-						name="responsible"
+						name="moderators"
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>Responsáveis</FormLabel>
-								<FormResponsiblePicker
-									form={form}
-									field={field}
-								/>
+								<ModeratorPicker projectId={projectId} />
 								<FormMessage />
 							</FormItem>
 						)}
@@ -168,8 +175,8 @@ export default function AddEventFormContent({ form }: FormProps) {
 					control={form.control}
 					name="ace"
 					render={({ field }) => {
-						const currentACE = ACEs.find(
-							(ace) => ace.id === field.value,
+						const currentAce = aces?.find(
+							(ace) => ace.id === Number(field.value),
 						);
 
 						return (
@@ -180,6 +187,7 @@ export default function AddEventFormContent({ form }: FormProps) {
 								<Select
 									onValueChange={field.onChange}
 									defaultValue={field.value}
+									disabled={!aces}
 								>
 									<FormControl>
 										<SelectTrigger>
@@ -187,19 +195,21 @@ export default function AddEventFormContent({ form }: FormProps) {
 										</SelectTrigger>
 									</FormControl>
 									<SelectContent>
-										{ACEs.map((ace) => (
-											<SelectItem
-												key={ace.id}
-												value={ace.id}
-											>
-												{ace.name} - {ace.hours}h
-											</SelectItem>
-										))}
+										{aces &&
+											aces.map((ace) => (
+												<SelectItem
+													key={ace.id}
+													value={ace.id.toString()}
+												>
+													{ace.description} -{" "}
+													{ace.hours}h
+												</SelectItem>
+											))}
 									</SelectContent>
 								</Select>
-								{currentACE && (
+								{currentAce && (
 									<Panel type="info">
-										{currentACE.description}
+										{currentAce.description}
 									</Panel>
 								)}
 								<FormMessage />

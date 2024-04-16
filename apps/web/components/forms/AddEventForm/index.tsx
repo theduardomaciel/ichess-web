@@ -20,7 +20,7 @@ import {
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export default function AddEventForm() {
+export default function AddEventForm({ projectId }: { projectId: string }) {
 	const [currentState, setCurrentState] = useState<
 		false | "submitting" | "submitted"
 	>(false);
@@ -32,7 +32,7 @@ export default function AddEventForm() {
 	const form = useForm<AddEventFormSchema>({
 		resolver: zodResolver(addEventFormSchema),
 		defaultValues: {
-			responsible: [],
+			moderators: [],
 			dateFrom: new Date(),
 		},
 	});
@@ -60,7 +60,7 @@ export default function AddEventForm() {
 				onSubmit={form.handleSubmit(onSubmit)}
 				className="flex w-full flex-col items-center justify-start gap-9"
 			>
-				<AddEventFormContent form={form} />
+				<AddEventFormContent form={form} projectId={projectId} />
 			</form>
 			<LoadingDialog isOpen={currentState === "submitting"} />
 			<SuccessDialog

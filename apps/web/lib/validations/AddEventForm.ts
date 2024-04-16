@@ -3,8 +3,9 @@ import { z } from "zod";
 export const addEventFormSchema = z.object({
 	name: z.string({ required_error: "O nome do evento é obrigatório" }),
 	description: z.string().optional(),
-	responsible: z.array(z.string()).nonempty({
-		message: "É necessário informar pelo menos um responsável",
+	moderators: z.union([z.array(z.string()), z.string()], {
+		required_error:
+			"É necessário informar pelo menos um moderador responsável pelo evento",
 	}),
 	dateFrom: z.coerce.date({
 		required_error: "É necessário inserir a data de início do evento",

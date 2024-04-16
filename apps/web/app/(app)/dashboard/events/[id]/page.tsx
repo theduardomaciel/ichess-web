@@ -113,7 +113,7 @@ export default async function EventPage({
 					members={event.membersOnEvent.filter(
 						(member) => member.role === "admin",
 					)}
-					isResponsible
+					isModerators
 				/>
 			</div>
 		</main>
@@ -122,7 +122,7 @@ export default async function EventPage({
 
 interface MembersListProps {
 	className?: string;
-	isResponsible?: boolean;
+	isModerators?: boolean;
 	members: RouterOutput["getEvent"]["event"]["membersOnEvent"];
 	onRemove?: (id: string) => void;
 	onAdd?: () => void;
@@ -131,7 +131,7 @@ interface MembersListProps {
 
 function MembersList({
 	className,
-	isResponsible = false,
+	isModerators = false,
 	members,
 }: MembersListProps) {
 	return (
@@ -142,7 +142,7 @@ function MembersList({
 			)}
 		>
 			<h2 className="font-title text-lg font-extrabold text-neutral">
-				{isResponsible ? "Responsáveis" : "Membros"}
+				{isModerators ? "Responsáveis" : "Membros"}
 			</h2>
 			<ul className="flex w-full flex-col items-start justify-start gap-4">
 				{members.map((member) => (

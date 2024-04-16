@@ -7,14 +7,14 @@ import Link from "next/link";
 // Components
 import { EventPreview } from "@/components/events/EventPreview";
 import { DashboardPagination } from "@/components/dashboard/Pagination";
-import { ParamsResponsiblePicker } from "@/components/dashboard/ResponsiblePicker";
+import { ModeratorFilter } from "@/components/dashboard/ModeratorPicker";
 import { Empty } from "@/components/Empty";
 
 // Filters and Sorting
 import { SearchBar } from "@/components/dashboard/SearchBar";
 import { SortBy } from "@/components/dashboard/SortBy";
-import { PeriodFilter } from "@/components/dashboard/PeriodFilter";
-import { AceFilter } from "@/components/dashboard/AceFilter";
+import { PeriodFilter } from "@/components/dashboard/filters/PeriodFilter";
+import { AceFilter } from "@/components/dashboard/filters/AceFilter";
 
 // Validation
 import { z } from "zod";
@@ -105,7 +105,7 @@ export default async function EventsPage({
 						<p className="text-center text-sm font-medium text-neutral">
 							Filtrar por responsável
 						</p>
-						<ParamsResponsiblePicker />
+						<ModeratorFilter projectId={env.PROJECT_ID} />
 					</div>
 				</div>
 			</div>

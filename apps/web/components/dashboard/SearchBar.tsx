@@ -1,19 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
 // Icons
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import SearchIcon from "@/public/icons/search.svg";
 
 // Components
 import { Input } from "@/components/ui/input";
 
-// Utils
+// Hooks
 import { useQueryString } from "@/hooks/use-query-string";
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface SearchBarProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
@@ -21,21 +22,22 @@ export function SearchBar({ className, onChange, ...props }: SearchBarProps) {
 	const router = useRouter();
 	const { query, toUrl } = useQueryString();
 
+	const [isPendingSearchTransition, startTransition] = useTransition();
+
 	const [value, setValue] = useState(query.get("search") || "");
+	const debouncedValue = useDebounce(value, 250);
 
 	useEffect(() => {
-		const delayDebounce = setTimeout(() => {
+		startTransition(() => {
 			router.push(
 				toUrl(
-					value
-						? { search: value, page: undefined }
+					debouncedValue
+						? { search: debouncedValue, page: undefined }
 						: { search: undefined },
 				),
 			);
-		}, 250);
-
-		return () => clearTimeout(delayDebounce);
-	}, [value, toUrl, router]);
+		});
+	}, [debouncedValue, toUrl, router]);
 
 	return (
 		<div className="relative w-full">
@@ -49,7 +51,12 @@ export function SearchBar({ className, onChange, ...props }: SearchBarProps) {
 				}}
 				{...props}
 			/>
-			{value && (
+
+			{isPendingSearchTransition ? (
+				<div className="absolute right-4 top-1/2 -translate-y-1/2">
+					<Loader2 className="h-4 w-4 origin-center animate-spin text-muted" />
+				</div>
+			) : value ? (
 				<X
 					className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer text-muted"
 					onClick={() => {
@@ -57,7 +64,7 @@ export function SearchBar({ className, onChange, ...props }: SearchBarProps) {
 						router.push(toUrl({ search: undefined }));
 					}}
 				/>
-			)}
+			) : null}
 		</div>
 	);
 }

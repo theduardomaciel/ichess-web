@@ -31,7 +31,8 @@ export async function seedAces() {
 		data.push({
 			id: i,
 			hours: faker.number.int({ min: 10, max: 25 }),
-			description: faker.lorem.sentence({ min: 3, max: 6 }),
+			name: faker.lorem.sentence({ min: 3, max: 6 }).slice(0, -1),
+			description: faker.lorem.paragraph({ min: 1, max: 3 }),
 			projectId: env.PROJECT_ID,
 		});
 	}
@@ -131,6 +132,7 @@ export async function seedMembersOnEvents() {
 		where(fields, { eq }) {
 			return eq(fields.projectId, env.PROJECT_ID);
 		},
+		limit: Math.floor(Math.random() * 10),
 	});
 
 	const data: (typeof memberOnEvent.$inferInsert)[] = [];

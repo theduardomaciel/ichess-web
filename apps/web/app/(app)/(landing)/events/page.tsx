@@ -32,15 +32,15 @@ export default function Events() {
 	return (
 		<>
 			<Header />
-			<main className="text-neutral text-center pt-8 pb-14 px-wrapper">
+			<main className="px-wrapper pb-14 pt-8 text-center text-neutral">
 				<StyledTitle title="Evento Externos" />
 
 				<div className="text-left">
-					<h3 className="text-2xl font-title font-bold pb-3 pt-12">
+					<h3 className="pb-3 pt-12 font-title text-2xl font-bold">
 						Este Mês
 					</h3>
 
-					<div className="flex gap-4 w-full pt-2 pb-16">
+					<div className="flex w-full gap-4 pb-16 pt-2">
 						{monthExternal.length ? (
 							monthExternal.map((event: Event, index: number) => (
 								<ExternalEvent key={index} {...event} />
@@ -60,7 +60,7 @@ export default function Events() {
 						Caso você seja parte do IC, e tem interesse em
 						participar,{" "}
 						<Link
-							className="underline text-primary-200"
+							className="text-primary-200 underline"
 							href={`/join`}
 						>
 							ingresse já
@@ -71,44 +71,44 @@ export default function Events() {
 
 				<div
 					className={cn(
-						"flex flex-col items-start justify-start mt-8 gap-4 w-full",
+						"mt-8 flex w-full flex-col items-start justify-start gap-4",
 						{
-							"opacity-50 pointer-events-none": !isLogged,
-						}
+							"pointer-events-none opacity-50": !isLogged,
+						},
 					)}
 				>
-					<h3 className="font-title font-bold text-neutral text-start text-2xl pt-4 pb-3">
+					<h3 className="pb-3 pt-4 text-start font-title text-2xl font-bold text-neutral">
 						Esta Semana
 					</h3>
-					<div className="flex flex-col md:grid grid-cols-2 gap-4 w-full">
+					<div className="flex w-full grid-cols-2 flex-col gap-4 md:grid">
 						{thisWeekInternal.length ? (
 							thisWeekInternal.map(
 								(event: Event, index: number) => (
 									<EventPreview
 										key={index}
 										event={event}
-										showResponsible={false}
+										showmoderators={false}
 									/>
-								)
+								),
 							)
 						) : (
 							<NoEvents />
 						)}
 					</div>
 
-					<h3 className="font-title font-bold text-neutral text-start text-2xl pt-10 pb-3">
+					<h3 className="pb-3 pt-10 text-start font-title text-2xl font-bold text-neutral">
 						Próxima Semana
 					</h3>
-					<div className="flex gap-4 w-full">
+					<div className="flex w-full gap-4">
 						{nextWeekInternal.length ? (
 							nextWeekInternal.map(
 								(event: Event, index: number) => (
 									<EventPreview
 										key={index}
 										event={event}
-										showResponsible={false}
+										showmoderators={false}
 									/>
-								)
+								),
 							)
 						) : (
 							<NoEvents />

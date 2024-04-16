@@ -5,7 +5,7 @@ import { z } from "zod";
 // API
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { member, user } from "@ichess/drizzle/schema";
+import { member, memberRoles, user } from "@ichess/drizzle/schema";
 import { and, desc, eq, getTableColumns } from "@ichess/drizzle/orm";
 
 export const membersRouter = createTRPCRouter({
@@ -69,13 +69,14 @@ export const membersRouter = createTRPCRouter({
 			z.object({
 				projectId: z.string().uuid(),
 				search: z.string().optional(),
+				role: z.enum(memberRoles).optional(),
 				sortBy: z.enum(["recent", "oldest"]).optional(),
 				page: z.coerce.number().default(0),
 				pageSize: z.coerce.number().default(10),
 			}),
 		)
 		.query(async ({ input }) => {
-			const { projectId, search, sortBy, page, pageSize } = input;
+			const { projectId, search, role, sortBy, page, pageSize } = input;
 
 			const members = await db
 				.select({
@@ -91,6 +92,7 @@ export const membersRouter = createTRPCRouter({
 					and(
 						eq(member.projectId, projectId),
 						search ? eq(user.name, search) : undefined,
+						role ? eq(member.role, role) : undefined,
 					),
 				)
 				.orderBy(
