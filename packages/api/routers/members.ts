@@ -33,16 +33,20 @@ export const membersRouter = createTRPCRouter({
 
 			const requestUserId = ctx.session?.user.id;
 
-			if (!requestUserId) {
+			const requestMember = requestUserId
+				? await db.query.member.findFirst({
+						where: (fields, { eq }) =>
+							eq(fields.userId, requestUserId),
+					})
+				: undefined;
+
+			if (!requestUserId || !requestMember) {
 				throw new TRPCError({
-					code: "UNAUTHORIZED",
+					code: "FORBIDDEN",
 					message: "You are not authorized to view this member",
+					cause: "You are not a member of this project",
 				});
 			}
-
-			const requestMember = await db.query.member.findFirst({
-				where: (fields, { eq }) => eq(fields.userId, requestUserId),
-			});
 
 			if (
 				requestMember?.role === "member" &&
@@ -50,7 +54,8 @@ export const membersRouter = createTRPCRouter({
 			) {
 				throw new TRPCError({
 					code: "FORBIDDEN",
-					message: "You are not allowed to view this member",
+					message: "You are not authorized to view this member",
+					cause: "You are not the requested member or an admin of this project",
 				});
 			}
 
@@ -75,7 +80,10 @@ export const membersRouter = createTRPCRouter({
 			const members = await db
 				.select({
 					...getTableColumns(member),
-					...getTableColumns(user),
+					user: {
+						name: user.name,
+						image: user.image,
+					},
 				})
 				.from(member)
 				.leftJoin(user, eq(member.userId, user.id))

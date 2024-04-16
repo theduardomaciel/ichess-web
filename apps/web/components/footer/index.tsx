@@ -9,6 +9,7 @@ import InstagramIcon from "@/public/logos/instagram.svg";
 // Components
 import Status from "./subcomponents/Status";
 import ThemePicker from "./subcomponents/ThemePicker";
+import FooterSection from "./subcomponents/FooterSection";
 
 export default function Footer() {
 	return (
@@ -76,42 +77,13 @@ export default function Footer() {
 							href: "https://drive.google.com/file/d/1lcP4scEH7wrscuBN98DmDGVsytYv2rr-/view?usp=drive_link",
 							target: "_blank",
 						},
-						{ label: "Dashboard", href: "/dashboard" },
+						{
+							label: "Dashboard",
+							href: "/dashboard",
+						},
 					]}
 				/>
 			</div>
 		</footer>
-	);
-}
-
-interface FooterSectionProps {
-	title: string;
-	items: {
-		label: string;
-		href: string;
-		target?: "_blank" | "_self";
-	}[];
-}
-
-function FooterSection({ title, items }: FooterSectionProps) {
-	return (
-		<div className="flex flex-col items-start justify-center gap-6">
-			<h6 className="font-title text-base font-black text-neutral">
-				{title}
-			</h6>
-			<ul className="flex flex-col items-start justify-center gap-5">
-				{items.map((item, index) => (
-					<li key={index}>
-						<a
-							href={item.href}
-							target={item.target ?? "_self"}
-							className="font-medium"
-						>
-							{item.label}
-						</a>
-					</li>
-				))}
-			</ul>
-		</div>
 	);
 }

@@ -12,6 +12,7 @@ import { memberOnEvent, project, user } from ".";
 
 export const memberRoles = ["member", "admin"] as const;
 export const roleEnum = pgEnum("role", memberRoles);
+export type Role = (typeof memberRoles)[number];
 
 export const member = pgTable(
 	"members",

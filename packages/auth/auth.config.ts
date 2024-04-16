@@ -1,11 +1,14 @@
 import { env } from "@ichess/env";
 import { db } from "@ichess/drizzle";
-import { GoogleProfile } from "next-auth/providers/google";
-import { googleProvider } from "./google-provider";
+
 import { drizzleAuthAdapter } from "./drizzle-auth-adapter";
+import { googleProvider } from "./google-provider";
 
 // Types
 import type { NextAuthConfig, Session } from "next-auth";
+import type { GoogleProfile } from "next-auth/providers/google";
+
+const icDomain = "ic.ufal.br";
 
 export const authConfig = {
 	adapter: drizzleAuthAdapter,
@@ -23,37 +26,18 @@ export const authConfig = {
 				const googleProfile = profile as GoogleProfile;
 				const [, emailDomain] = googleProfile.email.split("@");
 
-				const icDomain = "ic.ufal.br";
-
 				if (!emailDomain || emailDomain !== icDomain) {
 					return false;
 				}
 
 				return googleProfile.email_verified;
-			} else if (account?.provider === "credentials") {
-				return true;
 			}
 
 			return false;
 		},
 		async jwt({ token, user, session, trigger }) {
-			if (user && user.id) {
-				const members = await db.query.member.findMany({
-					where(fields, { eq }) {
-						return eq(fields.userId, user.id!);
-					},
-				});
-
-				const projectsIds = members
-					.filter((member) => member.role === "member")
-					.map((member) => member.projectId);
-
-				const projectsWithAdminIds = members
-					.filter((member) => member.role === "admin")
-					.map((member) => member.projectId);
-
-				token.projectsIds = projectsIds;
-				token.projectsWithAdminIds = projectsWithAdminIds;
+			if (user) {
+				token.role = user.members[0].role;
 			}
 
 			function isSessionAvailable(session: unknown): session is Session {
@@ -61,7 +45,6 @@ export const authConfig = {
 			}
 
 			if (trigger === "update" && isSessionAvailable(session)) {
-				console.log(session);
 				token.name = session.user.name;
 			}
 
@@ -69,37 +52,32 @@ export const authConfig = {
 		},
 		session({ session, ...params }) {
 			if ("token" in params && session.user) {
-				session.projectsIds = params.token.projectsIds;
-				session.projectsWithAdminIds =
-					params.token.projectsWithAdminIds;
+				session.role = params.token.role;
 				session.user.id = params.token.sub!;
 			}
 
 			return session;
 		},
-		authorized({ auth, request: { nextUrl } }) {
-			// console.log("Auth: " + JSON.stringify(auth?.user));
-			const isLoggedIn = !!auth?.user;
-			const isMember = auth?.projectsIds?.includes(env.PROJECT_ID);
-			const isAdmin = auth?.projectsWithAdminIds?.includes(
-				env.PROJECT_ID,
-			);
+		authorized({ auth, request: { nextUrl, cookies } }) {
+			/* const isLoggedIn = !!auth?.user;
+			const isMember = auth?.role === "member";
+			const isAdmin = auth?.role === "admin";
 
-			console.log("Is member: " + isMember);
-			console.log("Is admin: " + isAdmin);
+			const privatePages = ["/auth"];
+			const privatePaths = ["/events/", "/dashboard"];
+			// A página de eventos é privada somente para eventos específicos (/events/[id]); a página /events é pública
 
-			const privatePages = ["/dashboard", "/events/"];
-			// A página de eventos é privada somente para eventos específicos (/events/[id]), a página /events é pública
+			const isOnPrivatePage =
+				privatePaths.some((page) =>
+					nextUrl.pathname.startsWith(page),
+				) || privatePages.some((page) => nextUrl.pathname === page);
 
-			const isOnPrivatePage = privatePages.some((page) =>
-				nextUrl.pathname.startsWith(page),
-			);
 			const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
-
 			const isOnPublicAPIRoutes =
 				nextUrl.pathname.startsWith("/api/auth");
 			const isOnAPIRoutes = nextUrl.pathname.startsWith("/api");
-			const isAuthenticating = nextUrl.pathname === "/auth/sign-in";
+			const isOnUnauthenticatedRoutes =
+				nextUrl.pathname === "/auth/sign-in";
 
 			if (isOnPublicAPIRoutes) {
 				return true;
@@ -110,32 +88,38 @@ export const authConfig = {
 					{ message: "Unauthorized." },
 					{ status: 401 },
 				);
-			}
+			} */
 
-			console.log("Is logged in: " + isLoggedIn);
+			/* if (isOnUnauthenticatedRoutes && isLoggedIn) {
+				return Response.redirect(new URL("/auth", nextUrl));
+			} */
 
-			if (isOnPrivatePage) {
-				// Check if member is trying to access dashboard
+			/* if (isOnPrivatePage) {
+				console.log("Private page");
+
+				cookies.set("internal.callback-url", nextUrl.toString());
+
+				// Checamos se o membro tem permissão para acessar a página
+				// O "isLoggedIn" é necessário pois caso não existisse, um usuário nao logado seria redirecionado para a tela de erro
 				if (isOnDashboard && isLoggedIn && !isAdmin) {
+					console.log("Redirecting to error page");
 					return Response.redirect(
 						new URL(
 							`/auth/error?error=PermissionLevelError`,
 							nextUrl,
 						),
 					);
-				} else if (isMember) {
-					// Nem todos os usuários logados podem acessar, somente membros
-					// Temos que cuidar desse comportamento caso outros projetos sejam adicionados
+				}
+
+				if (isMember) {
+					// Nem todos os usuários logados podem acessar, somente membros do projeto em questão
+					// Cuidamos desse comportamento no caso de outros projetos serem adicionados
 					return true;
 				}
 
-				// Redirect user back to sign in
+				// Redireciona o usuário para a página de login
 				return false;
-			}
-
-			if (isAuthenticating && isLoggedIn) {
-				return Response.redirect(new URL("/", nextUrl));
-			}
+			} */
 
 			return true;
 		},

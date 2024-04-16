@@ -1,7 +1,11 @@
-import { Adapter } from "@auth/core/adapters";
+import { env } from "@ichess/env";
+
 import { db } from "@ichess/drizzle";
 import { account, session, user } from "@ichess/drizzle/schema";
 import { and, eq, getTableColumns } from "@ichess/drizzle/orm";
+
+// Types
+import type { Adapter } from "@auth/core/adapters";
 
 export const drizzleAuthAdapter: Adapter = {
 	async createUser(userToCreate) {
@@ -21,6 +25,19 @@ export const drizzleAuthAdapter: Adapter = {
 		const authUser = await db.query.user.findFirst({
 			where(fields, { eq }) {
 				return eq(fields.id, id);
+			},
+			with: {
+				members: {
+					where: (fields, { eq, and }) =>
+						and(
+							eq(fields.userId, id),
+							eq(fields.projectId, env.PROJECT_ID),
+						),
+					columns: {
+						role: true,
+						username: true,
+					},
+				},
 			},
 		});
 

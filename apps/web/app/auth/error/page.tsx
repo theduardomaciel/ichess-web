@@ -11,7 +11,11 @@ export const metadata: Metadata = {
 	title: "Acesso negado",
 };
 
-export default function ErrorPage() {
+export default function ErrorPage({
+	searchParams,
+}: {
+	searchParams: { [key: string]: string | undefined };
+}) {
 	return (
 		<div className="relative flex min-h-screen flex-col items-center justify-center">
 			<div className="mx-auto flex w-full max-w-[350px] flex-col justify-center space-y-6">
@@ -31,7 +35,7 @@ export default function ErrorPage() {
 						<br />
 						<ErrorDisplay />
 					</div>
-					<ActionButton />
+					<ActionButton error={searchParams.error} />
 				</div>
 			</div>
 		</div>

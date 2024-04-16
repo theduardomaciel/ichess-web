@@ -2,11 +2,12 @@ import type { AdapterUser as AdapterUserBase } from "@auth/core/adapters";
 import type { DefaultSession, User as DefaultUser } from "next-auth";
 import type { DefaultJWT } from "next-auth/jwt";
 
+import type { Course, Period, Role } from "@ichess/drizzle/schema";
+
 interface CustomUser {
-	/* projectId: string; */
-	course: "cc" | "ec" | null;
+	course: Course | null;
+	period: Period | null;
 	registrationId: string | null;
-	period: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | null;
 }
 
 declare module "@auth/core/adapters" {
@@ -18,15 +19,12 @@ declare module "next-auth" {
 
 	export interface Session extends DefaultSession {
 		user: User;
-		projectsIds: string[];
-		projectsWithAdminIds: string[];
+		role?: Role;
 	}
 }
 
 declare module "next-auth/jwt" {
 	interface JWT extends DefaultJWT {
-		/* projectId: string; */
-		projectsIds: string[];
-		projectsWithAdminIds: string[];
+		role?: Role;
 	}
 }

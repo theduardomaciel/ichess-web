@@ -12,9 +12,11 @@ import { account, session, member } from ".";
 
 export const userCourses = ["cc", "ec"] as const;
 export const courseEnum = pgEnum("course", userCourses);
+export type Course = (typeof userCourses)[number];
 
 export const userPeriods = ["1", "2", "3", "4", "5", "6", "7", "8"] as const;
 export const periodEnum = pgEnum("period", userPeriods);
+export type Period = (typeof userPeriods)[number];
 
 export const user = pgTable(
 	"users",

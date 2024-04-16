@@ -1,19 +1,17 @@
-"use client";
+import Link from "next/link";
 
-import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 // Icons
 import { ArrowLeftIcon, Repeat2Icon } from "lucide-react";
 
 // Components
 import { Button } from "@/components/ui/button";
-import { useQueryString } from "@/hooks/use-query-string";
-import { cn } from "@/lib/utils";
 
 const ERRORS = {
 	AuthorizedCallbackError: {
 		title: "Tentar novamente",
-		href: "/",
+		href: "/sign-in",
 		icon: {
 			instance: Repeat2Icon,
 			position: "left",
@@ -21,7 +19,7 @@ const ERRORS = {
 	},
 	default: {
 		title: "Voltar",
-		href: null,
+		href: undefined,
 		icon: {
 			instance: ArrowLeftIcon,
 			position: "left",
@@ -29,26 +27,31 @@ const ERRORS = {
 	},
 };
 
-export function ActionButton() {
-	const error = useQueryString().query.get("error");
-	const router = useRouter();
+interface Params {
+	error?: string;
+	callbackUrl?: string;
+}
 
+export function ActionButton({ error, callbackUrl }: Params) {
 	const isKeyInErrors = error && error in ERRORS;
+
 	const { title, href, icon } = isKeyInErrors
 		? ERRORS[error as keyof typeof ERRORS]
 		: ERRORS.default;
 
 	return (
 		<Button
+			asChild
 			variant="outline"
 			type="button"
 			className={cn("w-full", {
 				"flex-row-reverse": icon.position === "left",
 			})}
-			onClick={() => (href ? router.push(href) : router.back())}
 		>
-			{title}
-			<icon.instance className="ml-2 h-4 w-4" />
+			<Link href={href || callbackUrl || "/"}>
+				{title}
+				<icon.instance className="ml-2 h-4 w-4" />
+			</Link>
 		</Button>
 	);
 }
