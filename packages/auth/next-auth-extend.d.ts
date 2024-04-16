@@ -8,6 +8,10 @@ interface CustomUser {
 	course: Course | null;
 	period: Period | null;
 	registrationId: string | null;
+	member?: {
+		role: Role | null;
+		username: string | null;
+	};
 }
 
 declare module "@auth/core/adapters" {
@@ -19,12 +23,12 @@ declare module "next-auth" {
 
 	export interface Session extends DefaultSession {
 		user: User;
-		role?: Role;
+		role: Role | null;
 	}
 }
 
 declare module "next-auth/jwt" {
 	interface JWT extends DefaultJWT {
-		role?: Role;
+		role: Role | null;
 	}
 }

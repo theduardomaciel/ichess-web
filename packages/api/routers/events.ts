@@ -193,6 +193,8 @@ export const eventsRouter = createTRPCRouter({
 						})
 					: undefined;
 
+			console.log("Periods filter:", periodsFilter);
+
 			const periods =
 				periodsFilter && periodsFilter.length > 0
 					? await db.query.period.findMany({
@@ -202,17 +204,23 @@ export const eventsRouter = createTRPCRouter({
 						})
 					: undefined;
 
-			const dateFrom = periods
-				?.map((period) => period.from)
-				.reduce((acc, date) => {
-					return acc < date ? acc : date;
-				});
+			const dateFrom =
+				periods && periods.length > 0
+					? periods
+							.map((period) => period.from)
+							.reduce((acc, date) => {
+								return acc < date ? acc : date;
+							})
+					: undefined;
 
-			const dateTo = periods
-				?.map((period) => period.to)
-				.reduce((acc, date) => {
-					return acc > date ? acc : date;
-				});
+			const dateTo =
+				periods && periods.length > 0
+					? periods
+							.map((period) => period.to)
+							.reduce((acc, date) => {
+								return acc > date ? acc : date;
+							})
+					: undefined;
 
 			const [events, [{ amount }]] = await Promise.all([
 				db.query.event.findMany({
@@ -263,7 +271,7 @@ export const eventsRouter = createTRPCRouter({
 						sortBy === "recent"
 							? desc(event.dateFrom)
 							: event.dateFrom,
-					offset: (pageIndex - 1) * pageSize,
+					offset: pageIndex ? (pageIndex - 1) * pageSize : undefined,
 					limit: pageSize,
 				}),
 				db

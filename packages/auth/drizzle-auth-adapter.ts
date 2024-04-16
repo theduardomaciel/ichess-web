@@ -1,7 +1,7 @@
 import { env } from "@ichess/env";
 
 import { db } from "@ichess/drizzle";
-import { account, session, user } from "@ichess/drizzle/schema";
+import { account, member, session, user } from "@ichess/drizzle/schema";
 import { and, eq, getTableColumns } from "@ichess/drizzle/orm";
 
 // Types
@@ -41,7 +41,24 @@ export const drizzleAuthAdapter: Adapter = {
 			},
 		});
 
-		return authUser || null;
+		// Precisamos unir os campos de membros com o usuário
+		// para que a resposta seja um objeto único
+
+		if (authUser) {
+			const { members, ...rest } = authUser as typeof authUser & {
+				members: typeof authUser.members;
+			};
+
+			return {
+				...rest,
+				member: {
+					role: members[0].role,
+					username: members[0].username,
+				},
+			};
+		} else {
+			return null;
+		}
 	},
 
 	async getUserByEmail(email) {
@@ -49,26 +66,70 @@ export const drizzleAuthAdapter: Adapter = {
 			where(fields, { eq }) {
 				return eq(fields.email, email);
 			},
+			with: {
+				members: {
+					where: (fields, { eq, and }) =>
+						and(
+							eq(fields.userId, fields.id),
+							eq(fields.projectId, env.PROJECT_ID),
+						),
+					columns: {
+						role: true,
+						username: true,
+					},
+				},
+			},
 		});
 
-		return authUser || null;
+		if (authUser) {
+			const { members, ...rest } = authUser as typeof authUser & {
+				members: typeof authUser.members;
+			};
+
+			return {
+				...rest,
+				member: {
+					role: members[0].role,
+					username: members[0].username,
+				},
+			};
+		} else {
+			return null;
+		}
 	},
 
 	async getUserByAccount({ providerAccountId, provider }) {
 		const [authUser] = await db
 			.select({
 				user: getTableColumns(user),
+				username: member.username,
+				role: member.role,
 			})
 			.from(user)
+			.leftJoin(member, eq(member.userId, user.id))
 			.innerJoin(account, eq(account.userId, user.id))
 			.where(
 				and(
 					eq(account.provider, provider),
 					eq(account.providerAccountId, providerAccountId),
+					eq(member.projectId, env.PROJECT_ID),
+					eq(member.userId, user.id),
 				),
 			);
 
-		return authUser?.user || null;
+		if (authUser) {
+			const { username, role, ...rest } = authUser;
+
+			return {
+				...rest.user,
+				member: {
+					username,
+					role,
+				},
+			};
+		} else {
+			return null;
+		}
 	},
 
 	async updateUser({ id, ...userToUpdate }) {
@@ -104,7 +165,21 @@ export const drizzleAuthAdapter: Adapter = {
 				return eq(fields.sessionToken, sessionToken);
 			},
 			with: {
-				user: true,
+				user: {
+					with: {
+						members: {
+							where: (fields, { eq, and }) =>
+								and(
+									eq(fields.userId, fields.id),
+									eq(fields.projectId, env.PROJECT_ID),
+								),
+							columns: {
+								role: true,
+								username: true,
+							},
+						},
+					},
+				},
 			},
 		});
 
@@ -113,6 +188,17 @@ export const drizzleAuthAdapter: Adapter = {
 		}
 
 		const { user, ...session } = drizzleSession;
+
+		if (user) {
+			const { members, ...rest } = user as typeof user & {
+				members: typeof user.members;
+			};
+
+			return {
+				user: { ...rest, ...members[0] },
+				session,
+			};
+		}
 
 		return {
 			user,
