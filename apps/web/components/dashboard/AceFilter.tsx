@@ -8,10 +8,10 @@ export async function AceFilter() {
 	const { aces } = await serverClient.getAces();
 
 	return (
-		<Suspense fallback={<>carregando aces...</>}>
+		<Suspense>
 			<Filter
 				title="Filtrar por ACE"
-				prefix={"acesFilter"}
+				prefix={"aces"}
 				items={aces?.map((ace) => ({
 					name: ace.description,
 					value: ace.id.toString(),

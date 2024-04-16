@@ -8,7 +8,7 @@ export async function PeriodFilter() {
 	const { periods } = await serverClient.getPeriods();
 
 	return (
-		<Suspense fallback={<>carregando períodos...</>}>
+		<Suspense>
 			<Filter
 				title="Filtrar por período"
 				prefix={"periods"}

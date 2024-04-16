@@ -1,6 +1,12 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import {
+	Dispatch,
+	SetStateAction,
+	useRef,
+	useState,
+	useTransition,
+} from "react";
 import { useQueryString } from "@/hooks/use-query-string";
 import { useRouter } from "next/navigation";
 
@@ -10,6 +16,9 @@ import ChevronUp from "@/public/icons/chevron_up.svg";
 // Components
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+
+// Utils
+import { cn } from "@/lib/utils";
 
 interface FilterProps {
 	title: string;
@@ -36,26 +45,44 @@ export function Filter({ title, prefix, items, linesAmount = 1 }: FilterProps) {
 	const router = useRouter();
 	const { query, toUrl } = useQueryString();
 
-	const filters = query.get(prefix)?.split(",") ?? [];
+	const [isExpanded, setIsExpanded] = useState(false);
+
+	const [isPendingFilterTransition, startTransition] = useTransition();
+
+	const [filters, setFilters] = useState<string[]>(
+		query.getAll(prefix) ?? [],
+	);
+
+	const hasDebounce = useRef(false);
 
 	const handleFilterChange = (value: string, checked: boolean) => {
-		const newFilters = checked
+		const newFilters: string[] | undefined = checked
 			? [...filters, value]
 			: filters.filter((f) => f !== value);
 
-		if (newFilters.length === 0) {
-			// router.push(toUrl(deleteQuery(prefix)), { scroll: false });
-			router.push(toUrl({ [`${prefix}`]: undefined }), {
-				scroll: false,
-			});
-		} else {
-			router.push(toUrl({ [`${prefix}`]: newFilters.join(",") }), {
-				scroll: false,
-			});
-		}
-	};
+		setFilters(newFilters);
 
-	const [isExpanded, setIsExpanded] = useState(false);
+		const delayDebounce = setTimeout(() => {
+			if (hasDebounce.current) {
+				console.log("Filtrando...");
+				startTransition(() => {
+					router.push(
+						toUrl({
+							[`${prefix}`]:
+								filters.length === 0 ? undefined : filters,
+						}),
+						{
+							scroll: false,
+						},
+					);
+				});
+			}
+			hasDebounce.current = false;
+			clearTimeout(delayDebounce);
+		}, 1000);
+
+		hasDebounce.current = true;
+	};
 
 	return (
 		<div className="flex flex-col items-start justify-center gap-4">
@@ -80,9 +107,13 @@ export function Filter({ title, prefix, items, linesAmount = 1 }: FilterProps) {
 				{items.map((item, index) => (
 					<li
 						key={index}
-						className={
-							"flex w-full items-center justify-start gap-2"
-						}
+						className={cn(
+							"flex w-full items-center justify-start gap-2",
+							{
+								"pointer-events-none select-none opacity-50":
+									isPendingFilterTransition,
+							},
+						)}
 					>
 						<Checkbox
 							id={item.value}

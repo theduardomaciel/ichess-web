@@ -58,7 +58,7 @@ export const authConfig = {
 		},
 		authorized({ auth, request: { nextUrl } }) {
 			const isLoggedIn = !!auth?.user;
-			const isMember = auth?.role === "member";
+			const isMember = !!auth?.role;
 			const isAdmin = auth?.role === "admin";
 
 			console.log("Authorized", { isLoggedIn, isMember, isAdmin });
@@ -99,7 +99,7 @@ export const authConfig = {
 				);
 			}
 
-			if ((isOnPrivatePages || isOnDashboard) && !isMember && !isAdmin) {
+			if ((isOnPrivatePages || isOnDashboard) && !isMember) {
 				// Redirect user back to sign in
 				console.log("Redirecting to sign-in page");
 				return false;

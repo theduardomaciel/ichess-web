@@ -11,6 +11,7 @@ import {
 	lte,
 	or,
 	ilike,
+	asc,
 } from "@ichess/drizzle/orm";
 import { z } from "zod";
 
@@ -74,13 +75,6 @@ export const eventsRouter = createTRPCRouter({
 					);
 				},
 			});
-
-			/* if (!member) {
-				throw new TRPCError({
-					message: "User is not a member of the project.",
-					code: "BAD_REQUEST",
-				});
-			} */
 
 			const isAdmin = member?.role === "admin";
 
@@ -172,28 +166,18 @@ export const eventsRouter = createTRPCRouter({
 				pageSize,
 				search,
 				sortBy,
-				aces: acesFilter,
+				aces: rawAcesFilter,
 				periods: periodsFilter,
 				moderators: moderatorsFilter,
 			} = input;
 
-			const acesFilterConverted = acesFilter
-				? acesFilter.map((aceId) => Number(aceId))
+			const aces = rawAcesFilter
+				? rawAcesFilter.map((aceId) => Number(aceId))
 				: undefined;
 
-			const aces =
-				acesFilterConverted && acesFilterConverted.length > 0
-					? await db.query.ace.findMany({
-							where(fields) {
-								return inArray(fields.id, acesFilterConverted);
-							},
-							columns: {
-								id: true,
-							},
-						})
-					: undefined;
+			console.log("Aces:", aces);
 
-			console.log("Periods filter:", periodsFilter);
+			// console.log("Periods filter:", periodsFilter);
 
 			const periods =
 				periodsFilter && periodsFilter.length > 0
@@ -203,6 +187,8 @@ export const eventsRouter = createTRPCRouter({
 							},
 						})
 					: undefined;
+
+			// console.log("Periods:", periods);
 
 			const dateFrom =
 				periods && periods.length > 0
@@ -233,12 +219,7 @@ export const eventsRouter = createTRPCRouter({
 										lte(fields.dateTo, dateTo),
 									)
 								: undefined,
-							aces
-								? inArray(
-										fields.aceId,
-										aces.map((ace) => ace.id),
-									)
-								: undefined,
+							aces ? inArray(fields.aceId, aces) : undefined,
 							search
 								? or(
 										ilike(fields.name, `%${search}%`),
@@ -268,9 +249,9 @@ export const eventsRouter = createTRPCRouter({
 						},
 					},
 					orderBy:
-						sortBy === "recent"
-							? desc(event.dateFrom)
-							: event.dateFrom,
+						sortBy && sortBy === "oldest"
+							? asc(event.dateFrom)
+							: desc(event.dateFrom),
 					offset: pageIndex ? (pageIndex - 1) * pageSize : undefined,
 					limit: pageSize,
 				}),
@@ -286,12 +267,7 @@ export const eventsRouter = createTRPCRouter({
 										lte(event.dateTo, dateTo),
 									)
 								: undefined,
-							aces
-								? inArray(
-										event.aceId,
-										aces.map((ace) => ace.id),
-									)
-								: undefined,
+							aces ? inArray(event.aceId, aces) : undefined,
 							search
 								? or(
 										ilike(event.name, `%${search}%`),
