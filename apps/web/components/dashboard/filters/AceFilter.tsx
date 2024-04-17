@@ -13,7 +13,7 @@ export async function AceFilter() {
 				title="Filtrar por ACE"
 				prefix={"aces"}
 				items={aces?.map((ace) => ({
-					name: ace.description,
+					name: ace.name,
 					value: ace.id.toString(),
 				}))}
 				linesAmount={2}

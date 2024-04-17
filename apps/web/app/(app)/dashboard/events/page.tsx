@@ -7,7 +7,7 @@ import Link from "next/link";
 // Components
 import { EventPreview } from "@/components/events/EventPreview";
 import { DashboardPagination } from "@/components/dashboard/Pagination";
-import { ModeratorFilter } from "@/components/dashboard/ModeratorPicker";
+import { ModeratorFilter } from "@/components/dashboard/filters/ModeratorFilter";
 import { Empty } from "@/components/Empty";
 
 // Filters and Sorting

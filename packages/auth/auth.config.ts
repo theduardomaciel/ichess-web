@@ -16,6 +16,7 @@ export const authConfig = {
 	},
 	session: {
 		strategy: "jwt",
+		updateAge: 60 * 60 * 24, // 24 hours
 	},
 	callbacks: {
 		async signIn({ account, profile }) {
@@ -88,7 +89,7 @@ export const authConfig = {
 				return true;
 			}
 
-			if (isOnGuestPages && isLoggedIn) {
+			if (isOnGuestPages && isMember) {
 				return Response.redirect(new URL("/", nextUrl));
 			}
 
@@ -100,9 +101,15 @@ export const authConfig = {
 			}
 
 			if ((isOnPrivatePages || isOnDashboard) && !isMember) {
-				// Redirect user back to sign in
-				console.log("Redirecting to sign-in page");
-				return false;
+				if (isLoggedIn) {
+					// Redirect user back to sign in
+					console.log("Redirecting to sign-in page");
+					return Response.redirect(
+						new URL(`/auth/error?error=NotAuthenticated`, nextUrl),
+					);
+				} else {
+					return false;
+				}
 			}
 
 			if (isOnDashboard && isLoggedIn && !isAdmin) {

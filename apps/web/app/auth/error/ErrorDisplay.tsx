@@ -49,8 +49,8 @@ const ERRORS: { [key: string]: Error } = {
 		type: "error",
 		content: (
 			<>
-				Somente <strong>membros cadastrados</strong> podem acessar essa
-				página.
+				Somente <strong>membros cadastrados no IChess</strong> podem
+				acessar essa página.
 			</>
 		),
 	},

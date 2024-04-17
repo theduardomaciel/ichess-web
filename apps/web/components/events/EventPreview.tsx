@@ -11,10 +11,10 @@ import type { RouterOutput } from "@ichess/api";
 
 interface Props {
 	event: RouterOutput["getEvents"]["events"][0];
-	showmoderators?: boolean;
+	showModerators?: boolean;
 }
 
-export function EventPreview({ event, showmoderators = true }: Props) {
+export function EventPreview({ event, showModerators = true }: Props) {
 	const moderators = event.membersOnEvent.filter((m) => m.role === "admin");
 	const moderatorsImages = moderators
 		.filter((m) => m.user.image)
@@ -48,7 +48,7 @@ export function EventPreview({ event, showmoderators = true }: Props) {
 					{/* <span className="text-sm font-medium">{event.timeFrom}</span> */}
 				</div>
 			</div>
-			{showmoderators && moderators.length > 0 && (
+			{showModerators && moderators.length > 0 && (
 				<div className="flex w-full flex-row flex-wrap items-center justify-between gap-4 border-t border-t-gray-100 pt-4">
 					<div className="flex flex-row items-center justify-start gap-2 max-sm:w-full">
 						<ProfileImages image_urls={moderatorsImages} />
@@ -59,7 +59,10 @@ export function EventPreview({ event, showmoderators = true }: Props) {
 						</span>
 					</div>
 					<p className="text-right text-sm font-semibold text-neutral">
-						+ de <span className="underline">10 membros</span>{" "}
+						+ de{" "}
+						<span className="underline">
+							{event.membersOnEvent.length - 1} membros
+						</span>{" "}
 						participaram
 					</p>
 				</div>
@@ -79,7 +82,7 @@ function ProfileImages({ image_urls }: { image_urls: string[] }) {
 					height={24}
 					width={24}
 					className={cn("h-6 w-6 min-w-6 rounded-full", {
-						"-ml-4": image_urls.indexOf(url) > 0,
+						"-ml-2.5": image_urls.indexOf(url) > 0,
 					})}
 				/>
 			))}

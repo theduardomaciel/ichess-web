@@ -132,23 +132,24 @@ export async function seedMembersOnEvents() {
 		where(fields, { eq }) {
 			return eq(fields.projectId, env.PROJECT_ID);
 		},
-		limit: Math.floor(Math.random() * 10),
+	});
+
+	const events = await db.query.event.findMany({
+		where(fields, { eq }) {
+			return eq(fields.projectId, env.PROJECT_ID);
+		},
 	});
 
 	const data: (typeof memberOnEvent.$inferInsert)[] = [];
 
-	for (const member of members) {
-		const events = await db.query.event.findMany({
-			where(fields, { eq }) {
-				return eq(fields.projectId, env.PROJECT_ID);
-			},
-		});
-
-		for (const event of events) {
-			data.push({
-				memberId: member.id!,
-				eventId: event.id!,
-			});
+	for (const event of events) {
+		for (const member of members) {
+			if (Math.random() > 0.5) {
+				data.push({
+					memberId: member.id!,
+					eventId: event.id!,
+				});
+			}
 		}
 	}
 
@@ -158,9 +159,9 @@ export async function seedMembersOnEvents() {
 }
 
 export async function seed() {
-	await seedAces();
+	/* await seedAces();
 	await seedPeriods();
-	await seedUsersAndMembers();
+	await seedUsersAndMembers(); */
 	await seedEvents();
 	await seedMembersOnEvents();
 }

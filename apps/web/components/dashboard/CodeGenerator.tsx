@@ -25,9 +25,8 @@ interface CodeGeneratorProps {
 const DEFAULT_CHARACTERS_AMOUNT = 6;
 
 const generateCode = (charactersAmount?: number) =>
-	Array.from(
-		{ length: charactersAmount || DEFAULT_CHARACTERS_AMOUNT },
-		(_, i) => Math.floor(Math.random() * 10)
+	Array.from({ length: charactersAmount || DEFAULT_CHARACTERS_AMOUNT }, () =>
+		Math.floor(Math.random() * 10),
 	);
 
 export function CodeGenerator({ charactersAmount }: CodeGeneratorProps) {
@@ -41,7 +40,7 @@ export function CodeGenerator({ charactersAmount }: CodeGeneratorProps) {
 				</Button>
 			</DialogTrigger>
 			<DialogContent
-				className="sm:max-w-lg w-full"
+				className="w-full sm:max-w-lg"
 				hasCloseButton={false}
 			>
 				<DialogHeader className="items-center justify-center">
@@ -58,26 +57,26 @@ export function CodeGenerator({ charactersAmount }: CodeGeneratorProps) {
 						})}
 					</DialogDescription>
 				</DialogHeader>
-				<ul className="flex flex-row items-center justify-between w-full gap-2.5">
+				<ul className="flex w-full flex-row items-center justify-between gap-2.5">
 					{code.map((character, i) => (
 						<li
 							key={i}
-							className="flex items-center justify-center px-1 py-6 w-full text-4xl font-extrabold text-neutral rounded-sm bg-gray-200"
+							className="flex w-full items-center justify-center rounded-sm bg-gray-200 px-1 py-6 text-4xl font-extrabold text-neutral"
 						>
 							{character}
 						</li>
 					))}
 				</ul>
 				<Button
-					className="w-full justify-between p-4 h-14"
+					className="group h-14 w-full justify-between p-4"
 					size={"xl"}
 					variant={"secondary"}
 					onClick={() => setCode(generateCode(charactersAmount))}
 				>
 					Gerar novo código
-					<ReloadIcon />
+					<ReloadIcon className="group-hover:animate-one-spin" />
 				</Button>
-				<DialogFooter className="sm:justify-start w-full">
+				<DialogFooter className="w-full sm:justify-start">
 					<DialogClose asChild>
 						<Button className="w-full" type="button" size={"xl"}>
 							<ArrowRightIcon className="-scale-100" />

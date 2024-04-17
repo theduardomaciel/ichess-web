@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import Image from "next/image";
 
 import { cn } from "@/lib/utils";
@@ -8,10 +8,10 @@ import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 
 // Hooks
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useDebounce } from "@/hooks/use-debounce";
 
 // Components
 import { Button } from "@/components/ui/button";
-import { FormControl } from "@/components/ui/form";
 import {
 	Command,
 	CommandEmpty,
@@ -36,21 +36,34 @@ type Moderator = RouterOutput["getMembers"]["members"][number];
 
 interface ModeratorFilterParams {
 	projectId: string;
-	callback?: () => void;
+	className?: string;
+	onSelect?: (moderatorsIds: string[]) => void;
 }
 
-export function ModeratorPicker({ projectId }: ModeratorFilterParams) {
+export function ModeratorPicker({
+	projectId,
+	className,
+	onSelect,
+}: ModeratorFilterParams) {
 	const [open, setOpen] = useState(false);
 	const isDesktop = useMediaQuery("(min-width: 768px)");
 
-	const [moderatorsIds, setModeratorsIds] = useState<string[]>([]);
-
-	const { data } = trpc.getMembers.useQuery({
-		projectId,
-		role: "admin",
-	});
+	const { data } = trpc.getMembers.useQuery(
+		{
+			projectId,
+			role: "admin",
+		},
+		{
+			staleTime: 5 * 60 * 1000,
+		},
+	);
 
 	const moderators = data?.members;
+
+	const [moderatorsIds, setModeratorsIds] = useState<string[]>([]);
+	const debouncedValue = useDebounce(moderatorsIds, 750);
+
+	const isActive = (id: string) => moderatorsIds.includes(id);
 	const filteredModerators = moderators?.filter((mod) =>
 		moderatorsIds.includes(mod.id),
 	);
@@ -63,21 +76,27 @@ export function ModeratorPicker({ projectId }: ModeratorFilterParams) {
 		}
 	};
 
-	const isActive = (id: string) => moderatorsIds.includes(id);
+	useEffect(() => {
+		onSelect?.(debouncedValue);
+	}, [debouncedValue]);
 
 	if (isDesktop) {
 		return (
 			<Popover>
 				<PopoverTrigger asChild>
-					<FormControl>
-						<SelectorTrigger moderators={filteredModerators} />
-					</FormControl>
+					<SelectorTrigger
+						className={className}
+						moderators={filteredModerators}
+					/>
 				</PopoverTrigger>
-				<PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+				<PopoverContent
+					className={"w-[var(--radix-popover-trigger-width)] p-0"}
+				>
 					<ModeratorsList
 						onSelect={handleSelect}
 						isActive={isActive}
 						moderators={moderators}
+						className={className}
 					/>
 				</PopoverContent>
 			</Popover>
@@ -87,9 +106,10 @@ export function ModeratorPicker({ projectId }: ModeratorFilterParams) {
 	return (
 		<Drawer open={open} onOpenChange={setOpen}>
 			<DrawerTrigger asChild>
-				<FormControl>
-					<SelectorTrigger moderators={filteredModerators} />
-				</FormControl>
+				<SelectorTrigger
+					className={className}
+					moderators={filteredModerators}
+				/>
 			</DrawerTrigger>
 			<DrawerContent>
 				<div className="mt-4 border-t">
@@ -97,6 +117,7 @@ export function ModeratorPicker({ projectId }: ModeratorFilterParams) {
 						onSelect={handleSelect}
 						isActive={isActive}
 						moderators={moderators}
+						className={className}
 					/>
 				</div>
 			</DrawerContent>
@@ -164,7 +185,7 @@ interface SelectorTriggerProps
 const SelectorTrigger = forwardRef<
 	React.ElementRef<typeof PopoverTrigger>,
 	SelectorTriggerProps
->(({ moderators, ...props }, ref) => (
+>(({ moderators, className, ...props }, ref) => (
 	<Button
 		ref={ref}
 		variant="outline"
@@ -176,6 +197,7 @@ const SelectorTrigger = forwardRef<
 				(moderators &&
 					moderators.length === 0 &&
 					"text-muted-foreground"),
+			className,
 		)}
 		{...props}
 	>
@@ -200,15 +222,17 @@ interface ModeratorsListProps {
 	onSelect: (id: string) => void;
 	isActive: (id: string) => boolean;
 	moderators?: Moderator[];
+	className?: string;
 }
 
 function ModeratorsList({
 	moderators,
+	className,
 	onSelect,
 	isActive,
 }: ModeratorsListProps) {
 	return (
-		<Command>
+		<Command className={className}>
 			<CommandInput placeholder="Procurar moderador..." />
 			<CommandEmpty>Nenhum moderador encontrado.</CommandEmpty>
 			<CommandGroup>

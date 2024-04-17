@@ -90,7 +90,12 @@ export default function AddEventFormContent({ form, projectId }: Props) {
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>Responsáveis</FormLabel>
-								<ModeratorPicker projectId={projectId} />
+								<ModeratorPicker
+									projectId={projectId}
+									onSelect={(moderatorsIds) => {
+										field.onChange(moderatorsIds);
+									}}
+								/>
 								<FormMessage />
 							</FormItem>
 						)}
@@ -201,8 +206,7 @@ export default function AddEventFormContent({ form, projectId }: Props) {
 													key={ace.id}
 													value={ace.id.toString()}
 												>
-													{ace.description} -{" "}
-													{ace.hours}h
+													{ace.name} - {ace.hours}h
 												</SelectItem>
 											))}
 									</SelectContent>
