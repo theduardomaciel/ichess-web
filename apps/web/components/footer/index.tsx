@@ -23,21 +23,21 @@ export default function Footer() {
 						</Link>
 						<div className="h-8 w-[1px] bg-neutral/50" />
 						<a
-							title="Repositório do Projeto IChess no Github"
+							title="Repositório do IChess no Github"
 							target="_blank"
 							href={`https://github.com/theduardomaciel/ichess-web`}
 						>
 							<GithubIcon />
 						</a>
 						<a
-							title="Servidor do Discord IChess UFAL"
+							title="Servidor no Discord do IChess"
 							target="_blank"
 							href={`https://discord.gg/jrMfHpRnCf`}
 						>
-							<DiscordIcon width={24} />
+							<DiscordIcon width={28} />
 						</a>
 						<a
-							title="Instagram IChess UFAL"
+							title="Perfil no Instagram do IChess"
 							target="_blank"
 							href={`https://instagram.com/ichess.ufal`}
 						>
