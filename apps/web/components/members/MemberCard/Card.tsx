@@ -71,9 +71,25 @@ export async function MemberCard({ id: memberId, variant }: Props) {
 						<a
 							href={`https://chess.com/member/${member.username}`}
 							target="_blank"
+							className="group"
 						>
+							<div className="hidden flex-row items-center justify-start gap-2 lg:flex">
+								<span className="text-base font-semibold transition-colors group-hover:text-primary-100 group-hover:underline">
+									{member.username ||
+										"Usuário não encontrado"}
+								</span>
+								<ExternalLinkIcon
+									width={14}
+									height={14}
+									className="transition-colors group-hover:text-primary-100"
+								/>
+							</div>
 							<ChessIcon />
-							<ExternalLinkIcon width={14} height={14} />
+							<ExternalLinkIcon
+								width={14}
+								height={14}
+								className="flex lg:hidden"
+							/>
 						</a>
 					</ActionItem>
 					<ActionItem variant={variant} asChild>

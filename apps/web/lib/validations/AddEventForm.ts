@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { eventTypes } from "@ichess/drizzle/schema";
 
 export const addEventFormSchema = z.object({
 	name: z.string({ required_error: "O nome do evento é obrigatório" }),
@@ -10,18 +11,20 @@ export const addEventFormSchema = z.object({
 	dateFrom: z.coerce.date({
 		required_error: "É necessário inserir a data de início do evento",
 	}),
-	dateTo: z.coerce.date().optional(),
+	dateTo: z.coerce.date({
+		required_error: "É necessário inserir a data de término do evento",
+	}),
 	timeFrom: z.string({
 		required_error: "É necessário inserir o horário de início do evento",
 	}),
 	timeTo: z.string({
 		required_error: "É necessário inserir o horário de término do evento",
 	}),
-	ace: z.string({
+	aceId: z.string({
 		required_error:
 			"É necessário informar qual a ACE cumprida pelo evento.",
 	}),
-	type: z.enum(["internal", "external"], {
+	type: z.enum(eventTypes, {
 		required_error: "É necessário informar o tipo do evento",
 	}),
 });

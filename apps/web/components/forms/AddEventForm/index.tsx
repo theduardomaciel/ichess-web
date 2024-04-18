@@ -17,16 +17,17 @@ import {
 	type AddEventFormSchema,
 	addEventFormSchema,
 } from "@/lib/validations/AddEventForm";
+import { trpc } from "@/lib/trpc/react";
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default function AddEventForm({ projectId }: { projectId: string }) {
 	const [currentState, setCurrentState] = useState<
 		false | "submitting" | "submitted"
 	>(false);
-	const submittedEvent = useRef<(AddEventFormSchema & { id: string }) | null>(
-		null,
-	);
+	const submittedEventId = useRef<string | null>(null);
+
+	const mutation = trpc.createEvent.useMutation();
 
 	// 1. Define your form.
 	const form = useForm<AddEventFormSchema>({
@@ -43,14 +44,17 @@ export default function AddEventForm({ projectId }: { projectId: string }) {
 
 		console.log(data);
 
-		await wait(5000);
+		const { description, dateFrom, dateTo, ...rest } = data;
 
-		const response = {
-			id: "123",
-			...data,
-		};
+		const { event } = await mutation.mutateAsync({
+			projectId,
+			description: description ?? null,
+			dateFrom: dateFrom.toISOString(),
+			dateTo: dateTo?.toISOString(),
+			...rest,
+		});
 
-		submittedEvent.current = response;
+		submittedEventId.current = event.id;
 		setCurrentState("submitted");
 	}
 
@@ -65,7 +69,7 @@ export default function AddEventForm({ projectId }: { projectId: string }) {
 			<LoadingDialog isOpen={currentState === "submitting"} />
 			<SuccessDialog
 				isOpen={currentState === "submitted"}
-				href={`/dashboard/events/${submittedEvent.current?.id}`}
+				href={`/dashboard/events/${submittedEventId.current}`}
 			/>
 		</Form>
 	);

@@ -178,7 +178,7 @@ export default function AddEventFormContent({ form, projectId }: Props) {
 			<div className={sectionClassName}>
 				<FormField
 					control={form.control}
-					name="ace"
+					name="aceId"
 					render={({ field }) => {
 						const currentAce = aces?.find(
 							(ace) => ace.id === Number(field.value),

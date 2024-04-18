@@ -23,18 +23,9 @@ export const getEventsParams = z.object({
 	sortBy: z.enum(["recent", "oldest"]).optional(),
 	page: z.coerce.number().default(0),
 	pageSize: z.coerce.number().default(10),
-	periods: z
-		.union([z.array(z.string()), z.string()])
-		.optional()
-		.transform(transformSingleToArray),
-	aces: z
-		.union([z.array(z.string()), z.string()])
-		.optional()
-		.transform(transformSingleToArray),
-	moderators: z
-		.union([z.array(z.string()), z.string()])
-		.optional()
-		.transform(transformSingleToArray),
+	periods: z.string().optional().transform(transformSingleToArray),
+	aces: z.string().optional().transform(transformSingleToArray),
+	moderators: z.string().optional().transform(transformSingleToArray),
 });
 
 const mutateEventParams = z.object({
