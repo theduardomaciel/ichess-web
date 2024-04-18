@@ -1,17 +1,18 @@
 import { z } from "zod";
 import { eventTypes } from "@ichess/drizzle/schema";
 
-export const addEventFormSchema = z.object({
+export const mutateEventFormSchema = z.object({
 	name: z.string({ required_error: "O nome do evento é obrigatório" }),
 	description: z.string().optional(),
-	moderators: z.union([z.array(z.string()), z.string()], {
-		required_error:
+	members: z.union([z.array(z.string()), z.string()]).default([]),
+	/* 
+	required_error:
 			"É necessário informar pelo menos um moderador responsável pelo evento",
-	}),
+	*/
 	dateFrom: z.coerce.date({
 		required_error: "É necessário inserir a data de início do evento",
 	}),
-	dateTo: z.coerce.date().optional(),
+	/* dateTo: z.coerce.date() */
 	timeFrom: z.string({
 		required_error: "É necessário inserir o horário de início do evento",
 	}),
@@ -27,4 +28,4 @@ export const addEventFormSchema = z.object({
 	}),
 });
 
-export type AddEventFormSchema = z.infer<typeof addEventFormSchema>;
+export type MutateEventFormSchema = z.infer<typeof mutateEventFormSchema>;

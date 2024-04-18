@@ -20,7 +20,7 @@ import {
 	JoinFormTypeEnum,
 	joinFormSchema,
 } from "@/lib/validations/JoinForm";
-import { scrollToNextSection, wait } from "@/lib/validations";
+import { scrollToNextSection } from "@/lib/validations";
 
 // Types
 import { User } from "@ichess/auth";
@@ -68,9 +68,6 @@ export default function JoinForm({ user }: { user?: User }) {
 		console.log(values);
 
 		setCurrentState("submitting");
-
-		await wait(5000);
-
 		setCurrentState("submitted");
 	}
 
@@ -107,8 +104,21 @@ export default function JoinForm({ user }: { user?: User }) {
 				<JoinForm2 form={form} />
 				<JoinForm3 form={form} />
 			</form>
-			<LoadingDialog isOpen={currentState === "submitting"} />
-			<SuccessDialog isOpen={currentState === "submitted"} />
+			<LoadingDialog
+				isOpen={currentState === "submitting"}
+				title="Estamos realizando seu cadastro..."
+			/>
+			<SuccessDialog
+				isOpen={currentState === "submitted"}
+				description={
+					<>
+						Seu cadastro já foi enviado e está em análise.
+						<br />
+						Uma resposta será enviada ao seu e-mail institucional em
+						breve!
+					</>
+				}
+			/>
 		</Form>
 	);
 }

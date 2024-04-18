@@ -18,7 +18,7 @@ import {
 } from "@/lib/validations/PresenceForm/section1";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { GoogleLoginButton } from "@/app/auth/sign-in/GoogleLogin";
+import { GoogleButton } from "@/components/auth/SignInButton";
 
 const section1Keys = Object.keys(
 	presenceFormSection1Schema.shape,
@@ -52,7 +52,7 @@ export default function PresenceForm1({ form }: FormProps) {
 				render={({ field }) => (
 					<FormItem>
 						<FormControl>
-							<GoogleLoginButton className="w-full" />
+							<GoogleButton className="w-full" />
 						</FormControl>
 						<FormMessage />
 					</FormItem>

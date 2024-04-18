@@ -22,7 +22,7 @@ import { Command as CommandPrimitive } from "cmdk";
 
 // Types
 import type { UseFormReturn } from "react-hook-form";
-import type { AddEventFormSchema } from "@/lib/validations/AddEventForm";
+import type { MutateEventFormSchema } from "@/lib/validations/MutateEventForm";
 
 const times = [
 	"00:00",
@@ -124,7 +124,7 @@ const times = [
 ] as const;
 
 interface Props {
-	form: UseFormReturn<AddEventFormSchema>;
+	form: UseFormReturn<MutateEventFormSchema>;
 	field: {
 		name: string;
 		value: string;
@@ -132,32 +132,9 @@ interface Props {
 	placeholder?: string;
 }
 
-/* function checkTime(str: string) {
-    // Verifica se a string está no formato HH:MM
-    if (!/^\d{2}:\d{2}$/.test(str)) {
-        return false;
-    }
-
-    // Divide a string em partes usando os dois pontos
-    const timeParts = str.split(":");
-
-    // Extrai as horas e os minutos
-    const hours = parseInt(timeParts[0], 10);
-    const minutes = parseInt(timeParts[1], 10);
-
-    // Verifica se as horas estão no intervalo de 0 a 23
-    if (hours < 0 || hours > 23) {
-        return false;
-    }
-
-    // Verifica se os minutos estão no intervalo de 0 a 59
-    if (minutes < 0 || minutes > 59) {
-        return false;
-    }
-
-    // Se passou por todas as verificações, a string está no formato correto
-    return true;
-} */
+export function dateToTimeString(date: Date) {
+	return date.toTimeString().slice(0, 5);
+}
 
 function checkDiscrepancy(form: Props["form"]) {
 	const dateFrom = form.getValues("dateFrom");
@@ -181,6 +158,8 @@ function checkDiscrepancy(form: Props["form"]) {
 		form.setValue("timeTo", formattedTime);
 	}
 }
+
+type TimeFields = "timeFrom" | "timeTo";
 
 export function TimePicker({ form, field, placeholder }: Props) {
 	const [open, setOpen] = useState(false);
@@ -212,7 +191,10 @@ export function TimePicker({ form, field, placeholder }: Props) {
 									)}:${newString.slice(2)}`;
 								}
 
-								form.setValue(field.name, newString);
+								form.setValue(
+									field.name as TimeFields,
+									newString,
+								);
 							}}
 							onBlur={() => {
 								if (!field.value || field.value.length === 0)
@@ -250,7 +232,10 @@ export function TimePicker({ form, field, placeholder }: Props) {
 								}
 
 								// Agora, newString contém o formato corrigido (HH:MM)
-								form.setValue(field.name, newString);
+								form.setValue(
+									field.name as TimeFields,
+									newString,
+								);
 
 								// Verificamos se o horário final é menor que o horário inicial
 								checkDiscrepancy(form);
@@ -271,7 +256,10 @@ export function TimePicker({ form, field, placeholder }: Props) {
 								key={time}
 								className="lg:py-3"
 								onSelect={(currentValue) => {
-									form.setValue(field.name, currentValue);
+									form.setValue(
+										field.name as TimeFields,
+										currentValue,
+									);
 
 									// Verificamos se o horário final é menor que o horário inicial
 									checkDiscrepancy(form);

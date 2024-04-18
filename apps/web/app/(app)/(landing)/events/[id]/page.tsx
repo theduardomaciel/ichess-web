@@ -4,20 +4,20 @@ import Image from "next/image";
 import PresenceForm from "@/components/forms/PresenceForm";
 import { DateDisplay } from "@/components/ui/calendar";
 import { AceCard } from "@/components/dashboard/AceCard";
-import { ACEs } from "@/lib/validations/AddEventForm";
+import { ACEs } from "@/lib/validations/MutateEventForm";
 
 export default function PresencePage() {
 	return (
 		<main className="flex min-h-screen flex-col items-start justify-start">
-			<div className="flex flex-col sm:flex-row items-start justify-between relative pt-36 pb-12 px-wrapper w-full bg-board gap-9 ">
-				<div className="flex flex-col items-start justify-start gap-4 w-full md:max-w-[50%] z-20">
-					<h2 className="text-foreground text-lg font-semibold">
+			<div className="bg-board relative flex w-full flex-col items-start justify-between gap-9 px-wrapper pb-12 pt-36 sm:flex-row ">
+				<div className="z-20 flex w-full flex-col items-start justify-start gap-4 md:max-w-[50%]">
+					<h2 className="text-lg font-semibold text-foreground">
 						Lista de Presença
 					</h2>
-					<h1 className="font-title font-extrabold text-5xl text-left">
+					<h1 className="text-left font-title text-5xl font-extrabold">
 						Reunião Semanal
 					</h1>
-					<h2 className="text-left text-foreground font-semibold">
+					<h2 className="text-left font-semibold text-foreground">
 						Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 						Pellentesque at odio fermentum augue consequat mollis
 						dignissim at lacus.
@@ -33,7 +33,7 @@ export default function PresencePage() {
 				</div>
 				<AceCard
 					ace={ACEs[0]}
-					className="border border-primary-200/50 z-20"
+					className="z-20 border border-primary-200/50"
 				/>
 			</div>
 			<PresenceForm />

@@ -37,6 +37,7 @@ type Moderator = RouterOutput["getMembers"]["members"][number];
 interface ModeratorFilterParams {
 	projectId: string;
 	className?: string;
+	initialModerators?: string[] | string;
 	onSelect?: (moderatorsIds: string[]) => void;
 }
 
@@ -44,6 +45,7 @@ export function ModeratorPicker({
 	projectId,
 	className,
 	onSelect,
+	initialModerators,
 }: ModeratorFilterParams) {
 	const [open, setOpen] = useState(false);
 	const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -60,7 +62,13 @@ export function ModeratorPicker({
 
 	const moderators = data?.members;
 
-	const [moderatorsIds, setModeratorsIds] = useState<string[]>([]);
+	const [moderatorsIds, setModeratorsIds] = useState<string[]>(
+		initialModerators
+			? Array.isArray(initialModerators)
+				? initialModerators
+				: [initialModerators]
+			: [],
+	);
 	const debouncedValue = useDebounce(moderatorsIds, 750);
 
 	const isActive = (id: string) => moderatorsIds.includes(id);

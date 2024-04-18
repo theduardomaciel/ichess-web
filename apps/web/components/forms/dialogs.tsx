@@ -24,7 +24,16 @@ interface Props {
 	onClose?: () => void;
 }
 
-export function LoadingDialog({ isOpen }: Props) {
+interface LoadingDialogProps extends Props {
+	title?: string;
+	description?: React.ReactNode;
+}
+
+export function LoadingDialog({
+	isOpen,
+	title,
+	description,
+}: LoadingDialogProps) {
 	return (
 		<Dialog open={isOpen}>
 			<DialogContent
@@ -41,11 +50,12 @@ export function LoadingDialog({ isOpen }: Props) {
 						loop
 					/>
 					<DialogTitle className="text-center font-title text-2xl font-extrabold">
-						Estamos realizando seu cadastro...
+						{title || "Estamos quase lá!"}
 					</DialogTitle>
 				</DialogHeader>
 				<DialogDescription className="max-w-[80%] text-center text-lg font-medium">
-					Aguarde um pouquinho enquanto processamos tudo!
+					{description ||
+						"Aguarde um pouquinho enquanto processamos tudo!"}
 				</DialogDescription>
 			</DialogContent>
 		</Dialog>
@@ -84,15 +94,13 @@ export function SuccessDialog({
 				<DialogDescription className="max-w-[80%] text-center text-lg font-medium">
 					{description || (
 						<>
-							Seu cadastro já foi enviado e está em análise.
-							<br />
-							Uma resposta será enviada ao seu e-mail
-							institucional em breve!
+							O processo foi concluído com sucesso! <br />
+							Agora você pode continuar navegando na plataforma.
 						</>
 					)}
 				</DialogDescription>
 				<DialogFooter>
-					<Link href={href ?? `/`}>
+					<Link href={href ?? `/`} prefetch={false}>
 						<Button type="button" className="h-11 px-6">
 							{buttonText || "Entendi!"}
 						</Button>

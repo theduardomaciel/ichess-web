@@ -1,9 +1,9 @@
 import { MemberCard, MemberCardModal } from "@/components/members/MemberCard";
 
 export default function MemberModal({
-	params: { id: memberId },
+	params: { memberId },
 }: {
-	params: { id: string };
+	params: { memberId: string };
 }) {
 	return (
 		<MemberCardModal>

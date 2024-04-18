@@ -23,16 +23,25 @@ export const getEventsParams = z.object({
 	sortBy: z.enum(["recent", "oldest"]).optional(),
 	page: z.coerce.number().default(0),
 	pageSize: z.coerce.number().default(10),
-	periods: z.string().optional().transform(transformSingleToArray),
-	aces: z.string().optional().transform(transformSingleToArray),
-	moderators: z.string().optional().transform(transformSingleToArray),
+	periods: z
+		.union([z.array(z.string()), z.string()])
+		.transform(transformSingleToArray)
+		.optional(),
+	aces: z
+		.union([z.array(z.string()), z.string()])
+		.transform(transformSingleToArray)
+		.optional(),
+	moderators: z
+		.union([z.array(z.string()), z.string()])
+		.transform(transformSingleToArray)
+		.optional(),
 });
 
 const mutateEventParams = z.object({
 	name: z.string().min(1),
-	description: z.string().nullable(),
-	dateFrom: z.string().transform((value) => new Date(value)),
-	dateTo: z.string().transform((value) => new Date(value)),
+	description: z.string().optional(),
+	dateFrom: z.date(),
+	dateTo: z.date(),
 	membersIds: z
 		.union([z.array(z.string()), z.string()])
 		.transform((value) => {
@@ -123,25 +132,27 @@ export const eventsRouter = createTRPCRouter({
 				});
 			}
 
-			const formattedEvent = {
-				...selectedEvent,
-				membersOnEvent: selectedEvent.membersOnEvent.map(
-					(memberOnEvent) => {
-						const { member } = memberOnEvent;
+			const { membersOnEvent, ...rest } = selectedEvent;
 
-						return {
-							...{
-								...member,
-								user: isAdmin
-									? member.user
-									: {
-											name: member.user.name,
-											image: member.user.image,
-										},
-							},
-						};
+			const allMembers = membersOnEvent.map((memberOnEvent) => {
+				const { member } = memberOnEvent;
+
+				return {
+					...{
+						...member,
+						user: isAdmin
+							? member.user
+							: {
+									name: member.user.name,
+									image: member.user.image,
+								},
 					},
-				),
+				};
+			});
+
+			const formattedEvent = {
+				...rest,
+				membersOnEvent: allMembers,
 			};
 
 			return {
@@ -366,7 +377,6 @@ export const eventsRouter = createTRPCRouter({
 		.input(
 			mutateEventParams.extend({
 				eventId: z.string().uuid(),
-				membersIds: z.array(z.string().uuid()).default([]),
 			}),
 		)
 		.mutation(async ({ input }) => {
@@ -460,8 +470,10 @@ export const eventsRouter = createTRPCRouter({
 					);
 				}
 
-				return updatedEvent;
+				return updatedEvent.id;
 			});
+
+			return { success: true };
 		}),
 
 	deleteEvent: protectedProcedure

@@ -40,7 +40,7 @@ export async function MemberCard({ id: memberId, variant }: Props) {
 		<Suspense fallback={<MemberCardSkeleton />}>
 			<DialogHeader className="flex flex-col items-center justify-start gap-6">
 				<Image
-					src={"https://github.com/theduardomaciel.png"}
+					src={member.user.image || "https://github.com/juquinha.png"}
 					alt="Eduardo Maciel"
 					className="overflow-hidden rounded-2xl"
 					width={128}

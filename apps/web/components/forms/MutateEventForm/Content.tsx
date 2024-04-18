@@ -2,7 +2,8 @@
 
 import { cn } from "@/lib/utils";
 
-/// Icons
+// Icons
+import EditIcon from "@/public/icons/edit.svg";
 import CloudIcon from "@/public/icons/cloud.svg";
 
 // Components
@@ -32,19 +33,27 @@ import { Calendar } from "@/components/ui/calendar";
 import { TimePicker } from "@/components/dashboard/TimePicker";
 
 // Types
-import type { AddEventFormSchema } from "@/lib/validations/AddEventForm";
+import type { MutateEventFormSchema } from "@/lib/validations/MutateEventForm";
 import type { UseFormReturn } from "react-hook-form";
+
+// API
 import { trpc } from "@/lib/trpc/react";
+// import type { RouterOutput } from "@ichess/api";
 
 const sectionClassName =
 	"md:p-9 w-full md:rounded-2xl md:border border-gray-200";
 
 interface Props {
-	form: UseFormReturn<AddEventFormSchema>;
+	form: UseFormReturn<MutateEventFormSchema>;
 	projectId: string;
+	isEditing?: boolean;
 }
 
-export default function AddEventFormContent({ form, projectId }: Props) {
+export default function MutateEventFormContent({
+	form,
+	projectId,
+	isEditing,
+}: Props) {
 	const aces = trpc.getAces.useQuery().data?.aces;
 
 	return (
@@ -115,12 +124,13 @@ export default function AddEventFormContent({ form, projectId }: Props) {
 
 					<FormField
 						control={form.control}
-						name="moderators"
+						name="members"
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>Responsáveis</FormLabel>
 								<ModeratorPicker
 									projectId={projectId}
+									initialModerators={field.value}
 									onSelect={(moderatorsIds) => {
 										field.onChange(moderatorsIds);
 									}}
@@ -220,6 +230,7 @@ export default function AddEventFormContent({ form, projectId }: Props) {
 								</FormLabel>
 								<Select
 									onValueChange={field.onChange}
+									defaultValue={field.value}
 									disabled={!aces}
 								>
 									<FormControl>
@@ -251,13 +262,23 @@ export default function AddEventFormContent({ form, projectId }: Props) {
 				/>
 			</div>
 			<div className="flex w-full flex-row items-center justify-end">
-				<Button
-					className="h-12 w-full bg-primary-200 px-9 font-extrabold text-white md:w-fit"
-					type="submit"
-				>
-					<CloudIcon />
-					Cadastrar evento
-				</Button>
+				{isEditing ? (
+					<Button
+						className="h-12 w-full bg-info-100 px-9 font-extrabold text-white ring-info-200 hover:bg-info-200 md:w-fit"
+						type="submit"
+					>
+						<EditIcon width={24} height={24} />
+						Editar evento
+					</Button>
+				) : (
+					<Button
+						className="h-12 w-full bg-primary-200 px-9 font-extrabold text-white md:w-fit"
+						type="submit"
+					>
+						<CloudIcon />
+						Cadastrar evento
+					</Button>
+				)}
 			</div>
 		</div>
 	);

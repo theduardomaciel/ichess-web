@@ -1,12 +1,10 @@
-import Image from "next/image";
+import Link from "next/link";
 
 import { cn, isDateDifferent } from "@/lib/utils";
 
 // Icons
-import PersonCheckIcon from "@/public/icons/person_check.svg";
 import EditIcon from "@/public/icons/edit.svg";
-import AccountIcon from "@/public/icons/account.svg";
-import BlockIcon from "@/public/icons/block.svg";
+import DeleteIcon from "@/public/icons/delete.svg";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -14,12 +12,13 @@ import { AceCard } from "@/components/dashboard/AceCard";
 import { AddParticipant } from "@/components/dashboard/AddParticipant";
 import { DateDisplay } from "@/components/ui/calendar";
 import { CodeGenerator } from "@/components/dashboard/CodeGenerator";
+import { MemberPreview } from "@/components/members/MemberPreview";
 
-// Data
-import { env } from "@ichess/env";
+// Validation
 import { z } from "zod";
 
 // API
+import { env } from "@ichess/env";
 import { serverClient } from "@/lib/trpc/server";
 import type { RouterOutput } from "@ichess/api";
 
@@ -92,9 +91,18 @@ export default async function EventPage({
 				<div className="flex flex-row items-center justify-between gap-4 max-sm:w-full">
 					<Button
 						size={"icon"}
+						className="bg-tertiary-100 ring-tertiary-200 hover:bg-tertiary-200"
+					>
+						<DeleteIcon className="h-5 w-5" />
+					</Button>
+					<Button
+						asChild
+						size={"icon"}
 						className="bg-info-100 ring-info-200 hover:bg-info-200"
 					>
-						<EditIcon className="h-5 w-5" />
+						<Link href={`/dashboard/events/${id}/edit`}>
+							<EditIcon className="h-5 w-5" />
+						</Link>
 					</Button>
 					<CodeGenerator />
 				</div>
@@ -105,6 +113,7 @@ export default async function EventPage({
 						members={event.membersOnEvent.filter(
 							(member) => member.role === "member",
 						)}
+						eventId={event.id}
 					/>
 					<AddParticipant members={event.membersOnEvent} />
 				</div>
@@ -113,6 +122,7 @@ export default async function EventPage({
 					members={event.membersOnEvent.filter(
 						(member) => member.role === "admin",
 					)}
+					eventId={event.id}
 					isModerators
 				/>
 			</div>
@@ -123,15 +133,14 @@ export default async function EventPage({
 interface MembersListProps {
 	className?: string;
 	isModerators?: boolean;
+	eventId: string;
 	members: RouterOutput["getEvent"]["event"]["membersOnEvent"];
-	onRemove?: (id: string) => void;
-	onAdd?: () => void;
-	onEdit?: (id: string) => void;
 }
 
 function MembersList({
 	className,
 	isModerators = false,
+	eventId,
 	members,
 }: MembersListProps) {
 	return (
@@ -144,68 +153,17 @@ function MembersList({
 			<h2 className="font-title text-lg font-extrabold text-neutral">
 				{isModerators ? "Responsáveis" : "Membros"}
 			</h2>
-			<ul className="flex w-full flex-col items-start justify-start gap-4">
-				{members.map((member) => (
-					<MemberCard key={member.id} member={member} />
-				))}
-			</ul>
-		</div>
-	);
-}
-
-interface MemberCardProps {
-	className?: string;
-	member: RouterOutput["getEvent"]["event"]["membersOnEvent"][0];
-}
-
-function MemberCard({ className, member }: MemberCardProps) {
-	return (
-		<li
-			className={cn(
-				"flex w-full flex-col items-start justify-start gap-4 rounded-lg border bg-gray-300 px-6 py-4",
-				className,
+			{members && members.length > 0 && (
+				<ul className="flex w-full flex-col items-start justify-start gap-4">
+					{members.map((member) => (
+						<MemberPreview
+							key={member.id}
+							member={member}
+							eventId={eventId}
+						/>
+					))}
+				</ul>
 			)}
-		>
-			<div className="flex flex-row items-center justify-start gap-4">
-				<Image
-					src={member.user.image ?? ""}
-					width={42}
-					height={42}
-					alt="Member profile picture"
-					className="rounded-full"
-				/>
-				<div className="flex flex-col items-start justify-start">
-					<h3 className="text-left text-base font-bold">
-						{member.user.name ?? member.username}
-					</h3>
-					<p className="text-xs font-semibold text-foreground opacity-50">
-						#{member.id.split("-")[0]}
-					</p>
-				</div>
-			</div>
-			<div className="flex w-full flex-row items-center justify-between gap-4">
-				<div className="flex flex-row items-center justify-start gap-4 text-foreground">
-					{!member.role && (
-						<PersonCheckIcon className="h-4 min-h-4 w-4 min-w-4 md:min-h-4 md:min-w-4" />
-					)}
-					<p className="text-left text-sm font-medium leading-tight">
-						{member.role === "admin"
-							? "Moderador"
-							: "Marcou presença às 14:35"}
-					</p>
-				</div>
-				<div className="flex flex-row items-center justify-end gap-2 md:gap-4">
-					<button title="Exibir cartão da conta do membro">
-						<AccountIcon className="h-6 w-6" />
-					</button>
-
-					{member.role === "member" && (
-						<button title="Remover presença do membro">
-							<BlockIcon className="h-6 w-6" />
-						</button>
-					)}
-				</div>
-			</div>
-		</li>
+		</div>
 	);
 }

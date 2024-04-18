@@ -13,7 +13,7 @@ import { FormLabel } from "@/components/ui/form";
 
 // Types
 import type { UseFormReturn } from "react-hook-form";
-import type { AddEventFormSchema } from "@/lib/validations/AddEventForm";
+import type { MutateEventFormSchema } from "@/lib/validations/MutateEventForm";
 import {
 	type JoinFormSchema,
 	JoinFormTypeEnum,
@@ -25,7 +25,7 @@ import { scrollToNextSection } from "@/lib/validations";
 interface FormSectionProps {
 	title: string;
 	section: number;
-	form: UseFormReturn<JoinFormSchema | AddEventFormSchema>;
+	form: UseFormReturn<JoinFormSchema | MutateEventFormSchema>;
 	fields: {
 		name?: string;
 		value?: boolean;

@@ -12,3 +12,8 @@ export const isDateDifferent = (date1: Date, date2: Date) => {
 		date1.getFullYear() !== date2.getFullYear()
 	);
 };
+
+export const wait = (ms: number) =>
+	new Promise((resolve) => setTimeout(resolve, ms));
+export const waitRandom = (min: number, max: number) =>
+	wait(Math.floor(Math.random() * (max - min + 1) + min));
