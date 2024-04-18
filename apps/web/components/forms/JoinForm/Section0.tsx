@@ -13,7 +13,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import { GoogleButton } from "@/app/auth/sign-in/SignInButton";
+import { GoogleButton } from "@/components/auth/SignInButton";
 
 export default function JoinForm0({
 	form,

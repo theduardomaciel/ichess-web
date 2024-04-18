@@ -7,7 +7,7 @@ import { NoEvents } from "@/components/events/NoEvents";
 import { Header } from "./header";
 import { StyledTitle } from "@/components/events/StyledTitle";
 import { ExternalEvent } from "@/components/events/ExternalEvent";
-import { NotLogged } from "@/components/events/NotLogged";
+import { NotLogged } from "@/components/auth/NotLogged";
 import { EventPreview } from "@/components/events/EventPreview";
 
 // Types

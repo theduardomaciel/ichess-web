@@ -5,7 +5,7 @@ import Link from "next/link";
 import IChessLogo from "@/public/logo.svg";
 
 // Components
-import { GoogleButton } from "./SignInButton";
+import { GoogleButton } from "../../../components/auth/SignInButton";
 
 export const metadata: Metadata = {
 	title: "Entrar no IChess",

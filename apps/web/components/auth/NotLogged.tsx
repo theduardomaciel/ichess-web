@@ -1,7 +1,7 @@
 import React from "react";
 
 // Components
-import { GoogleButton } from "@/app/auth/sign-in/SignInButton";
+import { GoogleButton } from "@/components/auth/SignInButton";
 
 interface Props {
 	className?: string;

@@ -4,8 +4,8 @@ import { Metadata } from "next";
 import IChessLogo from "@/public/logo.svg";
 
 // Components
-import { ErrorDisplay } from "./ErrorDisplay";
-import { ActionButton } from "./ActionButton";
+import { ErrorDisplay } from "@/components/auth/ErrorDisplay";
+import { ActionButton } from "@/components/auth/ActionButton";
 
 export const metadata: Metadata = {
 	title: "Acesso negado",

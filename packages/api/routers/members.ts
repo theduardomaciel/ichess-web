@@ -22,6 +22,28 @@ export const membersRouter = createTRPCRouter({
 				where(fields, { eq }) {
 					return eq(fields.id, memberId);
 				},
+				with: {
+					user: {
+						columns: {
+							name: true,
+							image: true,
+							email: true,
+						},
+					},
+					membersOnEvent: {
+						with: {
+							event: {
+								with: {
+									ace: {
+										columns: {
+											hours: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
 			});
 
 			if (!member) {
@@ -59,8 +81,23 @@ export const membersRouter = createTRPCRouter({
 				});
 			}
 
+			const periods = await db.query.period.findMany();
+
+			const periodFrom = periods.find(
+				(period) =>
+					period.from <= member.joinedAt &&
+					period.to >= member.joinedAt,
+			);
+
+			const totalHours = member.membersOnEvent.reduce(
+				(total, { event }) => total + event.ace.hours,
+				0,
+			);
+
 			return {
 				member,
+				period: periodFrom?.slug,
+				hours: totalHours,
 			};
 		}),
 

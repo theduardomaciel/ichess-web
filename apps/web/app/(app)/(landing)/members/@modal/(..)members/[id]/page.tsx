@@ -1,9 +1,13 @@
-import { MemberCard } from "@/components/members/MemberCard/Modal";
+import { MemberCard, MemberCardModal } from "@/components/members/MemberCard";
 
-export default function PhotoModal({
+export default function MemberModal({
 	params: { id: memberId },
 }: {
 	params: { id: string };
 }) {
-	return <MemberCard id={memberId} />;
+	return (
+		<MemberCardModal>
+			<MemberCard id={memberId} />
+		</MemberCardModal>
+	);
 }
