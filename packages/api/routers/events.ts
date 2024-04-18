@@ -33,8 +33,13 @@ const mutateEventParams = z.object({
 	description: z.string().nullable(),
 	dateFrom: z.string().transform((value) => new Date(value)),
 	dateTo: z.string().transform((value) => new Date(value)),
+	membersIds: z
+		.union([z.array(z.string()), z.string()])
+		.transform((value) => {
+			return Array.isArray(value) ? value : [value];
+		}),
 	type: z.enum(eventTypes),
-	aceId: z.string().uuid(),
+	aceId: z.string().transform((value) => Number(value)),
 });
 
 export const eventsRouter = createTRPCRouter({
@@ -321,11 +326,12 @@ export const eventsRouter = createTRPCRouter({
 				dateTo,
 				type,
 				aceId,
+				membersIds,
 				projectId,
 			} = input;
 
-			const newEvent = await db.transaction(async (tx) => {
-				const [createdEvent] = await tx
+			const insertedEventId = await db.transaction(async (tx) => {
+				const [{ insertedId }] = await tx
 					.insert(event)
 					.values({
 						name,
@@ -333,17 +339,27 @@ export const eventsRouter = createTRPCRouter({
 						dateFrom,
 						dateTo,
 						type,
-						aceId: !isNaN(Number(aceId))
-							? Number(aceId)
-							: undefined,
+						aceId,
 						projectId,
 					})
-					.returning();
+					.returning({
+						insertedId: event.id,
+					});
 
-				return createdEvent;
+				// Inserimos os moderadores do evento
+				if (membersIds && membersIds.length > 0) {
+					await tx.insert(memberOnEvent).values(
+						membersIds.map((memberId) => ({
+							eventId: insertedId,
+							memberId,
+						})),
+					);
+				}
+
+				return insertedId;
 			});
 
-			return { event: newEvent };
+			return { eventId: insertedEventId };
 		}),
 
 	updateEvent: protectedProcedure

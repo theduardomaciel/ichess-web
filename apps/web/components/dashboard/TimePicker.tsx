@@ -22,6 +22,7 @@ import { Command as CommandPrimitive } from "cmdk";
 
 // Types
 import type { UseFormReturn } from "react-hook-form";
+import type { AddEventFormSchema } from "@/lib/validations/AddEventForm";
 
 const times = [
 	"00:00",
@@ -123,7 +124,7 @@ const times = [
 ] as const;
 
 interface Props {
-	form: UseFormReturn<any>;
+	form: UseFormReturn<AddEventFormSchema>;
 	field: {
 		name: string;
 		value: string;
@@ -166,10 +167,10 @@ function checkDiscrepancy(form: Props["form"]) {
 	const timeTo = form.getValues("timeTo");
 
 	const timeFromDate = new Date(
-		`${dateFrom.toISOString().slice(0, 10)}T${timeFrom}:00`
+		`${dateFrom.toISOString().slice(0, 10)}T${timeFrom}:00`,
 	);
 	const timeToDate = new Date(
-		`${dateTo.toISOString().slice(0, 10)}T${timeTo}:00`
+		`${dateTo.toISOString().slice(0, 10)}T${timeTo}:00`,
 	);
 
 	if (timeToDate <= timeFromDate) {
@@ -192,7 +193,7 @@ export function TimePicker({ form, field, placeholder }: Props) {
 						<CommandPrimitive.Input
 							role="combobox"
 							className={cn(
-								"flex h-10 lg:h-11 w-full rounded-md border border-input bg-background px-3 lg:px-4 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm lg:text-base change_later file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+								"change_later flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 lg:h-11 lg:px-4 lg:text-base",
 							)}
 							value={field.value}
 							maxLength={5}
@@ -207,7 +208,7 @@ export function TimePicker({ form, field, placeholder }: Props) {
 								if (newString.length > 2) {
 									newString = `${newString.slice(
 										0,
-										2
+										2,
 									)}:${newString.slice(2)}`;
 								}
 
@@ -237,7 +238,7 @@ export function TimePicker({ form, field, placeholder }: Props) {
 									// Garantimos que os minutos estejam no intervalo de 0 a 59
 									minutes = Math.min(
 										Math.max(minutes, 0),
-										59
+										59,
 									);
 
 									// Formatamos as horas e os minutos como duas casas decimais
@@ -258,7 +259,7 @@ export function TimePicker({ form, field, placeholder }: Props) {
 					</FormControl>
 				</PopoverTrigger>
 				<PopoverContent
-					className="p-0 w-[var(--radix-popover-trigger-width)] max-h-56 overflow-y-scroll no-scrollbar"
+					className="no-scrollbar max-h-56 w-[var(--radix-popover-trigger-width)] overflow-y-scroll p-0"
 					onOpenAutoFocus={(event) => event.preventDefault()}
 					onCloseAutoFocus={(event) => event.preventDefault()}
 				>

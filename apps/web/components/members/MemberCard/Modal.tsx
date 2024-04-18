@@ -15,7 +15,7 @@ export function MemberCardModal({ children }: { children: ReactNode }) {
 			<DialogContent
 				className="gap-6 sm:max-w-[600px]"
 				// hasCloseButton={false}
-				onOverlayClick={() => {
+				onClose={() => {
 					setIsOpen(false);
 
 					setTimeout(() => {

@@ -29,7 +29,7 @@ import { ModeratorPicker } from "@/components/dashboard/ModeratorPicker";
 // Date and Time
 import { ptBR } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
-import { TimePicker } from "@/components/TimePicker";
+import { TimePicker } from "@/components/dashboard/TimePicker";
 
 // Types
 import type { AddEventFormSchema } from "@/lib/validations/AddEventForm";
@@ -78,12 +78,41 @@ export default function AddEventFormContent({ form, projectId }: Props) {
 							<FormItem>
 								<FormLabel>Descrição</FormLabel>
 								<FormControl>
-									<Textarea placeholder="" {...field} />
+									<Textarea {...field} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
+					<FormField
+						control={form.control}
+						name="type"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Tipo</FormLabel>
+								<Select
+									onValueChange={field.onChange}
+									defaultValue={"internal"}
+								>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder="Selecione o tipo" />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent>
+										<SelectItem value="internal">
+											Interno
+										</SelectItem>
+										<SelectItem value="external">
+											Externo
+										</SelectItem>
+									</SelectContent>
+								</Select>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
 					<FormField
 						control={form.control}
 						name="moderators"
@@ -191,7 +220,6 @@ export default function AddEventFormContent({ form, projectId }: Props) {
 								</FormLabel>
 								<Select
 									onValueChange={field.onChange}
-									defaultValue={field.value}
 									disabled={!aces}
 								>
 									<FormControl>

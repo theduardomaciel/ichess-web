@@ -35,7 +35,6 @@ export async function MemberCard({ id: memberId, variant }: Props) {
 	const { member, period, hours } = await serverClient.getMember({
 		memberId,
 	});
-	console.log("MemberCard", member);
 
 	return (
 		<Suspense fallback={<MemberCardSkeleton />}>
@@ -71,18 +70,13 @@ export async function MemberCard({ id: memberId, variant }: Props) {
 						<a
 							href={`https://chess.com/member/${member.username}`}
 							target="_blank"
-							className="group"
 						>
 							<div className="hidden flex-row items-center justify-start gap-2 lg:flex">
-								<span className="text-base font-semibold transition-colors group-hover:text-primary-100 group-hover:underline">
+								<span className="text-base font-semibold">
 									{member.username ||
 										"Usuário não encontrado"}
 								</span>
-								<ExternalLinkIcon
-									width={14}
-									height={14}
-									className="transition-colors group-hover:text-primary-100"
-								/>
+								<ExternalLinkIcon width={14} height={14} />
 							</div>
 							<ChessIcon />
 							<ExternalLinkIcon

@@ -11,9 +11,7 @@ export const addEventFormSchema = z.object({
 	dateFrom: z.coerce.date({
 		required_error: "É necessário inserir a data de início do evento",
 	}),
-	dateTo: z.coerce.date({
-		required_error: "É necessário inserir a data de término do evento",
-	}),
+	dateTo: z.coerce.date().optional(),
 	timeFrom: z.string({
 		required_error: "É necessário inserir o horário de início do evento",
 	}),
