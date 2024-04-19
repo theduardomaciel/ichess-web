@@ -18,8 +18,9 @@ interface Params {
 
 export function ModeratorFilter({ projectId }: Params) {
 	const router = useRouter();
-	const { toUrl } = useQueryString();
+	const { query, toUrl } = useQueryString();
 
+	const initialModerators = query.get("moderators")?.split(",") || [];
 	const [isPendingFilterTransition, startTransition] = useTransition();
 
 	const onSelect = useCallback(
@@ -48,6 +49,7 @@ export function ModeratorFilter({ projectId }: Params) {
 			className={cn({
 				"pointer-events-none animate-pulse": isPendingFilterTransition,
 			})}
+			initialModerators={initialModerators}
 			projectId={projectId}
 			onSelect={onSelect}
 		/>
