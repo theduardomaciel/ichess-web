@@ -28,7 +28,7 @@ interface Props {
 	eventId: string;
 }
 
-export function DeleteEventDialog({ eventId }: Props) {
+export function EventDelete({ eventId }: Props) {
 	const [currentState, setCurrentState] = useState<
 		boolean | "submitting" | "submitted" | "error"
 	>(false);

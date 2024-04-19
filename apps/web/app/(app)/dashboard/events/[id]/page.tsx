@@ -12,7 +12,7 @@ import { MemberAdd } from "@/components/members/MemberAdd";
 import { DateDisplay } from "@/components/ui/calendar";
 import { CodeGenerator } from "@/components/dashboard/CodeGenerator";
 import { MemberPreview } from "@/components/members/MemberPreview";
-import { DeleteEventDialog } from "@/components/events/DeleteDialog";
+import { EventDelete } from "@/components/events/EventDelete";
 
 // Validation
 import { z } from "zod";
@@ -91,7 +91,7 @@ export default async function EventPage({
 			<div className="flex w-full flex-col items-center justify-start gap-4 md:flex-row">
 				<AceCard className="w-full" ace={event.ace} />
 				<div className="flex flex-row items-center justify-between gap-4 max-md:w-full">
-					<DeleteEventDialog eventId={event.id} />
+					<EventDelete eventId={event.id} />
 					<Button
 						asChild
 						size={"icon"}

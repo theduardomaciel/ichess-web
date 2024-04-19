@@ -12,7 +12,6 @@ import AddIcon from "@/public/icons/add.svg";
 
 // Components
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
 	Dialog,
 	DialogClose,
@@ -25,10 +24,6 @@ import {
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SearchBar } from "@/components/dashboard/SearchBar";
-import {
-	ScrollAreaScrollbar,
-	ScrollAreaViewport,
-} from "@radix-ui/react-scroll-area";
 
 // Types
 // import type { RouterOutput } from "@ichess/api";
@@ -143,7 +138,7 @@ export function MemberAdd({
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
-				<Button type="button" size={"lg"} className="w-full">
+				<Button size={"lg"} className="w-full">
 					Adicionar participante
 					<AddIcon className="h-6 w-6" />
 				</Button>
@@ -173,52 +168,45 @@ export function MemberAdd({
 							placeholder="Pesquisar membros"
 						/>
 						{filteredMembers && filteredMembers.length > 0 ? (
-							<ScrollArea
-								className="max-h-[32.5vh] w-full lg:max-h-[40vh]"
-								type="scroll"
-							>
-								<ScrollAreaViewport asChild>
-									<ul className="flex h-full w-full flex-col items-start justify-start gap-4">
-										{filteredMembers.map((member, i) => (
-											<li
-												key={i}
-												className="flex w-full flex-row items-center justify-between"
-											>
-												<div className="flex flex-row items-center justify-start gap-4">
-													<Image
-														src={
-															member.user
-																?.image ??
-															"https://github.com/marquinhos.png"
-														}
-														width={36}
-														height={36}
-														className="rounded-full"
-														alt="Member profile picture"
-													/>
-													<span className="text-left text-base font-semibold leading-tight text-neutral">
-														{member.user?.name ??
-															`@${member.username}`}
+							<div className="no-scrollbar max-h-[32.5vh] w-full overflow-y-scroll lg:max-h-[40vh]">
+								<ul className="flex h-full w-full flex-col items-start justify-start gap-4">
+									{filteredMembers.map((member, i) => (
+										<li
+											key={i}
+											className="flex w-full flex-row items-center justify-between"
+										>
+											<div className="flex flex-row items-center justify-start gap-4">
+												<Image
+													src={
+														member.user?.image ??
+														"https://github.com/marquinhos.png"
+													}
+													width={36}
+													height={36}
+													className="rounded-full"
+													alt="Member profile picture"
+												/>
+												<span className="text-left text-base font-semibold leading-tight text-neutral">
+													{member.user?.name ??
+														`@${member.username}`}
+												</span>
+											</div>
+											<div className="flex flex-row items-center justify-end gap-4">
+												{member.user?.name && (
+													<span className="hidden text-xs font-semibold leading-none text-neutral opacity-50 md:flex">
+														@{member.username}
 													</span>
-												</div>
-												<div className="flex flex-row items-center justify-end gap-4">
-													{member.user?.name && (
-														<span className="hidden text-xs font-semibold leading-none text-neutral opacity-50 md:flex">
-															@{member.username}
-														</span>
-													)}
-													<Checkbox
-														id={member.id}
-														name={member.id}
-														className="h-6 w-6"
-													/>
-												</div>
-											</li>
-										))}
-									</ul>
-								</ScrollAreaViewport>
-								<ScrollAreaScrollbar orientation="vertical" />
-							</ScrollArea>
+												)}
+												<Checkbox
+													id={member.id}
+													name={member.id}
+													className="h-6 w-6"
+												/>
+											</div>
+										</li>
+									))}
+								</ul>
+							</div>
 						) : isFetching ? (
 							<Loader2 className="origin-center animate-spin" />
 						) : (
