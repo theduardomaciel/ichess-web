@@ -66,13 +66,14 @@ export function MemberPreview({
 						<AccountIcon className="h-6 w-6" />
 					</Link>
 
-					{member.role === "member" && (
-						<MemberRemove
-							memberName={member.user.name}
-							eventId={eventId}
-							memberId={member.id}
-						/>
-					)}
+					<MemberRemove
+						member={{
+							id: member.id,
+							name: member.user.name ?? member.username,
+							role: member.role,
+						}}
+						eventId={eventId}
+					/>
 				</div>
 			</div>
 		</li>

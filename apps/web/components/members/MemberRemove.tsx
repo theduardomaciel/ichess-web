@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 // Icons
+import SuccessIcon from "@/public/icons/success.svg";
 import BlockIcon from "@/public/icons/block.svg";
 
 // Components
@@ -28,17 +29,23 @@ import { trpc } from "@/lib/trpc/react";
 type Member = RouterOutput["getEvent"]["event"]["membersOnEvent"][0];
 
 interface Props {
-	memberName: Member["user"]["name"];
-	memberId: Member["id"];
+	member: {
+		id: Member["id"];
+		name: Member["user"]["name"];
+		role: Member["role"];
+	};
 	eventId: string;
 }
 
-export function MemberRemove({ memberId, memberName, eventId }: Props) {
+export function MemberRemove({ member, eventId }: Props) {
 	const router = useRouter();
 	const { toast } = useToast();
 
 	const [isOpen, setIsOpen] = useState(false);
+
+	const [hasStartedMutation, setHasStartedMutation] = useState(false);
 	const [isMutating, startTransition] = useTransition();
+	// const [canUpdate, setCanUpdate] = useState(false);
 
 	const mutate = trpc.updateEventMembers.useMutation();
 
@@ -46,29 +53,27 @@ export function MemberRemove({ memberId, memberName, eventId }: Props) {
 		startTransition(async () => {
 			await mutate.mutateAsync({
 				eventId,
-				membersIdsToMutate: [memberId],
+				membersIdsToMutate: [member.id],
 			});
+			setHasStartedMutation(true);
 			router.refresh();
 		});
-
-		// setIsOpen(false);
 	}
 
-	const hasFirstRendered = useRef(false);
+	const isAdmin = member.role === "admin";
 
 	useEffect(() => {
-		if (isMutating === false && hasFirstRendered.current) {
+		if (isMutating === false && hasStartedMutation) {
 			setIsOpen(false);
 
 			toast({
-				title: "Membro removido!",
-				description: `A presença de ${memberName} foi removida do evento.`,
+				title: `${isAdmin ? "Moderador" : "Membro"} removido!`,
+				description: `A presença de ${member.name} foi removida do evento.`,
+				icon: SuccessIcon,
 				className: "border-primary-100",
 			});
 		}
-
-		hasFirstRendered.current = true;
-	}, [isMutating, toast, memberName]);
+	}, [hasStartedMutation, isMutating, toast, member.name, isAdmin]);
 
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -83,14 +88,20 @@ export function MemberRemove({ memberId, memberName, eventId }: Props) {
 				hasCloseButton={false}
 			>
 				<DialogHeader>
-					<DialogTitle>Remover participante</DialogTitle>
+					<DialogTitle>
+						Remover {isAdmin ? "moderador" : "participante"}
+					</DialogTitle>
 					<DialogDescription>
-						Você tem certeza que deseja remover a presença de{" "}
+						Você tem certeza que deseja remover{" "}
+						{!isAdmin ? "a presença de " : ""}
 						<strong className="scale-105 text-nowrap text-neutral">
-							{memberName}
+							{member.name}
 						</strong>{" "}
-						do evento? <br /> As horas atribuídas a ele serão
-						removidas.
+						{isAdmin && <>da moderação </>}
+						do evento? <br />
+						{!isAdmin && (
+							<>As horas atribuídas a ele serão removidas.</>
+						)}
 					</DialogDescription>
 				</DialogHeader>
 				<DialogFooter className="w-full gap-2 sm:justify-start">

@@ -88,15 +88,23 @@ const ToastClose = React.forwardRef<
 ));
 ToastClose.displayName = ToastPrimitives.Close.displayName;
 
+interface ToastTitleProps
+	extends React.ComponentPropsWithoutRef<typeof ToastPrimitives.Title> {
+	icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+}
+
 const ToastTitle = React.forwardRef<
 	React.ElementRef<typeof ToastPrimitives.Title>,
-	React.ComponentPropsWithoutRef<typeof ToastPrimitives.Title>
->(({ className, ...props }, ref) => (
-	<ToastPrimitives.Title
-		ref={ref}
-		className={cn("text-sm font-semibold", className)}
-		{...props}
-	/>
+	ToastTitleProps
+>(({ className, icon: Icon, ...props }, ref) => (
+	<div className="flex flex-row items-center justify-start gap-2">
+		{Icon && <Icon width={12} height={12} />}
+		<ToastPrimitives.Title
+			ref={ref}
+			className={cn("text-sm font-semibold", className)}
+			{...props}
+		/>
+	</div>
 ));
 ToastTitle.displayName = ToastPrimitives.Title.displayName;
 
