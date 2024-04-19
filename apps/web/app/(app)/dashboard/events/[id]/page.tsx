@@ -30,8 +30,10 @@ type EventDetailsPageParams = z.infer<typeof eventDetailsPageParams>;
 
 export default async function EventPage({
 	params,
+	searchParams,
 }: {
 	params: EventDetailsPageParams;
+	searchParams: { search?: string };
 }) {
 	const { id } = eventDetailsPageParams.parse(params);
 
@@ -88,7 +90,7 @@ export default async function EventPage({
 			</div>
 			<div className="flex w-full flex-col items-center justify-start gap-4 md:flex-row">
 				<AceCard className="w-full" ace={event.ace} />
-				<div className="flex flex-row items-center justify-between gap-4 max-sm:w-full">
+				<div className="flex flex-row items-center justify-between gap-4 max-md:w-full">
 					<DeleteEventDialog eventId={event.id} />
 					<Button
 						asChild
@@ -110,7 +112,14 @@ export default async function EventPage({
 						)}
 						eventId={event.id}
 					/>
-					<MemberAdd members={event.membersOnEvent} />
+					<MemberAdd
+						projectId={env.PROJECT_ID}
+						eventId={event.id}
+						alreadyAddedMembers={event.membersOnEvent.map(
+							(member) => member.id,
+						)}
+						search={searchParams.search}
+					/>
 				</div>
 				<MembersList
 					className="md:w-2/5"

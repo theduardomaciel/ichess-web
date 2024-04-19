@@ -494,6 +494,9 @@ export const eventsRouter = createTRPCRouter({
 				},
 			});
 
+			console.log("membersIdsToMutate:", membersIdsToMutate);
+			console.log("currentEventMembers:", currentEventMembers);
+
 			const { idsToAdd, idsToRemove } = getMembersIdsToMutate({
 				membersIds: membersIdsToMutate,
 				currentMembersIds: currentEventMembers.map(
@@ -501,6 +504,8 @@ export const eventsRouter = createTRPCRouter({
 				),
 				mode: "partial",
 			});
+
+			console.log("Ids to add:", idsToAdd);
 
 			await db.transaction(async (tx) => {
 				if (idsToRemove.length > 0) {

@@ -28,7 +28,7 @@ export function getMembersIdsToMutate({
 		// Quando todos os membros são passados, a diferença entre os membros atuais e os novos
 		// é a lista de membros a serem adicionados e removidos
 		const membersIdsToRemove = currentMembersIds.filter(
-			(memberOnEvent) => !membersIds.includes(memberOnEvent),
+			(memberId) => !membersIds.includes(memberId),
 		);
 
 		const membersIdsToAdd = membersIds.filter(
@@ -43,8 +43,8 @@ export function getMembersIdsToMutate({
 			currentMembersIds.includes(memberId),
 		);
 
-		const membersIdsToAdd = currentMembersIds.filter(
-			(memberOnEvent) => !currentMembersIds.includes(memberOnEvent),
+		const membersIdsToAdd = membersIds.filter(
+			(memberId) => !currentMembersIds.includes(memberId),
 		);
 
 		return { idsToAdd: membersIdsToAdd, idsToRemove: membersIdsToRemove };

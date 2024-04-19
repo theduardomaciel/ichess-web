@@ -4,7 +4,6 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 // Icons
-import SuccessIcon from "@/public/icons/success.svg";
 import BlockIcon from "@/public/icons/block.svg";
 
 // Components
@@ -45,19 +44,27 @@ export function MemberRemove({ member, eventId }: Props) {
 
 	const [hasStartedMutation, setHasStartedMutation] = useState(false);
 	const [isMutating, startTransition] = useTransition();
-	// const [canUpdate, setCanUpdate] = useState(false);
 
 	const mutate = trpc.updateEventMembers.useMutation();
 
 	async function removeMember() {
-		startTransition(async () => {
-			await mutate.mutateAsync({
-				eventId,
-				membersIdsToMutate: [member.id],
+		try {
+			startTransition(async () => {
+				await mutate.mutateAsync({
+					eventId,
+					membersIdsToMutate: [member.id],
+				});
+				setHasStartedMutation(true);
+				router.refresh();
 			});
-			setHasStartedMutation(true);
-			router.refresh();
-		});
+		} catch (error) {
+			console.error(error);
+			toast({
+				title: "Erro ao remover membro",
+				description: "Não foi possível remover o membro do evento.",
+				variant: "error",
+			});
+		}
 	}
 
 	const isAdmin = member.role === "admin";
@@ -69,8 +76,7 @@ export function MemberRemove({ member, eventId }: Props) {
 			toast({
 				title: `${isAdmin ? "Moderador" : "Membro"} removido!`,
 				description: `A presença de ${member.name} foi removida do evento.`,
-				icon: SuccessIcon,
-				className: "border-primary-100",
+				variant: "success",
 			});
 		}
 	}, [hasStartedMutation, isMutating, toast, member.name, isAdmin]);

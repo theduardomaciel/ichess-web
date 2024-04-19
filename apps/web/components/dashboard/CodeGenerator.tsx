@@ -35,7 +35,10 @@ export function CodeGenerator({ charactersAmount }: CodeGeneratorProps) {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button size={"xl"} className="max-sm:w-full">
+				<Button
+					size={"xl"}
+					className="max-md:w-full max-md:pl-0 max-md:pr-0"
+				>
 					Gerar código
 				</Button>
 			</DialogTrigger>

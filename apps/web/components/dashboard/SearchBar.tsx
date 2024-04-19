@@ -54,7 +54,7 @@ export function SearchBar({ className, onChange, ...props }: SearchBarProps) {
 
 			{isPendingSearchTransition ? (
 				<div className="absolute right-4 top-1/2 -translate-y-1/2">
-					<Loader2 className="h-4 w-4 origin-center animate-spin text-muted" />
+					<Loader2 className="h-4 w-4 animate-spin text-muted" />
 				</div>
 			) : value ? (
 				<X

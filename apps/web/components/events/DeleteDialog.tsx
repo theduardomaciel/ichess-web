@@ -57,7 +57,7 @@ export function DeleteEventDialog({ eventId }: Props) {
 					</Button>
 				</DialogTrigger>
 				<DialogContent
-					className="flex flex-col items-center justify-center py-16 sm:max-w-[450px]"
+					className="flex flex-col items-center justify-center sm:max-w-[450px]"
 					hasCloseButton={false}
 				>
 					<DialogHeader className="flex flex-col items-center justify-center gap-4">
@@ -72,7 +72,7 @@ export function DeleteEventDialog({ eventId }: Props) {
 						membros que participaram. <br /> Cuidado, pois essa ação
 						não poderá ser desfeita.
 					</DialogDescription>
-					<DialogFooter className="w-full">
+					<DialogFooter className="w-full gap-2">
 						<DialogClose asChild>
 							<Button
 								type="button"
