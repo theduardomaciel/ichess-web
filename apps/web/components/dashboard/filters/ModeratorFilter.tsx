@@ -25,7 +25,7 @@ export function ModeratorFilter({ projectId }: Params) {
 
 	const onSelect = useCallback(
 		(moderatorsIds: string[]) => {
-			console.log("Selected moderators:", moderatorsIds);
+			// console.log("Selected moderators:", moderatorsIds);
 
 			startTransition(() => {
 				router.push(
@@ -45,13 +45,19 @@ export function ModeratorFilter({ projectId }: Params) {
 	);
 
 	return (
-		<ModeratorPicker
-			className={cn({
-				"pointer-events-none animate-pulse": isPendingFilterTransition,
-			})}
-			initialModerators={initialModerators}
-			projectId={projectId}
-			onSelect={onSelect}
-		/>
+		<div className="flex w-full flex-col items-start justify-center gap-4">
+			<p className="text-center text-sm font-medium text-neutral">
+				Filtrar por responsável
+			</p>
+			<ModeratorPicker
+				className={cn({
+					"pointer-events-none animate-pulse":
+						isPendingFilterTransition,
+				})}
+				initialModerators={initialModerators}
+				projectId={projectId}
+				onSelect={onSelect}
+			/>
+		</div>
 	);
 }

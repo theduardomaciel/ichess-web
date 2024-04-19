@@ -1,18 +1,113 @@
-import BuildingIcon from "@/public/icons/building.svg";
+import { Suspense } from "react";
+import { Metadata } from "next";
 
-export default function MembersOverall() {
+// Components
+import { MemberPreview } from "@/components/members/MemberPreview";
+import { DashboardPagination } from "@/components/dashboard/Pagination";
+import { Empty } from "@/components/Empty";
+
+// Filters and Sorting
+import { SearchBar } from "@/components/dashboard/SearchBar";
+import { SortBy } from "@/components/dashboard/SortBy";
+
+import { Filters } from "@/components/dashboard/filters";
+import { PeriodFilter } from "@/components/dashboard/filters/PeriodFilter";
+import { Filter } from "@/components/dashboard/filters/Filter";
+
+// Validation
+import { z } from "zod";
+import { getMembersParams } from "@ichess/api/routers/members";
+
+// API
+import { env } from "@ichess/env";
+import { serverClient } from "@/lib/trpc/server";
+import { memberRoles } from "@ichess/drizzle/schema";
+
+export const metadata: Metadata = {
+	title: "Membros",
+	description: "Veja todos os membros cadastrados",
+};
+
+const membersPageParams = getMembersParams.partial().extend({
+	r: z.string().optional(),
+	role: z.enum(["any", ...memberRoles]).optional(),
+});
+
+export type MembersPageParams = z.infer<typeof membersPageParams>;
+
+export default async function DashboardMembersPage({
+	searchParams,
+}: {
+	searchParams: MembersPageParams;
+}) {
+	const { page, pageSize, search, sortBy, periods, role, r } =
+		membersPageParams.parse(searchParams);
+
+	const { members, pageCount } = await serverClient.getMembers({
+		projectId: env.PROJECT_ID,
+		page,
+		pageSize,
+		search,
+		sortBy,
+		periods,
+		role: role === "any" ? undefined : role,
+	});
+
+	// O "r" equivale ao estado da barra de pesquisa quando o usuário clica em "Limpar filtros"
+	// Isso é feito por meio da mudança de key do componente SearchBar
+
 	return (
-		<main className="flex min-h-screen flex-col items-start justify-start">
-			<div className="flex flex-col items-center justify-center w-full h-full pt-36 gap-6 px-wrapper">
-				<BuildingIcon />
-				<h1 className="font-title font-bold text-4xl text-center">
-					Essa página ainda não está pronta!
-				</h1>
-				<p className="text-lg text-center">
-					Mas não se preocupe, tudo está sendo preparado com muito
-					carinho!
-				</p>
+		<main className="flex min-h-screen flex-col items-start justify-start gap-[var(--wrapper)] px-wrapper py-12 lg:flex-row lg:gap-12">
+			<div className="flex flex-1 flex-col items-start justify-center gap-4">
+				<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
+					<SearchBar key={r} placeholder="Pesquisar membros" />
+					<div className="flex flex-row items-center justify-between gap-4 max-sm:w-full sm:justify-end">
+						<span className="text-nowrap text-sm font-medium">
+							Ordenar por
+						</span>
+						<SortBy sortBy={sortBy} />
+					</div>
+				</div>
+				{
+					<ul className="flex w-full flex-col items-start justify-start gap-4">
+						{members && members.length > 0 ? (
+							members.map((member) => (
+								<MemberPreview
+									key={member.id}
+									member={member}
+									memberCardHref={`/dashboard/members/${member.id}`}
+								/>
+							))
+						) : (
+							<Empty href={`/dashboard/members`} />
+						)}
+					</ul>
+				}
+				{members && members.length > 0 && (
+					<Suspense fallback={null}>
+						<DashboardPagination
+							currentPage={page || 1}
+							pageCount={pageCount}
+						/>
+					</Suspense>
+				)}
 			</div>
+			<Filters>
+				<PeriodFilter />
+				<Filter
+					type={"select"}
+					items={[
+						{ name: "Qualquer cargo", value: "any" },
+						{ name: "Moderador", value: "admin" },
+						{ name: "Membro", value: "member" },
+					]}
+					prefix="role"
+					title="Filtrar por cargo"
+					config={{
+						placeholder: "Escolha um cargo",
+					}}
+				/>
+			</Filters>
 		</main>
 	);
 }

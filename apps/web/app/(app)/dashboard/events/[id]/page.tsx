@@ -163,7 +163,11 @@ function MembersList({
 						<MemberPreview
 							key={member.id}
 							member={member}
-							eventId={eventId}
+							memberCardHref={`/dashboard/events/${eventId}/member/${member.id}`}
+							event={{
+								id: eventId,
+								memberJoinedAt: member.joinedAt,
+							}}
 						/>
 					))}
 				</ul>

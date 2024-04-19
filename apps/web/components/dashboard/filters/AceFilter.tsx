@@ -1,7 +1,7 @@
 import { serverClient } from "@/lib/trpc/server";
 
 // Components
-import { Filter } from ".";
+import { Filter } from "./Filter";
 import { Suspense } from "react";
 
 export async function AceFilter() {
@@ -16,7 +16,9 @@ export async function AceFilter() {
 					name: ace.name,
 					value: ace.id.toString(),
 				}))}
-				linesAmount={2}
+				config={{
+					linesAmount: 2,
+				}}
 			/>
 		</Suspense>
 	);

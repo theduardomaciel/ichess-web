@@ -1,7 +1,7 @@
 import { serverClient } from "@/lib/trpc/server";
 
 // Components
-import { Filter } from ".";
+import { Filter } from "./Filter";
 import { Suspense } from "react";
 
 export async function PeriodFilter() {

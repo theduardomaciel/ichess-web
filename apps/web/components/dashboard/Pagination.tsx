@@ -13,18 +13,13 @@ import { useQueryString } from "@/hooks/use-query-string";
 import { cn } from "@/lib/utils";
 
 interface Props {
-	pathname: string;
 	currentPage: number;
 	pageCount: number;
 }
 
 const MAX_PAGINATION_PAGES = 5;
 
-export function DashboardPagination({
-	pathname,
-	currentPage,
-	pageCount,
-}: Props) {
+export function DashboardPagination({ currentPage, pageCount }: Props) {
 	const { toUrl } = useQueryString();
 
 	const canGoBack = currentPage > 1;
@@ -40,7 +35,7 @@ export function DashboardPagination({
 				>
 					<PaginationPrevious
 						size={"icon"}
-						href={`${pathname}${currentPage - 1}`}
+						href={toUrl({ page: (currentPage - 1).toString() })}
 						className={cn({
 							"pointer-events-none opacity-50": !canGoBack,
 						})}
@@ -81,7 +76,7 @@ export function DashboardPagination({
 				>
 					<PaginationNext
 						size={"icon"}
-						href={`${pathname}${currentPage + 1}`}
+						href={toUrl({ page: (currentPage + 1).toString() })}
 						className={cn({
 							"pointer-events-none opacity-50": !canGoForward,
 						})}

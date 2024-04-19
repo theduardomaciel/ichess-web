@@ -50,3 +50,36 @@ export function getMembersIdsToMutate({
 		return { idsToAdd: membersIdsToAdd, idsToRemove: membersIdsToRemove };
 	}
 }
+
+export function getPeriodsInterval(
+	periods:
+		| {
+				from: Date;
+				to: Date;
+		  }[]
+		| undefined,
+) {
+	if (!periods) {
+		return { dateFrom: undefined, dateTo: undefined };
+	}
+
+	const dateFrom =
+		periods && periods.length > 0
+			? periods
+					.map((period) => period.from)
+					.reduce((acc, date) => {
+						return acc < date ? acc : date;
+					})
+			: undefined;
+
+	const dateTo =
+		periods && periods.length > 0
+			? periods
+					.map((period) => period.to)
+					.reduce((acc, date) => {
+						return acc > date ? acc : date;
+					})
+			: undefined;
+
+	return { dateFrom, dateTo };
+}

@@ -13,13 +13,18 @@ import { MemberRemove } from "./MemberRemove";
 
 interface MemberPreviewProps {
 	className?: string;
-	eventId: string;
-	member: RouterOutput["getEvent"]["event"]["membersOnEvent"][0];
+	memberCardHref: string;
+	event?: {
+		id: string;
+		memberJoinedAt: Date;
+	};
+	member: RouterOutput["getMembers"]["members"][number];
 }
 
 export function MemberPreview({
 	className,
-	eventId,
+	event,
+	memberCardHref,
 	member,
 }: MemberPreviewProps) {
 	return (
@@ -31,7 +36,7 @@ export function MemberPreview({
 		>
 			<div className="flex flex-row items-center justify-start gap-4">
 				<Image
-					src={member.user.image ?? ""}
+					src={member.user?.image ?? ""}
 					width={42}
 					height={42}
 					alt="Member profile picture"
@@ -39,7 +44,7 @@ export function MemberPreview({
 				/>
 				<div className="flex flex-col items-start justify-start">
 					<h3 className="text-left text-base font-bold">
-						{member.user.name ?? member.username}
+						{member.user?.name ?? member.username}
 					</h3>
 					<p className="text-xs font-semibold text-foreground opacity-50">
 						#{member.id.split("-")[0]}
@@ -47,33 +52,49 @@ export function MemberPreview({
 				</div>
 			</div>
 			<div className="flex w-full flex-row items-center justify-between gap-4">
-				<div className="flex flex-row items-center justify-start gap-4 text-foreground">
-					{!member.role && (
-						<PersonCheckIcon className="h-4 min-h-4 w-4 min-w-4 md:min-h-4 md:min-w-4" />
-					)}
-					<p className="text-left text-sm font-medium leading-tight">
-						{member.role === "admin"
-							? "Moderador"
-							: "Marcou presença às 14:35"}
-					</p>
-				</div>
+				{event ? (
+					<div className="flex flex-row items-center justify-start gap-4 text-foreground">
+						{member.role === "member" && (
+							<PersonCheckIcon className="h-4 min-h-4 w-4 min-w-4 md:min-h-4 md:min-w-4" />
+						)}
+						<p className="text-left text-sm font-medium leading-tight">
+							{member.role === "admin"
+								? "Moderador"
+								: `Marcou presença às ${event?.memberJoinedAt.toLocaleTimeString(
+										"pt-BR",
+										{
+											hour: "2-digit",
+											minute: "2-digit",
+										},
+									)}`}
+						</p>
+					</div>
+				) : (
+					<div className="flex flex-row items-center justify-start gap-3 text-left text-sm font-medium leading-tight">
+						{member.role === "admin" ? "Moderador" : "Membro"}
+						<div className="h-1 w-1 rounded-full bg-neutral" />
+						<span>@{member.username}</span>
+					</div>
+				)}
 				<div className="flex flex-row items-center justify-end gap-2 md:gap-4">
 					<Link
 						title="Exibir cartão da conta do membro"
-						href={`/dashboard/events/${eventId}/member/${member.id}`}
+						href={memberCardHref}
 						scroll={false}
 					>
 						<AccountIcon className="h-6 w-6" />
 					</Link>
 
-					<MemberRemove
-						member={{
-							id: member.id,
-							name: member.user.name ?? member.username,
-							role: member.role,
-						}}
-						eventId={eventId}
-					/>
+					{event?.id && (
+						<MemberRemove
+							member={{
+								id: member.id,
+								name: member.user?.name ?? member.username,
+								role: member.role,
+							}}
+							eventId={event.id}
+						/>
+					)}
 				</div>
 			</div>
 		</li>

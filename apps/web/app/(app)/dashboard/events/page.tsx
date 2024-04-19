@@ -7,14 +7,16 @@ import Link from "next/link";
 // Components
 import { EventPreview } from "@/components/events/EventPreview";
 import { DashboardPagination } from "@/components/dashboard/Pagination";
-import { ModeratorFilter } from "@/components/dashboard/filters/ModeratorFilter";
 import { Empty } from "@/components/Empty";
 
 // Filters and Sorting
 import { SearchBar } from "@/components/dashboard/SearchBar";
 import { SortBy } from "@/components/dashboard/SortBy";
+
+import { Filters } from "@/components/dashboard/filters";
 import { PeriodFilter } from "@/components/dashboard/filters/PeriodFilter";
 import { AceFilter } from "@/components/dashboard/filters/AceFilter";
+import { ModeratorFilter } from "@/components/dashboard/filters/ModeratorFilter";
 
 // Validation
 import { z } from "zod";
@@ -35,7 +37,7 @@ const eventsPageParams = getEventsParams.extend({
 
 export type EventsPageParams = z.infer<typeof eventsPageParams>;
 
-export default async function EventsPage({
+export default async function DashboardEventsPage({
 	searchParams,
 }: {
 	searchParams: EventsPageParams;
@@ -82,33 +84,24 @@ export default async function EventsPage({
 								</Link>
 							))
 						) : (
-							<Empty />
+							<Empty href={`/dashboard/events`} />
 						)}
 					</ul>
 				}
 				{events && events.length > 0 && (
 					<Suspense fallback={null}>
 						<DashboardPagination
-							pathname="/dashboard/events"
-							currentPage={page}
+							currentPage={page || 1}
 							pageCount={pageCount}
 						/>
 					</Suspense>
 				)}
 			</div>
-			<div className="flex w-full min-w-60 flex-col items-start justify-start gap-4 lg:w-[35%] lg:max-w-[17.5vw]">
-				<div className="flex w-full flex-col items-start justify-start gap-9 rounded-lg bg-gray-400 p-6 ">
-					<h6>Filtros</h6>
-					<PeriodFilter />
-					<AceFilter />
-					<div className="flex w-full flex-col items-start justify-center gap-4">
-						<p className="text-center text-sm font-medium text-neutral">
-							Filtrar por responsável
-						</p>
-						<ModeratorFilter projectId={env.PROJECT_ID} />
-					</div>
-				</div>
-			</div>
+			<Filters>
+				<PeriodFilter />
+				<AceFilter />
+				<ModeratorFilter projectId={env.PROJECT_ID} />
+			</Filters>
 		</main>
 	);
 }

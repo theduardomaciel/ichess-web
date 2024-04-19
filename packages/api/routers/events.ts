@@ -1,6 +1,10 @@
 import { db } from "@ichess/drizzle";
 import { event, eventTypes, memberOnEvent } from "@ichess/drizzle/schema";
-import { getMembersIdsToMutate, transformSingleToArray } from "../utils";
+import {
+	getMembersIdsToMutate,
+	getPeriodsInterval,
+	transformSingleToArray,
+} from "../utils";
 import {
 	and,
 	count,
@@ -183,7 +187,6 @@ export const eventsRouter = createTRPCRouter({
 				: undefined;
 
 			// console.log("Aces:", aces);
-
 			// console.log("Periods filter:", periodsFilter);
 
 			const periods =
@@ -195,25 +198,7 @@ export const eventsRouter = createTRPCRouter({
 						})
 					: undefined;
 
-			// console.log("Periods:", periods);
-
-			const dateFrom =
-				periods && periods.length > 0
-					? periods
-							.map((period) => period.from)
-							.reduce((acc, date) => {
-								return acc < date ? acc : date;
-							})
-					: undefined;
-
-			const dateTo =
-				periods && periods.length > 0
-					? periods
-							.map((period) => period.to)
-							.reduce((acc, date) => {
-								return acc > date ? acc : date;
-							})
-					: undefined;
+			const { dateFrom, dateTo } = getPeriodsInterval(periods);
 
 			const [events, [{ amount }]] = await Promise.all([
 				db.query.event.findMany({

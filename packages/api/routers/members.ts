@@ -1,12 +1,40 @@
 import { db } from "@ichess/drizzle";
 
+import { member, memberRoles, user } from "@ichess/drizzle/schema";
+import {
+	and,
+	asc,
+	count,
+	desc,
+	eq,
+	getTableColumns,
+	gte,
+	ilike,
+	inArray,
+	lte,
+	or,
+} from "@ichess/drizzle/orm";
+
+// Validation
 import { z } from "zod";
+import { getPeriodsInterval, transformSingleToArray } from "../utils";
 
 // API
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { member, memberRoles, user } from "@ichess/drizzle/schema";
-import { and, desc, eq, getTableColumns } from "@ichess/drizzle/orm";
+
+export const getMembersParams = z.object({
+	projectId: z.string().uuid(),
+	search: z.string().optional(),
+	role: z.enum(memberRoles).optional(),
+	periods: z
+		.union([z.array(z.string()), z.string()])
+		.transform(transformSingleToArray)
+		.optional(),
+	sortBy: z.enum(["recent", "oldest"]).optional(),
+	page: z.coerce.number().default(0),
+	pageSize: z.coerce.number().default(10),
+});
 
 export const membersRouter = createTRPCRouter({
 	getMember: protectedProcedure
@@ -103,47 +131,96 @@ export const membersRouter = createTRPCRouter({
 		}),
 
 	getMembers: protectedProcedure
-		.input(
-			z.object({
-				projectId: z.string().uuid(),
-				search: z.string().optional(),
-				role: z.enum(memberRoles).optional(),
-				sortBy: z.enum(["recent", "oldest"]).optional(),
-				page: z.coerce.number().default(0),
-				pageSize: z.coerce.number().default(10),
-			}),
-		)
+		.input(getMembersParams)
 		.query(async ({ input }) => {
-			const { projectId, search, role, sortBy, page, pageSize } = input;
+			const {
+				projectId,
+				role,
+				sortBy,
+				search,
+				page: pageIndex,
+				periods: periodsFilter,
+				pageSize,
+			} = input;
 
-			const members = await db
-				.select({
-					...getTableColumns(member),
-					user: {
-						name: user.name,
-						image: user.image,
-					},
-				})
-				.from(member)
-				.leftJoin(user, eq(member.userId, user.id))
-				.where(
-					and(
-						eq(member.projectId, projectId),
-						search ? eq(user.name, search) : undefined,
-						role ? eq(member.role, role) : undefined,
+			const periods =
+				periodsFilter && periodsFilter.length > 0
+					? await db.query.period.findMany({
+							where(fields) {
+								return inArray(fields.slug, periodsFilter);
+							},
+						})
+					: undefined;
+
+			console.log("periods", periods);
+
+			const { dateFrom, dateTo } = getPeriodsInterval(periods);
+
+			console.log("dateFrom", dateFrom);
+			console.log("dateTo", dateTo);
+
+			const [members, [{ amount }]] = await Promise.all([
+				await db
+					.select({
+						...getTableColumns(member),
+						user: {
+							name: user.name,
+							image: user.image,
+						},
+					})
+					.from(member)
+					.leftJoin(user, eq(member.userId, user.id))
+					.where(
+						and(
+							eq(member.projectId, projectId),
+							search
+								? or(
+										ilike(user.name, `%${search}%`),
+										ilike(member.username, `%${search}%`),
+									)
+								: undefined,
+							dateFrom && dateTo
+								? and(
+										gte(member.joinedAt, dateFrom),
+										lte(member.joinedAt, dateTo),
+									)
+								: undefined,
+							role ? eq(member.role, role) : undefined,
+						),
+					)
+					.orderBy(
+						member.joinedAt,
+						sortBy && sortBy === "oldest"
+							? asc(member.joinedAt)
+							: desc(member.joinedAt),
+					)
+					.limit(pageSize)
+					.offset(pageIndex ? (pageIndex - 1) * pageSize : 0),
+				db
+					.select({ amount: count() })
+					.from(member)
+					.leftJoin(user, eq(member.userId, user.id))
+					.where(
+						and(
+							eq(member.projectId, projectId),
+							search
+								? or(
+										ilike(user.name, `%${search}%`),
+										ilike(member.username, `%${search}%`),
+									)
+								: undefined,
+							role ? eq(member.role, role) : undefined,
+						),
 					),
-				)
-				.orderBy(
-					member.joinedAt,
-					sortBy && sortBy === "recent"
-						? desc(member.joinedAt)
-						: member.joinedAt,
-				)
-				.limit(pageSize)
-				.offset(page * pageSize);
+			]);
+
+			const pageCount = Math.ceil(amount / pageSize);
+			console.log("amount", amount);
+			console.log("pageCount", pageCount);
 
 			return {
 				members,
+				pageCount,
 			};
 		}),
 });
