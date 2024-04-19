@@ -30,7 +30,7 @@ interface AddParticipantProps {
 	members: RouterOutput["getEvent"]["event"]["membersOnEvent"];
 }
 
-export function AddParticipant({ members }: AddParticipantProps) {
+export function MemberAdd({ members }: AddParticipantProps) {
 	const [time, setTime] = useState(new Date());
 
 	const search = useSearchParams().get("search");

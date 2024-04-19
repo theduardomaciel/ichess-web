@@ -98,6 +98,7 @@ export const membersRouter = createTRPCRouter({
 				member,
 				period: periodFrom?.slug,
 				hours: totalHours,
+				requestClientRole: requestMember.role,
 			};
 		}),
 

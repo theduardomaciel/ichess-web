@@ -5,11 +5,11 @@ import { cn } from "@/lib/utils";
 
 // Icons
 import AccountIcon from "@/public/icons/account.svg";
-import BlockIcon from "@/public/icons/block.svg";
 import PersonCheckIcon from "@/public/icons/person_check.svg";
 
 // API
 import type { RouterOutput } from "@ichess/api";
+import { MemberRemove } from "./MemberRemove";
 
 interface MemberPreviewProps {
 	className?: string;
@@ -61,14 +61,17 @@ export function MemberPreview({
 					<Link
 						title="Exibir cartão da conta do membro"
 						href={`/dashboard/events/${eventId}/member/${member.id}`}
+						scroll={false}
 					>
 						<AccountIcon className="h-6 w-6" />
 					</Link>
 
 					{member.role === "member" && (
-						<button title="Remover presença do membro">
-							<BlockIcon className="h-6 w-6" />
-						</button>
+						<MemberRemove
+							memberName={member.user.name}
+							eventId={eventId}
+							memberId={member.id}
+						/>
 					)}
 				</div>
 			</div>

@@ -4,7 +4,6 @@ import Image from "next/image";
 import PresenceForm from "@/components/forms/PresenceForm";
 import { DateDisplay } from "@/components/ui/calendar";
 import { AceCard } from "@/components/dashboard/AceCard";
-import { ACEs } from "@/lib/validations/MutateEventForm";
 
 export default function PresencePage() {
 	return (
@@ -31,10 +30,10 @@ export default function PresencePage() {
 						size="md"
 					/>
 				</div>
-				<AceCard
+				{/* <AceCard
 					ace={ACEs[0]}
 					className="z-20 border border-primary-200/50"
-				/>
+				/> */}
 			</div>
 			<PresenceForm />
 		</main>

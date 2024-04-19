@@ -25,7 +25,7 @@ export default async function EditEventPage({
 
 	return (
 		<main className="flex min-h-screen flex-col items-start justify-start gap-9 px-wrapper py-12 lg:pb-24">
-			<div className="flex flex-col items-start justify-start">
+			<div className="flex flex-col items-start justify-start gap-1">
 				<Link href={`/dashboard/events/${params.id}`}>
 					<div className="group z-20 flex cursor-pointer flex-row items-center justify-start gap-2">
 						<ArrowRightIcon

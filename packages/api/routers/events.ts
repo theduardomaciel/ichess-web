@@ -1,6 +1,6 @@
 import { db } from "@ichess/drizzle";
 import { event, eventTypes, memberOnEvent } from "@ichess/drizzle/schema";
-import { transformSingleToArray } from "../utils";
+import { getMembersIdsToMutate, transformSingleToArray } from "../utils";
 import {
 	and,
 	count,
@@ -375,7 +375,7 @@ export const eventsRouter = createTRPCRouter({
 
 	updateEvent: protectedProcedure
 		.input(
-			mutateEventParams.extend({
+			mutateEventParams.partial().extend({
 				eventId: z.string().uuid(),
 			}),
 		)
@@ -388,7 +388,7 @@ export const eventsRouter = createTRPCRouter({
 				dateTo,
 				type,
 				aceId,
-				membersIds,
+				membersIds, // Inclui TODOS os membros do evento
 			} = input;
 
 			const eventToUpdate = await db.query.event.findFirst({
@@ -415,20 +415,16 @@ export const eventsRouter = createTRPCRouter({
 					})
 				: undefined;
 
-			const membersIdsToRemove = currentEventMembers
-				? currentEventMembers
-						.filter((item) => membersIds.includes(item.memberId))
-						.map((item) => item.memberId)
-				: [];
-
-			const membersIdsToAdd = currentEventMembers
-				? membersIds.filter(
-						(memberId) =>
-							!currentEventMembers.find(
-								(item) => item.memberId === memberId,
+			const { idsToAdd, idsToRemove } =
+				currentEventMembers && membersIds
+					? getMembersIdsToMutate({
+							membersIds: membersIds!,
+							currentMembersIds: currentEventMembers.map(
+								(memberOnEvent) => memberOnEvent.memberId,
 							),
-					)
-				: [];
+							mode: "full",
+						})
+					: { idsToAdd: [], idsToRemove: [] };
 
 			// Para ter o evento atualizado retornado, utilize: const updatedEvent = await db.transaction(async (tx) => { ... });
 			await db.transaction(async (tx) => {
@@ -447,23 +443,20 @@ export const eventsRouter = createTRPCRouter({
 					.where(eq(event.id, eventId))
 					.returning();
 
-				if (membersIdsToRemove.length > 0) {
+				if (idsToRemove.length > 0) {
 					await tx
 						.delete(memberOnEvent)
 						.where(
 							and(
 								eq(memberOnEvent.eventId, eventId),
-								inArray(
-									memberOnEvent.memberId,
-									membersIdsToRemove,
-								),
+								inArray(memberOnEvent.memberId, idsToRemove),
 							),
 						);
 				}
 
-				if (membersIdsToAdd.length > 0) {
+				if (idsToAdd.length > 0) {
 					await tx.insert(memberOnEvent).values(
-						membersIdsToAdd.map((memberId) => ({
+						idsToAdd.map((memberId) => ({
 							eventId,
 							memberId,
 						})),
@@ -471,6 +464,64 @@ export const eventsRouter = createTRPCRouter({
 				}
 
 				return updatedEvent.id;
+			});
+
+			return { success: true };
+		}),
+
+	updateEventMembers: protectedProcedure
+		.input(
+			z.object({
+				eventId: z.string().uuid(),
+				membersIdsToMutate: z
+					.union([z.array(z.string()), z.string()])
+					.transform(transformSingleToArray),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			const { eventId, membersIdsToMutate } = input;
+
+			if (!membersIdsToMutate) {
+				throw new TRPCError({
+					message: "Members not found.",
+					code: "BAD_REQUEST",
+				});
+			}
+
+			const currentEventMembers = await db.query.memberOnEvent.findMany({
+				where(fields, { eq }) {
+					return eq(fields.eventId, eventId);
+				},
+			});
+
+			const { idsToAdd, idsToRemove } = getMembersIdsToMutate({
+				membersIds: membersIdsToMutate,
+				currentMembersIds: currentEventMembers.map(
+					(memberOnEvent) => memberOnEvent.memberId,
+				),
+				mode: "partial",
+			});
+
+			await db.transaction(async (tx) => {
+				if (idsToRemove.length > 0) {
+					await tx
+						.delete(memberOnEvent)
+						.where(
+							and(
+								eq(memberOnEvent.eventId, eventId),
+								inArray(memberOnEvent.memberId, idsToRemove),
+							),
+						);
+				}
+
+				if (idsToAdd.length > 0) {
+					await tx.insert(memberOnEvent).values(
+						idsToAdd.map((memberId) => ({
+							eventId,
+							memberId,
+						})),
+					);
+				}
 			});
 
 			return { success: true };

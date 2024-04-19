@@ -7,6 +7,7 @@ import "@dotlottie/react-player/dist/index.css";
 import { cn } from "@/lib/utils";
 
 // Components
+import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "./providers";
 
 export const fontSans = FontSans({
@@ -49,7 +50,10 @@ export default function RootLayout({
 			suppressHydrationWarning
 		>
 			<body className={"relative min-h-screen font-sans antialiased"}>
-				<Providers>{children}</Providers>
+				<Providers>
+					{children}
+					<Toaster />
+				</Providers>
 			</body>
 		</html>
 	);

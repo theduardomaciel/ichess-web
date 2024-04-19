@@ -4,15 +4,15 @@ import { cn, isDateDifferent } from "@/lib/utils";
 
 // Icons
 import EditIcon from "@/public/icons/edit.svg";
-import DeleteIcon from "@/public/icons/delete.svg";
 
 // Components
 import { Button } from "@/components/ui/button";
 import { AceCard } from "@/components/dashboard/AceCard";
-import { AddParticipant } from "@/components/dashboard/AddParticipant";
+import { MemberAdd } from "@/components/members/MemberAdd";
 import { DateDisplay } from "@/components/ui/calendar";
 import { CodeGenerator } from "@/components/dashboard/CodeGenerator";
 import { MemberPreview } from "@/components/members/MemberPreview";
+import { DeleteEventDialog } from "@/components/events/DeleteDialog";
 
 // Validation
 import { z } from "zod";
@@ -79,7 +79,7 @@ export default async function EventPage({
 					<DateDisplay dateString={dateString} />
 					<div className="h-1 w-1 rounded-full bg-neutral" />
 					<p className="text-base font-medium">
-						{timeFrom} às {timeTo}
+						de {timeFrom} às {timeTo}
 					</p>
 				</div>
 				<h2 className="text-base font-semibold leading-normal text-neutral">
@@ -89,12 +89,7 @@ export default async function EventPage({
 			<div className="flex w-full flex-col items-center justify-start gap-4 md:flex-row">
 				<AceCard className="w-full" ace={event.ace} />
 				<div className="flex flex-row items-center justify-between gap-4 max-sm:w-full">
-					<Button
-						size={"icon"}
-						className="bg-tertiary-100 ring-tertiary-200 hover:bg-tertiary-200"
-					>
-						<DeleteIcon className="h-5 w-5" />
-					</Button>
+					<DeleteEventDialog eventId={event.id} />
 					<Button
 						asChild
 						size={"icon"}
@@ -115,7 +110,7 @@ export default async function EventPage({
 						)}
 						eventId={event.id}
 					/>
-					<AddParticipant members={event.membersOnEvent} />
+					<MemberAdd members={event.membersOnEvent} />
 				</div>
 				<MembersList
 					className="md:w-2/5"

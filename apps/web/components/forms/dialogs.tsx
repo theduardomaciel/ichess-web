@@ -18,16 +18,16 @@ import {
 
 // Icons
 import SuccessIcon from "@/public/icons/success.svg";
+import ErrorFaceIcon from "@/public/icons/error_face.svg";
 
 interface Props {
 	isOpen: boolean;
 	onClose?: () => void;
-}
-
-interface LoadingDialogProps extends Props {
 	title?: string;
 	description?: React.ReactNode;
 }
+
+interface LoadingDialogProps extends Props {}
 
 export function LoadingDialog({
 	isOpen,
@@ -64,8 +64,6 @@ export function LoadingDialog({
 
 interface SuccessDialogProps extends Props {
 	href?: string;
-	title?: string;
-	description?: React.ReactNode;
 	buttonText?: string;
 }
 
@@ -111,7 +109,7 @@ export function SuccessDialog({
 	);
 }
 
-export function ErrorDialog({ isOpen, onClose }: Props) {
+export function ErrorDialog({ isOpen, onClose, title, description }: Props) {
 	return (
 		<Dialog
 			open={isOpen}
@@ -126,14 +124,18 @@ export function ErrorDialog({ isOpen, onClose }: Props) {
 				hasCloseButton={false}
 			>
 				<DialogHeader className="flex flex-col items-center justify-center gap-4">
-					<SuccessIcon />
+					<ErrorFaceIcon width={56} height={56} />
 					<DialogTitle className="text-center font-title text-2xl font-extrabold">
-						Oops! Algo deu errado!
+						{title || "Ops! Algo deu errado!"}
 					</DialogTitle>
 				</DialogHeader>
 				<DialogDescription className="max-w-[80%] text-center text-lg font-medium">
-					Algo deu errado ao enviar seu cadastro. <br />
-					Por favor, tente novamente mais tarde.
+					{description || (
+						<>
+							Algo deu errado ao enviar seu cadastro. <br />
+							Por favor, tente novamente mais tarde.
+						</>
+					)}
 				</DialogDescription>
 				<DialogFooter>
 					<DialogClose asChild>

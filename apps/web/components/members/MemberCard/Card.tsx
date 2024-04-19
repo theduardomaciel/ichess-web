@@ -32,9 +32,10 @@ interface Props {
 }
 
 export async function MemberCard({ id: memberId, variant }: Props) {
-	const { member, period, hours } = await serverClient.getMember({
-		memberId,
-	});
+	const { member, period, hours, requestClientRole } =
+		await serverClient.getMember({
+			memberId,
+		});
 
 	return (
 		<Suspense fallback={<MemberCardSkeleton />}>
@@ -56,7 +57,7 @@ export async function MemberCard({ id: memberId, variant }: Props) {
 			<div className="flex flex-col items-center justify-center gap-6">
 				<ul className="flex flex-col flex-wrap items-center justify-center gap-2 sm:max-w-[70%] sm:flex-row">
 					<InfoItem
-						title={`Membro desde ${period || new Date().getFullYear()}`}
+						title={`${member.role === "member" ? "Membro" : "Moderador"} desde ${period || new Date().getFullYear()}`}
 						icon={<SinceIcon />}
 					/>
 					<InfoItem title={member.user.email} icon={<EmailIcon />} />
@@ -95,12 +96,20 @@ export async function MemberCard({ id: memberId, variant }: Props) {
 				</ul>
 			</div>
 			<DialogFooter>
-				<Button className="w-full" asChild>
-					<Link href={`/auth`} className="w-full">
-						<ManageAccountIcon width={24} height={24} />
-						Gerenciar minha conta
-					</Link>
-				</Button>
+				{requestClientRole === "admin" ? (
+					<Button variant={"destructive"} className="w-full" asChild>
+						<Link href={`/auth`} className="w-full">
+							Remover membro
+						</Link>
+					</Button>
+				) : (
+					<Button className="w-full" asChild>
+						<Link href={`/auth`} className="w-full">
+							<ManageAccountIcon width={24} height={24} />
+							Gerenciar minha conta
+						</Link>
+					</Button>
+				)}
 			</DialogFooter>
 		</Suspense>
 	);
