@@ -275,16 +275,13 @@ export const eventsRouter = createTRPCRouter({
 				db
 					.select({
 						amount: count(),
-						memberOnEvent: {
-							memberId: memberOnEvent.memberId,
-							eventId: memberOnEvent.eventId,
-						},
 					})
 					.from(event)
 					.innerJoin(
 						memberOnEvent,
 						eq(event.id, memberOnEvent.eventId),
 					)
+					.innerJoin(member, eq(memberOnEvent.memberId, member.id))
 					.where(
 						and(
 							eq(event.projectId, projectId),
@@ -301,14 +298,9 @@ export const eventsRouter = createTRPCRouter({
 										ilike(event.description, `%${search}%`),
 									)
 								: undefined,
-							memberId
-								? eq(memberOnEvent.memberId, memberId)
-								: undefined,
+							memberId ? eq(member.id, memberId) : undefined,
 							moderatorsFilter
-								? inArray(
-										memberOnEvent.memberId,
-										moderatorsFilter,
-									)
+								? inArray(member.id, moderatorsFilter)
 								: undefined,
 						),
 					),
