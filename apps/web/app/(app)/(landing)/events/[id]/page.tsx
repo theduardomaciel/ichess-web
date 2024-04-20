@@ -1,8 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 
-import Link from "next/link";
-
 // Icons
 import ArrowRight from "@/public/icons/arrow_right.svg";
 
@@ -27,6 +25,7 @@ import { getEventsParams } from "@ichess/api/routers/events";
 
 // API
 import { env } from "@ichess/env";
+import { auth } from "@ichess/auth";
 import { serverClient } from "@/lib/trpc/server";
 
 export const metadata: Metadata = {
@@ -49,6 +48,8 @@ export default async function MemberEventsPage({
 	};
 	searchParams: EventsPageParams;
 }) {
+	const session = await auth();
+
 	const memberId = params?.id;
 	const { page, pageSize, search, sortBy, periods, aces, moderators, r } =
 		eventsPageParams.parse(searchParams);
@@ -87,7 +88,12 @@ export default async function MemberEventsPage({
 					<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
 						<SearchBar
 							key={r}
-							placeholder="Pesquisar eventos com presença"
+							tag={
+								session?.member?.username
+									? `@${session?.member?.username}`
+									: `#${memberId.split("-")[0]}`
+							}
+							placeholder="Pesquisar eventos"
 						/>
 						<div className="flex flex-row items-center justify-between gap-4 max-sm:w-full sm:justify-end">
 							<span className="text-nowrap text-sm font-medium">

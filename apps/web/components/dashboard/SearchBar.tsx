@@ -16,9 +16,16 @@ import { Input } from "@/components/ui/input";
 import { useQueryString } from "@/hooks/use-query-string";
 import { useDebounce } from "@/hooks/use-debounce";
 
-interface SearchBarProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+interface SearchBarProps extends React.InputHTMLAttributes<HTMLInputElement> {
+	tag?: string;
+}
 
-export function SearchBar({ className, onChange, ...props }: SearchBarProps) {
+export function SearchBar({
+	className,
+	onChange,
+	tag,
+	...props
+}: SearchBarProps) {
 	const router = useRouter();
 	const { query, toUrl } = useQueryString();
 
@@ -46,7 +53,9 @@ export function SearchBar({ className, onChange, ...props }: SearchBarProps) {
 		<div className="relative w-full">
 			<SearchIcon className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
 			<Input
-				className={cn("px-12 lg:px-12", className)}
+				className={cn("px-12 lg:px-12", className, {
+					"py-[1.1rem]": !!tag,
+				})}
 				value={value}
 				onChange={(e) => {
 					if (onChange) onChange(e);
@@ -55,19 +64,24 @@ export function SearchBar({ className, onChange, ...props }: SearchBarProps) {
 				{...props}
 			/>
 
-			{isPendingSearchTransition ? (
-				<div className="absolute right-4 top-1/2 -translate-y-1/2">
+			<div className="absolute right-4 top-1/2 flex -translate-y-1/2 flex-row items-center justify-end gap-2">
+				{isPendingSearchTransition ? (
 					<Loader2 className="h-4 w-4 origin-center animate-spin text-muted" />
-				</div>
-			) : value ? (
-				<X
-					className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer text-muted"
-					onClick={() => {
-						setValue("");
-						router.push(toUrl({ search: undefined }));
-					}}
-				/>
-			) : null}
+				) : value ? (
+					<X
+						className="h-4 w-4 cursor-pointer text-muted"
+						onClick={() => {
+							setValue("");
+							router.push(toUrl({ search: undefined }));
+						}}
+					/>
+				) : null}
+				{tag && (
+					<div className="pointer-events-none flex select-none rounded-sm bg-gray-200 px-2.5 py-1">
+						<span className="text-base text-muted">{tag}</span>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }
