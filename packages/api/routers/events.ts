@@ -7,7 +7,6 @@ import {
 } from "../utils";
 import {
 	and,
-	count,
 	desc,
 	eq,
 	inArray,
@@ -168,6 +167,7 @@ export const eventsRouter = createTRPCRouter({
 		.input(
 			getEventsParams.extend({
 				projectId: z.string().uuid(),
+				memberId: z.string().optional(),
 			}),
 		)
 		.query(async ({ input }) => {
@@ -177,6 +177,7 @@ export const eventsRouter = createTRPCRouter({
 				pageSize,
 				search,
 				sortBy,
+				memberId,
 				aces: rawAcesFilter,
 				periods: periodsFilter,
 				moderators: moderatorsFilter,
@@ -200,77 +201,51 @@ export const eventsRouter = createTRPCRouter({
 
 			const { dateFrom, dateTo } = getPeriodsInterval(periods);
 
-			const [events, [{ amount }]] = await Promise.all([
-				db.query.event.findMany({
-					where(fields) {
-						return and(
-							eq(fields.projectId, projectId),
-							dateFrom && dateTo
-								? and(
-										gte(fields.dateFrom, dateFrom),
-										lte(fields.dateTo, dateTo),
-									)
-								: undefined,
-							aces ? inArray(fields.aceId, aces) : undefined,
-							search
-								? or(
-										ilike(fields.name, `%${search}%`),
-										ilike(
-											fields.description,
-											`%${search}%`,
-										),
-									)
-								: undefined,
-						);
-					},
-					with: {
-						ace: true,
-						membersOnEvent: {
-							with: {
-								member: {
-									with: {
-										user: {
-											columns: {
-												name: true,
-												image: true,
-											},
+			const events = await db.query.event.findMany({
+				where(fields) {
+					return and(
+						eq(fields.projectId, projectId),
+						dateFrom && dateTo
+							? and(
+									gte(fields.dateFrom, dateFrom),
+									lte(fields.dateTo, dateTo),
+								)
+							: undefined,
+						aces ? inArray(fields.aceId, aces) : undefined,
+						search
+							? or(
+									ilike(fields.name, `%${search}%`),
+									ilike(fields.description, `%${search}%`),
+								)
+							: undefined,
+					);
+				},
+				with: {
+					ace: true,
+					membersOnEvent: {
+						with: {
+							member: {
+								with: {
+									user: {
+										columns: {
+											name: true,
+											image: true,
 										},
 									},
 								},
 							},
 						},
 					},
-					orderBy:
-						sortBy && sortBy === "oldest"
-							? asc(event.dateFrom)
-							: desc(event.dateFrom),
-					offset: pageIndex ? (pageIndex - 1) * pageSize : undefined,
-					limit: pageSize,
-				}),
-				db
-					.select({ amount: count() })
-					.from(event)
-					.where(
-						and(
-							eq(event.projectId, projectId),
-							dateFrom && dateTo
-								? and(
-										gte(event.dateFrom, dateFrom),
-										lte(event.dateTo, dateTo),
-									)
-								: undefined,
-							aces ? inArray(event.aceId, aces) : undefined,
-							search
-								? or(
-										ilike(event.name, `%${search}%`),
-										ilike(event.description, `%${search}%`),
-									)
-								: undefined,
-						),
-					),
-			]);
+				},
+				orderBy:
+					sortBy && sortBy === "oldest"
+						? asc(event.dateFrom)
+						: desc(event.dateFrom),
+				offset: pageIndex ? (pageIndex - 1) * pageSize : undefined,
+				limit: pageSize,
+			});
 
-			const filteredEvents = events.filter((event) => {
+			const moderatorsFiltered = (event: (typeof events)[number]) => {
 				if (moderatorsFilter && moderatorsFilter.length > 0) {
 					return event.membersOnEvent.some(
 						(memberOnEvent) =>
@@ -280,6 +255,23 @@ export const eventsRouter = createTRPCRouter({
 				} else {
 					return true;
 				}
+			};
+
+			const memberFiltered = (event: (typeof events)[number]) => {
+				if (memberId) {
+					return event.membersOnEvent.some(
+						(memberOnEvent) => memberOnEvent.memberId === memberId,
+					);
+				} else {
+					return true;
+				}
+			};
+
+			const filteredEvents = events.filter((event) => {
+				const passModeratorsFilter = moderatorsFiltered(event);
+				const passMemberFilter = memberFiltered(event);
+
+				return passModeratorsFilter && passMemberFilter;
 			});
 
 			const formattedEvents = filteredEvents.map((event) => {
@@ -303,7 +295,7 @@ export const eventsRouter = createTRPCRouter({
 				};
 			});
 
-			const pageCount = Math.ceil(amount / pageSize);
+			const pageCount = Math.ceil(filteredEvents.length / pageSize);
 
 			return { events: formattedEvents, pageCount };
 		}),

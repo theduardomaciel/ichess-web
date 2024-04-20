@@ -76,7 +76,7 @@ export default async function EventsPage() {
 				buttonProps={
 					isAuthenticated
 						? {
-								href: `/events/${session?.user.member?.id}`,
+								href: `/events/${session?.member?.id}`,
 								title: "Ver meus eventos",
 								icon: PawnIcon,
 							}

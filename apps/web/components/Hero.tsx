@@ -7,6 +7,7 @@ import React from "react";
 interface Props {
 	buttonProps?: React.ComponentProps<typeof Button> & {
 		icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+		iconClassName?: string;
 		href: string;
 	};
 	title: string;
@@ -19,13 +20,14 @@ export function Hero({ buttonProps, title, description, outro }: Props) {
 		children,
 		title: buttonTitle,
 		icon: Icon,
+		iconClassName,
 		href,
 		...rest
 	} = buttonProps || {};
 
 	const buttonChildren = (
 		<>
-			{Icon && <Icon width={24} height={24} />}
+			{Icon && <Icon width={24} height={24} className={iconClassName} />}
 			{buttonTitle}
 			{children}
 		</>
