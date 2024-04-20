@@ -210,64 +210,109 @@ export const eventsRouter = createTRPCRouter({
 
 			const { dateFrom, dateTo } = getPeriodsInterval(periods);
 
-			const events = await db
-				.select({
-					...getTableColumns(event),
-					member: {
-						id: member.id,
-						role: member.role,
-						username: member.username,
-					},
-					memberOnEvent: {
-						memberId: memberOnEvent.memberId,
-						eventId: memberOnEvent.eventId,
-					},
-					user: {
-						name: user.name,
-						image: user.image,
-					},
-					ace: {
-						id: ace.id,
-						name: ace.name,
-						description: ace.description,
-						hours: ace.hours,
-						projectId: ace.projectId,
-					},
-				})
-				.from(event)
-				.innerJoin(memberOnEvent, eq(event.id, memberOnEvent.eventId))
-				.innerJoin(member, eq(memberOnEvent.memberId, member.id))
-				.innerJoin(user, eq(member.userId, user.id))
-				.innerJoin(ace, eq(event.aceId, ace.id))
-				.where(
-					and(
-						eq(event.projectId, projectId),
-						dateFrom && dateTo
-							? and(
-									gte(event.dateFrom, dateFrom),
-									lte(event.dateTo, dateTo),
-								)
-							: undefined,
-						aces ? inArray(event.aceId, aces) : undefined,
-						search
-							? or(
-									ilike(event.name, `%${search}%`),
-									ilike(event.description, `%${search}%`),
-								)
-							: undefined,
-						memberId ? eq(member.id, memberId) : undefined,
-						moderatorsFilter
-							? inArray(member.id, moderatorsFilter)
-							: undefined,
+			const [events, [{ amount }]] = await Promise.all([
+				db
+					.select({
+						...getTableColumns(event),
+						member: {
+							id: member.id,
+							role: member.role,
+							username: member.username,
+						},
+						memberOnEvent: {
+							memberId: memberOnEvent.memberId,
+							eventId: memberOnEvent.eventId,
+						},
+						user: {
+							name: user.name,
+							image: user.image,
+						},
+						ace: {
+							id: ace.id,
+							name: ace.name,
+							description: ace.description,
+							hours: ace.hours,
+							projectId: ace.projectId,
+						},
+					})
+					.from(event)
+					.innerJoin(
+						memberOnEvent,
+						eq(event.id, memberOnEvent.eventId),
+					)
+					.innerJoin(member, eq(memberOnEvent.memberId, member.id))
+					.innerJoin(user, eq(member.userId, user.id))
+					.innerJoin(ace, eq(event.aceId, ace.id))
+					.where(
+						and(
+							eq(event.projectId, projectId),
+							dateFrom && dateTo
+								? and(
+										gte(event.dateFrom, dateFrom),
+										lte(event.dateTo, dateTo),
+									)
+								: undefined,
+							aces ? inArray(event.aceId, aces) : undefined,
+							search
+								? or(
+										ilike(event.name, `%${search}%`),
+										ilike(event.description, `%${search}%`),
+									)
+								: undefined,
+							memberId ? eq(member.id, memberId) : undefined,
+							moderatorsFilter
+								? inArray(member.id, moderatorsFilter)
+								: undefined,
+						),
+					)
+					.orderBy(
+						sortBy === "recent"
+							? desc(event.dateFrom)
+							: asc(event.dateFrom),
+					)
+					.limit(pageSize)
+					.offset(pageIndex ? (pageIndex - 1) * pageSize : 0),
+				db
+					.select({
+						amount: count(),
+						memberOnEvent: {
+							memberId: memberOnEvent.memberId,
+							eventId: memberOnEvent.eventId,
+						},
+					})
+					.from(event)
+					.innerJoin(
+						memberOnEvent,
+						eq(event.id, memberOnEvent.eventId),
+					)
+					.where(
+						and(
+							eq(event.projectId, projectId),
+							dateFrom && dateTo
+								? and(
+										gte(event.dateFrom, dateFrom),
+										lte(event.dateTo, dateTo),
+									)
+								: undefined,
+							aces ? inArray(event.aceId, aces) : undefined,
+							search
+								? or(
+										ilike(event.name, `%${search}%`),
+										ilike(event.description, `%${search}%`),
+									)
+								: undefined,
+							memberId
+								? eq(memberOnEvent.memberId, memberId)
+								: undefined,
+							moderatorsFilter
+								? inArray(
+										memberOnEvent.memberId,
+										moderatorsFilter,
+									)
+								: undefined,
+						),
 					),
-				)
-				.orderBy(
-					sortBy === "recent"
-						? desc(event.dateFrom)
-						: asc(event.dateFrom),
-				)
-				.limit(pageSize)
-				.offset(pageIndex * pageSize);
+			]);
 
 			const aggregatedEvents: typeof events &
 				{
@@ -345,11 +390,6 @@ export const eventsRouter = createTRPCRouter({
 			});
 
 			console.log("Aggregated events:", formattedEvents);
-
-			// console.log("Aggregated events:", aggregateEvents);
-
-			const amount = 0;
-
 			const pageCount = Math.ceil(amount / pageSize);
 
 			return { events: formattedEvents, pageCount };
