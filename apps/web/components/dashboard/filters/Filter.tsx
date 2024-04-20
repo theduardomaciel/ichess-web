@@ -31,11 +31,13 @@ import { cn } from "@/lib/utils";
 import { useDebounce } from "@/hooks/use-debounce";
 
 interface FilterProps {
-	title: string;
+	title?: string;
+	className?: string;
 	type?: "checkbox" | "radio" | "select";
 	config?: {
 		linesAmount?: number;
 		placeholder?: string;
+		className?: string;
 	};
 	prefix: string;
 	items: {
@@ -45,13 +47,22 @@ interface FilterProps {
 }
 
 const FILTERS = {
-	checkbox: CheckboxItems,
-	select: SelectItems,
-	radio: SelectItems,
+	checkbox: CheckboxFilter,
+	select: SelectFilter,
+	radio: () => {
+		return (
+			<div className="flex w-full flex-col items-start justify-center gap-4">
+				<p className="text-center text-sm font-medium text-neutral">
+					Em desenvolvimento
+				</p>
+			</div>
+		);
+	},
 };
 
 export function Filter({
 	title,
+	className,
 	type = "checkbox",
 	prefix,
 	items,
@@ -88,10 +99,17 @@ export function Filter({
 	}, [debouncedValue, prefix, toUrl, router]);
 
 	return (
-		<div className="flex w-full flex-col items-start justify-center gap-4">
-			<p className="text-center text-sm font-medium text-neutral">
-				{title}
-			</p>
+		<div
+			className={cn(
+				"flex flex-col items-start justify-center gap-4",
+				className,
+			)}
+		>
+			{title && (
+				<p className="text-nowrap text-center text-sm font-medium text-neutral">
+					{title}
+				</p>
+			)}
 			{FILTERS[type]({
 				items,
 				filters,
@@ -113,7 +131,7 @@ interface ItemsProps {
 
 interface SelectItemsProps extends ItemsProps {}
 
-function SelectItems({
+function SelectFilter({
 	items,
 	filters,
 	setFilters,
@@ -128,7 +146,7 @@ function SelectItems({
 		<Select onValueChange={handleFilterChange} defaultValue={filters[0]}>
 			<SelectTrigger
 				disabled={isPendingFilterTransition}
-				className={cn("w-full", {
+				className={cn(config?.className, {
 					"pointer-events-none animate-pulse select-none":
 						isPendingFilterTransition,
 				})}
@@ -170,7 +188,7 @@ const heightFormula = (linesAmount: number) => {
 	);
 };
 
-function CheckboxItems({
+function CheckboxFilter({
 	items,
 	filters,
 	setFilters,

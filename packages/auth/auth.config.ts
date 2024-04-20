@@ -36,7 +36,7 @@ export const authConfig = {
 		async jwt({ token, user, session, trigger }) {
 			if (user) {
 				// console.log("User", user);
-				token.role = user.member?.role || null;
+				token.member = user.member;
 			}
 
 			function isSessionAvailable(session: unknown): session is Session {
@@ -51,16 +51,18 @@ export const authConfig = {
 		},
 		session({ session, ...params }) {
 			if ("token" in params && session.user) {
-				session.role = params.token.role;
 				session.user.id = params.token.sub!;
+				session.member = params.token.member;
 			}
+
+			console.log("Session", session);
 
 			return session;
 		},
 		authorized({ auth, request: { nextUrl } }) {
 			const isLoggedIn = !!auth?.user;
-			const isMember = !!auth?.role;
-			const isAdmin = auth?.role === "admin";
+			const isMember = !!auth?.member?.role;
+			const isAdmin = auth?.member?.role === "admin";
 
 			console.log("Authorized", { isLoggedIn, isMember, isAdmin });
 			// console.log("Pathname", nextUrl.pathname);

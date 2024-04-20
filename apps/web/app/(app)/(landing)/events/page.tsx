@@ -39,7 +39,7 @@ export type EventsPageParams = z.infer<typeof getEventsParams>;
 
 export default async function EventsPage() {
 	const session = await auth();
-	const isAuthenticated = session && !!session.user.member?.role;
+	const isAuthenticated = session && !!session.member?.role;
 
 	const { events } = await serverClient.getEvents({
 		projectId: env.PROJECT_ID,
@@ -73,11 +73,15 @@ export default async function EventsPage() {
 				description="Acompanhe os eventos seguintes do IChess, tanto internos,
 				como externos, e saiba quando participar!"
 				outro={"2024.2"}
-				buttonProps={{
-					href: `/events/${session?.user.member?.id}`,
-					title: "Ver meus eventos",
-					icon: PawnIcon,
-				}}
+				buttonProps={
+					isAuthenticated
+						? {
+								href: `/events/${session?.user.member?.id}`,
+								title: "Ver meus eventos",
+								icon: PawnIcon,
+							}
+						: undefined
+				}
 			/>
 			<main className="flex flex-col items-center justify-start gap-16 py-[calc(var(--wrapper)/2)]">
 				<StyledTitle title="Evento Externos" />

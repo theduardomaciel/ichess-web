@@ -21,6 +21,7 @@ import { serverClient } from "@/lib/trpc/server";
 import { z } from "zod";
 import { getMembersParams } from "@ichess/api/routers/members";
 import { memberRoles } from "@ichess/drizzle/schema";
+import { Filter } from "@/components/dashboard/filters/Filter";
 
 export const metadata: Metadata = {
 	title: "Membros",
@@ -43,7 +44,7 @@ export default async function LandingMembers({
 		membersPageParams.parse(searchParams);
 
 	const session = await auth();
-	const isAuthenticated = session && !!session.user.member?.role;
+	const isAuthenticated = session && !!session.member?.role;
 
 	const { members, pageCount } = await serverClient.getMembers({
 		projectId: env.PROJECT_ID,
@@ -61,11 +62,15 @@ export default async function LandingMembers({
 				title="Lista de Membros"
 				description="Acompanhe a lista de atuais membros do IChess"
 				outro={"2024.2"}
-				buttonProps={{
-					href: `/members/${session?.user.member?.id}`,
-					title: "Ver meu perfil",
-					icon: AccountIcon,
-				}}
+				buttonProps={
+					isAuthenticated
+						? {
+								href: `/members/${session?.member?.id}`,
+								title: "Ver meu perfil",
+								icon: AccountIcon,
+							}
+						: undefined
+				}
 			/>
 			<main className="flex min-h-screen flex-col items-start justify-start gap-6 px-wrapper py-[calc(var(--wrapper)/2)]">
 				{!isAuthenticated ? (
@@ -76,8 +81,23 @@ export default async function LandingMembers({
 						plataforma com seu e-mail institucional!
 					</NotLogged>
 				) : null}
-				<div className="flex w-full flex-row items-center justify-between">
-					<SearchBar placeholder="Pesquisar membros" key={r} />
+				<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
+					<SearchBar key={r} placeholder="Pesquisar membros" />
+					<Filter
+						type="select"
+						items={[
+							{ value: "any", name: "Qualquer um" },
+							{ value: "member", name: "Membro" },
+							{ value: "admin", name: "Moderador" },
+						]}
+						prefix="role"
+						title="Filtrar por cargo"
+						className="flex-row items-center"
+						config={{
+							placeholder: "Qualquer um",
+							className: "w-40",
+						}}
+					/>
 				</div>
 				<Suspense>
 					<ul className="mb-auto grid w-full grid-cols-2 gap-4">
@@ -96,6 +116,7 @@ export default async function LandingMembers({
 														member.joinedAt,
 											)?.slug
 										}
+										isAuthenticated={isAuthenticated}
 									/>
 								);
 							})}

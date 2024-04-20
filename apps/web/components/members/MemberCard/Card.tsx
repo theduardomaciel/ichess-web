@@ -96,7 +96,7 @@ export async function MemberCard({ id: memberId, variant }: Props) {
 				</ul>
 			</div>
 			<DialogFooter>
-				{requestClientRole === "admin" ? (
+				{requestClientRole === "admin" && member.role === "member" ? (
 					<Button variant={"destructive"} className="w-full" asChild>
 						<Link href={`/auth`} className="w-full">
 							Remover membro

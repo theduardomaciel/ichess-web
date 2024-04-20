@@ -101,10 +101,12 @@ export default async function DashboardMembersPage({
 						{ name: "Moderador", value: "admin" },
 						{ name: "Membro", value: "member" },
 					]}
+					className="w-full"
 					prefix="role"
 					title="Filtrar por cargo"
 					config={{
 						placeholder: "Escolha um cargo",
+						className: "w-full",
 					}}
 				/>
 			</Filters>

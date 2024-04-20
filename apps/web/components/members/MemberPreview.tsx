@@ -4,6 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 // Icons
+import SinceIcon from "@/public/icons/since.svg";
 import AccountIcon from "@/public/icons/account.svg";
 import PersonCheckIcon from "@/public/icons/person_check.svg";
 
@@ -110,12 +111,14 @@ interface GuestProps {
 	className?: Props["className"];
 	member: Props["member"];
 	periodSlug?: string;
+	isAuthenticated?: boolean | null;
 }
 
 export function MemberGuestPreview({
 	className,
 	member,
 	periodSlug,
+	isAuthenticated,
 }: GuestProps) {
 	return (
 		<a href={`https://chess.com/member/${member.username}`} target="_blank">
@@ -136,19 +139,26 @@ export function MemberGuestPreview({
 					<div className="flex flex-col items-start justify-start">
 						<div className="flex flex-row items-center justify-start gap-2">
 							<h3 className="text-left text-base font-bold">
-								{member.user?.name}
+								{isAuthenticated
+									? member.user?.name
+									: member.username}
 							</h3>
-							<span className="text-xs font-medium text-foreground opacity-50">
-								@{member.username}
-							</span>
+							{isAuthenticated && (
+								<span className="text-xs font-medium text-foreground opacity-50">
+									@{member.username}
+								</span>
+							)}
 						</div>
 						{periodSlug ? (
-							<p>
-								{member.role === "admin"
-									? "Moderador"
-									: "Membro"}{" "}
-								desde {periodSlug}
-							</p>
+							<div className="flex flex-row items-center justify-start gap-2">
+								<SinceIcon className="h-4 w-4" />
+								<p>
+									{member.role === "admin"
+										? "Moderador"
+										: "Membro"}{" "}
+									desde {periodSlug}
+								</p>
+							</div>
 						) : (
 							<Skeleton className="h-4 w-28" />
 						)}

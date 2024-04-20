@@ -83,6 +83,8 @@ export const membersRouter = createTRPCRouter({
 
 			const requestUserId = ctx.session?.user.id;
 
+			console.log("requestUserId", requestUserId);
+
 			const requestMember = requestUserId
 				? await db.query.member.findFirst({
 						where: (fields, { eq }) =>

@@ -7,10 +7,11 @@ import { GoogleButton } from "@/components/auth/SignInButton";
 
 interface Props {
 	className?: string;
+	href?: string;
 	children: ReactNode;
 }
 
-export function NotLogged({ className, children }: Props) {
+export function NotLogged({ className, href, children }: Props) {
 	return (
 		<div
 			className={cn(
@@ -23,7 +24,7 @@ export function NotLogged({ className, children }: Props) {
 				{children ||
 					"Você precisa estar logado para ver os eventos internos."}
 			</span>
-			<GoogleButton className="px-8 max-md:w-full" />
+			<GoogleButton className="px-8 max-md:w-full" callbackUrl={href} />
 		</div>
 	);
 }

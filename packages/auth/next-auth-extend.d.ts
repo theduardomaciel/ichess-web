@@ -24,12 +24,12 @@ declare module "next-auth" {
 
 	export interface Session extends DefaultSession {
 		user: User;
-		role: Role | null;
+		member: CustomUser["member"];
 	}
 }
 
 declare module "next-auth/jwt" {
 	interface JWT extends DefaultJWT {
-		role: Role | null;
+		member: CustomUser["member"];
 	}
 }

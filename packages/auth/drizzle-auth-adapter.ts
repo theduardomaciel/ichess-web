@@ -194,6 +194,8 @@ export const drizzleAuthAdapter: Adapter = {
 			return null;
 		}
 
+		console.log("drizzleSession", drizzleSession);
+
 		const { user, ...session } = drizzleSession;
 
 		if (user) {

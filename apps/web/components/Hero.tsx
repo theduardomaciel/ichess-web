@@ -45,13 +45,15 @@ export function Hero({ buttonProps, title, description, outro }: Props) {
 					</p>
 				)}
 			</div>
-			<Button asChild size={"lg"} title={buttonTitle} {...rest}>
-				{href ? (
-					<Link href={href}>{buttonChildren}</Link>
-				) : (
-					buttonChildren
-				)}
-			</Button>
+			{buttonProps && (
+				<Button asChild size={"lg"} title={buttonTitle} {...rest}>
+					{href ? (
+						<Link href={href}>{buttonChildren}</Link>
+					) : (
+						buttonChildren
+					)}
+				</Button>
+			)}
 		</div>
 	);
 }
