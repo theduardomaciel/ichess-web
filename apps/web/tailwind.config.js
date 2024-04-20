@@ -89,6 +89,9 @@ const config = {
 			padding: {
 				wrapper: "var(--wrapper)",
 			},
+			margin: {
+				wrapper: "var(--wrapper)",
+			},
 			keyframes: {
 				"accordion-down": {
 					from: { height: "0" },

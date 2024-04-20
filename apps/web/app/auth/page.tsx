@@ -1,34 +1,61 @@
-export default function AuthenticatedPage() {
+import Link from "next/link";
+
+// Components
+import { Button } from "@/components/ui/button";
+
+// Auth
+import { auth, signOut } from "@ichess/auth";
+
+export default async function AuthenticatedPage() {
+	const session = await auth();
+	const isAuthenticated = session && !!session.member?.role;
+
+	async function signOutAction() {
+		"use server";
+
+		await signOut({
+			redirectTo: "/",
+		});
+	}
+
 	return (
-		<div className="relative flex min-h-screen flex-col items-center justify-center">
-			<div className="inline-flex h-56 w-96 flex-col items-start justify-start gap-4 rounded-lg border border-stone-700 bg-stone-800 p-6">
-				<div className="text-center font-['Manrope'] text-lg font-bold text-white">
-					👋 Olá, Eduardo Maciel!
+		<form
+			action={signOutAction}
+			className="relative flex min-h-screen flex-col items-center justify-center"
+		>
+			<div className="mx-wrapper inline-flex max-w-md flex-col items-start justify-start gap-4 rounded-lg border border-gray-200 bg-gray-400 p-6">
+				<div className="text-center text-lg font-bold text-white">
+					👋 Olá, {session?.user.name}!
 				</div>
-				<div className="self-stretch font-['Manrope'] text-sm font-medium leading-tight text-zinc-300">
-					Você já pode visualizar seus dados pessoais, marcar presença
-					em eventos e realizar todas as atividades de um membro do
-					IChess! <br />
-					<br />
-					Você está logado com: ema2@ic.ufal.br
+				<div className="self-stretch  text-sm font-medium leading-tight text-zinc-300">
+					{isAuthenticated ? (
+						<>
+							Você já pode visualizar seus dados pessoais, marcar
+							presença em eventos e realizar todas as atividades
+							de um membro do IChess! <br />
+							<br />
+							Você está logado com: {session?.user.email}
+						</>
+					) : (
+						<>
+							Você já criou sua conta e está pronto para ingressar
+							no IChess! <br />
+							Agora, basta apenas realizar seu cadastro para
+							participar de todas as atividades do grupo. <br />
+							<br />
+							Você está logado com: {session?.user.email}
+						</>
+					)}
 				</div>
 				<div className="inline-flex items-center justify-end gap-2.5 self-stretch">
-					<div className="inline-flex flex-col items-center justify-center gap-2.5 rounded-lg">
-						<div className="inline-flex items-center justify-center gap-4 self-stretch rounded-md border border-zinc-300 px-4 py-2 shadow">
-							<div className="font-['Manrope'] text-base font-semibold tracking-tight text-white">
-								Deslogar
-							</div>
-						</div>
-					</div>
-					<div className="inline-flex flex-col items-center justify-center gap-2.5 rounded-lg">
-						<div className="inline-flex items-center justify-center gap-4 self-stretch rounded-md bg-lime-500 px-4 py-2 shadow">
-							<div className="font-['Manrope'] text-base font-semibold tracking-tight text-white">
-								Ver meu perfil
-							</div>
-						</div>
-					</div>
+					<Button variant={"outline"}>Deslogar</Button>
+					<Button asChild>
+						<Link href={`/members/${session?.member?.id}`}>
+							Ver meu perfil
+						</Link>
+					</Button>
 				</div>
 			</div>
-		</div>
+		</form>
 	);
 }

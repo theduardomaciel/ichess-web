@@ -55,7 +55,7 @@ export const authConfig = {
 				session.member = params.token.member;
 			}
 
-			console.log("Session", session);
+			// console.log("Session", session);
 
 			return session;
 		},
