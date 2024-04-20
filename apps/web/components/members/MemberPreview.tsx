@@ -7,11 +7,16 @@ import { cn } from "@/lib/utils";
 import AccountIcon from "@/public/icons/account.svg";
 import PersonCheckIcon from "@/public/icons/person_check.svg";
 
+// Icons
+import ChessIcon from "@/public/logos/chess.svg";
+import ExternalLinkIcon from "@/public/icons/external_link.svg";
+
 // API
 import type { RouterOutput } from "@ichess/api";
 import { MemberRemove } from "./MemberRemove";
+import { Skeleton } from "../ui/skeleton";
 
-interface MemberPreviewProps {
+interface Props {
 	className?: string;
 	memberCardHref: string;
 	event?: {
@@ -26,7 +31,7 @@ export function MemberPreview({
 	event,
 	memberCardHref,
 	member,
-}: MemberPreviewProps) {
+}: Props) {
 	return (
 		<li
 			className={cn(
@@ -98,5 +103,62 @@ export function MemberPreview({
 				</div>
 			</div>
 		</li>
+	);
+}
+
+interface GuestProps {
+	className?: Props["className"];
+	member: Props["member"];
+	periodSlug?: string;
+}
+
+export function MemberGuestPreview({
+	className,
+	member,
+	periodSlug,
+}: GuestProps) {
+	return (
+		<a href={`https://chess.com/member/${member.username}`} target="_blank">
+			<li
+				className={cn(
+					"flex w-full flex-row items-center justify-between gap-4 rounded-lg border border-primary-200/50 bg-gray-300 px-8 py-4 transition-colors hover:bg-gray-200",
+					className,
+				)}
+			>
+				<div className="flex flex-row items-center justify-start gap-4">
+					<Image
+						src={member.user?.image ?? ""}
+						width={42}
+						height={42}
+						alt="Member profile picture"
+						className="rounded-full"
+					/>
+					<div className="flex flex-col items-start justify-start">
+						<div className="flex flex-row items-center justify-start gap-2">
+							<h3 className="text-left text-base font-bold">
+								{member.user?.name}
+							</h3>
+							<span className="text-xs font-medium text-foreground opacity-50">
+								@{member.username}
+							</span>
+						</div>
+						{periodSlug ? (
+							<p>
+								{member.role === "admin"
+									? "Moderador"
+									: "Membro"}{" "}
+								desde {periodSlug}
+							</p>
+						) : (
+							<Skeleton className="h-4 w-28" />
+						)}
+					</div>
+				</div>
+				<div className="flex flex-row items-center justify-end gap-2">
+					<ChessIcon />
+					<ExternalLinkIcon width={14} height={14} />
+				</div>
+			</li>
+		</a>
 	);
 }

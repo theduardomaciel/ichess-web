@@ -21,7 +21,7 @@ import { getPeriodsInterval, transformSingleToArray } from "../utils";
 
 // API
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const getMembersParams = z.object({
 	projectId: z.string().uuid(),
@@ -130,7 +130,7 @@ export const membersRouter = createTRPCRouter({
 			};
 		}),
 
-	getMembers: protectedProcedure
+	getMembers: publicProcedure
 		.input(getMembersParams)
 		.query(async ({ input }) => {
 			const {

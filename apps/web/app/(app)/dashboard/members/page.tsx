@@ -3,7 +3,7 @@ import { Metadata } from "next";
 
 // Components
 import { MemberPreview } from "@/components/members/MemberPreview";
-import { DashboardPagination } from "@/components/dashboard/Pagination";
+import { PagesDisplay } from "@/components/Pagination";
 import { Empty } from "@/components/Empty";
 
 // Filters and Sorting
@@ -33,7 +33,7 @@ const membersPageParams = getMembersParams.partial().extend({
 	role: z.enum(["any", ...memberRoles]).optional(),
 });
 
-export type MembersPageParams = z.infer<typeof membersPageParams>;
+type MembersPageParams = z.infer<typeof membersPageParams>;
 
 export default async function DashboardMembersPage({
 	searchParams,
@@ -85,7 +85,7 @@ export default async function DashboardMembersPage({
 				}
 				{members && members.length > 0 && (
 					<Suspense fallback={null}>
-						<DashboardPagination
+						<PagesDisplay
 							currentPage={page || 1}
 							pageCount={pageCount}
 						/>

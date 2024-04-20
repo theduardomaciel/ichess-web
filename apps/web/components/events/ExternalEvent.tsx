@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { cn } from "@/lib/utils";
+
 // Assets
 import ArrowIcon from "@/public/icons/arrow_right.svg";
 
@@ -7,26 +9,30 @@ import ArrowIcon from "@/public/icons/arrow_right.svg";
 import { Button } from "@/components/ui/button";
 import { DateDisplay } from "@/components/ui/calendar";
 
-// Types
-import type { Event } from "@/lib/fake_data";
+// API
+import { RouterOutput } from "@ichess/api";
 
-export function ExternalEvent({
-	name,
-	description,
-	dateFrom,
-	timeFrom,
-	timeTo,
-}: Event) {
+interface Props {
+	className?: string;
+	event: RouterOutput["getEvent"]["event"];
+}
+
+export function ExternalEvent({ className, event }: Props) {
 	return (
-		<div className="w-full p-9 border-2 border-primary-200 rounded-md bg-gray-300">
-			<h1 className="text-2xl font-title font-bold">
-				{name || "(Sem título)"}
+		<li
+			className={cn(
+				"w-full cursor-default list-none rounded-md border-2 border-primary-200 bg-gray-300 p-9",
+				className,
+			)}
+		>
+			<h1 className="font-title text-2xl font-bold">
+				{event.name || "(Sem título)"}
 			</h1>
 			<p className="pb-6 text-[#838380]">
-				{description || "(Evento sem descrição)"}
+				{event.description || "(Evento sem descrição)"}
 			</p>
 
-			<div className="flex w-full flex-wrap justify-between items-center gap-4">
+			<div className="flex w-full flex-wrap items-center justify-between gap-4">
 				<Button asChild className="" size={"lg"}>
 					<Link href="/">
 						Quero participar
@@ -36,12 +42,18 @@ export function ExternalEvent({
 
 				<DateDisplay
 					size="md"
-					dateString={`${dateFrom.toLocaleDateString("pt-BR", {
+					dateString={`${event.dateFrom.toLocaleDateString("pt-BR", {
 						month: "2-digit",
 						day: "numeric",
-					})} • das ${timeFrom} às ${timeTo}`}
+					})} • das ${event.dateFrom.toLocaleTimeString("pt-BR", {
+						hour: "2-digit",
+						minute: "2-digit",
+					})} às ${event.dateTo.toLocaleTimeString("pt-BR", {
+						hour: "2-digit",
+						minute: "2-digit",
+					})}`}
 				/>
 			</div>
-		</div>
+		</li>
 	);
 }

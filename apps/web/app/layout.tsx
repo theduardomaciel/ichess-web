@@ -7,7 +7,7 @@ import "@dotlottie/react-player/dist/index.css";
 import { cn } from "@/lib/utils";
 
 // Components
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/toast/toaster";
 import { Providers } from "./providers";
 
 export const fontSans = FontSans({

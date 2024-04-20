@@ -1,10 +1,10 @@
 import { db } from "@ichess/drizzle";
 
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const periodsRouter = createTRPCRouter({
-	getPeriods: protectedProcedure.query(async () => {
+	getPeriods: publicProcedure.query(async () => {
 		const periods = await db.query.period.findMany();
 
 		return {
@@ -12,7 +12,7 @@ export const periodsRouter = createTRPCRouter({
 		};
 	}),
 
-	getPeriod: protectedProcedure
+	getPeriod: publicProcedure
 		.input(
 			z.object({
 				periodId: z.string().min(1),

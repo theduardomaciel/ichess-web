@@ -10,11 +10,16 @@ import { AceLabel } from "@/components/dashboard/AceCard";
 import type { RouterOutput } from "@ichess/api";
 
 interface Props {
+	className?: string;
 	event: RouterOutput["getEvents"]["events"][0];
 	showModerators?: boolean;
 }
 
-export function EventPreview({ event, showModerators = true }: Props) {
+export function EventPreview({
+	className,
+	event,
+	showModerators = true,
+}: Props) {
 	const moderators = event.membersOnEvent.filter((m) => m.role === "admin");
 	const moderatorsImages = moderators
 		.filter((m) => m.user.image)
@@ -23,7 +28,12 @@ export function EventPreview({ event, showModerators = true }: Props) {
 	const lastModerator = moderators.length > 1 ? moderators.pop() : null;
 
 	return (
-		<li className="flex w-full flex-col items-start justify-start gap-4 rounded-lg bg-gray-300 p-9 outline-gray-200 transition-[background-color,outline] hover:bg-gray-400 hover:outline">
+		<li
+			className={cn(
+				"flex flex-col items-start justify-start gap-4 rounded-lg bg-gray-300 p-9 outline-gray-200 transition-[background-color,outline] hover:bg-gray-400 hover:outline",
+				className,
+			)}
+		>
 			<div className="flex w-full flex-row flex-wrap items-center justify-between gap-2">
 				<h3 className="text-left font-title text-lg font-extrabold leading-snug lg:text-xl">
 					{event.name}

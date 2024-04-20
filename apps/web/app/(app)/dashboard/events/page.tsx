@@ -6,7 +6,7 @@ import Link from "next/link";
 
 // Components
 import { EventPreview } from "@/components/events/EventPreview";
-import { DashboardPagination } from "@/components/dashboard/Pagination";
+import { PagesDisplay } from "@/components/Pagination";
 import { Empty } from "@/components/Empty";
 
 // Filters and Sorting
@@ -90,7 +90,7 @@ export default async function DashboardEventsPage({
 				}
 				{events && events.length > 0 && (
 					<Suspense fallback={null}>
-						<DashboardPagination
+						<PagesDisplay
 							currentPage={page || 1}
 							pageCount={pageCount}
 						/>

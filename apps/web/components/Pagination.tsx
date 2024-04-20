@@ -19,7 +19,7 @@ interface Props {
 
 const MAX_PAGINATION_PAGES = 5;
 
-export function DashboardPagination({ currentPage, pageCount }: Props) {
+export function PagesDisplay({ currentPage, pageCount }: Props) {
 	const { toUrl } = useQueryString();
 
 	const canGoBack = currentPage > 1;

@@ -9,6 +9,7 @@ interface CustomUser {
 	period: Period | null;
 	registrationId: string | null;
 	member?: {
+		id: string | null;
 		role: Role | null;
 		username: string | null;
 	};

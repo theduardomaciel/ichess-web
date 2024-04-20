@@ -34,6 +34,7 @@ export const drizzleAuthAdapter: Adapter = {
 							eq(fields.projectId, env.PROJECT_ID),
 						),
 					columns: {
+						id: true,
 						role: true,
 						username: true,
 					},
@@ -52,6 +53,7 @@ export const drizzleAuthAdapter: Adapter = {
 			return {
 				...rest,
 				member: {
+					id: members[0].id,
 					role: members[0].role,
 					username: members[0].username,
 				},
@@ -74,6 +76,7 @@ export const drizzleAuthAdapter: Adapter = {
 							eq(fields.projectId, env.PROJECT_ID),
 						),
 					columns: {
+						id: true,
 						role: true,
 						username: true,
 					},
@@ -89,6 +92,7 @@ export const drizzleAuthAdapter: Adapter = {
 			return {
 				...rest,
 				member: {
+					id: members[0].id,
 					role: members[0].role,
 					username: members[0].username,
 				},
@@ -102,6 +106,7 @@ export const drizzleAuthAdapter: Adapter = {
 		const [authUser] = await db
 			.select({
 				user: getTableColumns(user),
+				id: member.id,
 				username: member.username,
 				role: member.role,
 			})
@@ -118,11 +123,12 @@ export const drizzleAuthAdapter: Adapter = {
 			);
 
 		if (authUser) {
-			const { username, role, ...rest } = authUser;
+			const { id, username, role, ...rest } = authUser;
 
 			return {
 				...rest.user,
 				member: {
+					id,
 					username,
 					role,
 				},
@@ -174,6 +180,7 @@ export const drizzleAuthAdapter: Adapter = {
 									eq(fields.projectId, env.PROJECT_ID),
 								),
 							columns: {
+								id: true,
 								role: true,
 								username: true,
 							},

@@ -42,7 +42,7 @@ export async function MemberCard({ id: memberId, variant }: Props) {
 			<DialogHeader className="flex flex-col items-center justify-start gap-6">
 				<Image
 					src={member.user.image || "https://github.com/juquinha.png"}
-					alt="Eduardo Maciel"
+					alt={member.user.name || "User profile image"}
 					className="overflow-hidden rounded-2xl"
 					width={128}
 					height={128}

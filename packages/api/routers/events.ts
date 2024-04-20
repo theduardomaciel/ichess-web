@@ -20,7 +20,7 @@ import {
 import { z } from "zod";
 
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const getEventsParams = z.object({
 	search: z.string().optional(),
@@ -164,7 +164,7 @@ export const eventsRouter = createTRPCRouter({
 			};
 		}),
 
-	getEvents: protectedProcedure
+	getEvents: publicProcedure
 		.input(
 			getEventsParams.extend({
 				projectId: z.string().uuid(),
