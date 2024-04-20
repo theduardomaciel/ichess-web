@@ -99,7 +99,7 @@ export default async function EventsPage() {
 									{monthExternal.map((event) => (
 										<CarouselItem
 											key={event.id}
-											className="basis-[calc(100%-var(--wrapper)*2)] pl-8"
+											className="ml-[var(--wrapper)] basis-[calc(100%-var(--wrapper)*2)] pl-8"
 										>
 											<ExternalEvent event={event} />
 										</CarouselItem>
