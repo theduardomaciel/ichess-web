@@ -20,7 +20,7 @@ export function EventPreview({
 	event,
 	showModerators = true,
 }: Props) {
-	const moderators = event.membersOnEvent.filter((m) => m.role === "admin");
+	const moderators = event.members.filter((m) => m.role === "admin");
 	const moderatorsImages = moderators
 		.filter((m) => m.user.image)
 		.map((m) => m.user.image!);
@@ -71,7 +71,8 @@ export function EventPreview({
 					<p className="text-right text-sm font-semibold text-neutral">
 						+ de{" "}
 						<span className="underline">
-							{event.membersOnEvent.length - 1} membros
+							{event.members.length - 1} membro
+							{event.members.length !== 1 && "s"}
 						</span>{" "}
 						participaram
 					</p>

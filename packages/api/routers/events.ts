@@ -1,5 +1,6 @@
 import { db } from "@ichess/drizzle";
 import {
+	ace,
 	event,
 	eventTypes,
 	member,
@@ -225,11 +226,46 @@ export const eventsRouter = createTRPCRouter({
 						name: user.name,
 						image: user.image,
 					},
+					ace: {
+						id: ace.id,
+						name: ace.name,
+						description: ace.description,
+						hours: ace.hours,
+						projectId: ace.projectId,
+					},
 				})
 				.from(event)
-				.leftJoin(memberOnEvent, eq(event.id, memberOnEvent.eventId))
-				.leftJoin(member, eq(memberOnEvent.memberId, member.id))
-				.leftJoin(user, eq(member.userId, user.id))
+				.innerJoin(memberOnEvent, eq(event.id, memberOnEvent.eventId))
+				.innerJoin(member, eq(memberOnEvent.memberId, member.id))
+				.innerJoin(user, eq(member.userId, user.id))
+				.innerJoin(ace, eq(event.aceId, ace.id))
+				.where(
+					and(
+						eq(event.projectId, projectId),
+						dateFrom && dateTo
+							? and(
+									gte(event.dateFrom, dateFrom),
+									lte(event.dateTo, dateTo),
+								)
+							: undefined,
+						aces ? inArray(event.aceId, aces) : undefined,
+						search
+							? or(
+									ilike(event.name, `%${search}%`),
+									ilike(event.description, `%${search}%`),
+								)
+							: undefined,
+						memberId ? eq(member.id, memberId) : undefined,
+						moderatorsFilter
+							? inArray(member.id, moderatorsFilter)
+							: undefined,
+					),
+				)
+				.orderBy(
+					sortBy === "recent"
+						? desc(event.dateFrom)
+						: asc(event.dateFrom),
+				)
 				.limit(pageSize)
 				.offset(pageIndex * pageSize);
 
@@ -246,47 +282,65 @@ export const eventsRouter = createTRPCRouter({
 					}>;
 				}[] = [];
 
-			const aggregateEvents = events.reduce((acc, event) => {
-				const existingEvent = acc.find(({ id }) => id === event.id);
+			const aggregateEvents = events.reduce(
+				(acc: typeof aggregatedEvents, event) => {
+					const existingEvent = acc.find(
+						({ id }) => id === event.id,
+					) as (typeof aggregatedEvents)[number];
 
-				if (!existingEvent) {
-					acc.push({
-						...event,
-						members: event.member
-							? [
-									{
-										id: event.member.id,
-										role: event.member.role,
-										username: event.member.username,
-										user: {
-											name: event.user.name,
-											image: event.user.image,
+					if (!existingEvent) {
+						acc.push({
+							...event,
+							members: event.member
+								? [
+										{
+											id: event.member.id,
+											role: event.member.role,
+											username: event.member.username,
+											user: {
+												name: event.user.name!,
+												image: event.user.image!,
+											},
 										},
-									},
-								]
-							: [],
-					});
-				} else {
-					existingEvent.members.push({
-						id: event.member.id,
-						role: event.member.role,
-						username: event.member.username,
-						user: {
-							name: event.user.name,
-							image: event.user.image,
-						},
-					});
-				}
+									]
+								: [],
+						});
+					} else {
+						existingEvent.members.push({
+							id: event.member.id,
+							role: event.member.role,
+							username: event.member.username,
+							user: {
+								name: event.user.name!,
+								image: event.user.image!,
+							},
+						});
+					}
 
-				return acc;
-			}, aggregatedEvents);
+					return acc;
+				},
+				aggregatedEvents,
+			);
 
-			// Remove unnecessary fields
+			// Remove unnecessary fields (member, memberOnEvent, user)
 			const formattedEvents = aggregateEvents.map((event) => {
-				const { member, memberOnEvent, user, ...rest } = event;
+				const { member, user, memberOnEvent, ...rest } = event;
+
+				const typedEvent = rest as (typeof aggregateEvents)[number];
+				const members = typedEvent.members.map((member) => {
+					const { user, ...rest } = member;
+
+					return {
+						...rest,
+						user: {
+							...user,
+						},
+					};
+				});
+
 				return {
 					...rest,
-					members: event.members,
+					members,
 				};
 			});
 
@@ -518,6 +572,7 @@ export const eventsRouter = createTRPCRouter({
 			try {
 				await db.delete(event).where(eq(event.id, eventId));
 			} catch (error) {
+				console.error("Error deleting event:", error);
 				throw new TRPCError({
 					message: "Event not found.",
 					code: "BAD_REQUEST",
