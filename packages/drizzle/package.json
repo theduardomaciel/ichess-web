@@ -24,7 +24,7 @@
     "@ichess/eslint-config": "workspace:*",
     "@ichess/prettier-config": "workspace:*",
     "@ichess/typescript-config": "workspace:*",
-    "drizzle-kit": "^0.20.16",
+    "drizzle-kit": "^0.20.17",
     "drizzle-orm": "^0.30.8",
     "pg": "^8.11.5"
   },

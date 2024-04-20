@@ -1,5 +1,11 @@
 import { db } from "@ichess/drizzle";
-import { event, eventTypes, memberOnEvent } from "@ichess/drizzle/schema";
+import {
+	event,
+	eventTypes,
+	member,
+	memberOnEvent,
+	user,
+} from "@ichess/drizzle/schema";
 import {
 	getMembersIdsToMutate,
 	getPeriodsInterval,
@@ -15,6 +21,8 @@ import {
 	or,
 	ilike,
 	asc,
+	count,
+	getTableColumns,
 } from "@ichess/drizzle/orm";
 import { z } from "zod";
 
@@ -201,101 +209,94 @@ export const eventsRouter = createTRPCRouter({
 
 			const { dateFrom, dateTo } = getPeriodsInterval(periods);
 
-			const events = await db.query.event.findMany({
-				where(fields) {
-					return and(
-						eq(fields.projectId, projectId),
-						dateFrom && dateTo
-							? and(
-									gte(fields.dateFrom, dateFrom),
-									lte(fields.dateTo, dateTo),
-								)
-							: undefined,
-						aces ? inArray(fields.aceId, aces) : undefined,
-						search
-							? or(
-									ilike(fields.name, `%${search}%`),
-									ilike(fields.description, `%${search}%`),
-								)
-							: undefined,
-					);
-				},
-				with: {
-					ace: true,
-					membersOnEvent: {
-						with: {
-							member: {
-								with: {
-									user: {
-										columns: {
-											name: true,
-											image: true,
+			const events = await db
+				.select({
+					...getTableColumns(event),
+					member: {
+						id: member.id,
+						role: member.role,
+						username: member.username,
+					},
+					memberOnEvent: {
+						memberId: memberOnEvent.memberId,
+						eventId: memberOnEvent.eventId,
+					},
+					user: {
+						name: user.name,
+						image: user.image,
+					},
+				})
+				.from(event)
+				.leftJoin(memberOnEvent, eq(event.id, memberOnEvent.eventId))
+				.leftJoin(member, eq(memberOnEvent.memberId, member.id))
+				.leftJoin(user, eq(member.userId, user.id))
+				.limit(pageSize)
+				.offset(pageIndex * pageSize);
+
+			const aggregatedEvents: typeof events &
+				{
+					members: Array<{
+						id: string;
+						role: string;
+						username: string;
+						user: {
+							name: string;
+							image: string;
+						};
+					}>;
+				}[] = [];
+
+			const aggregateEvents = events.reduce((acc, event) => {
+				const existingEvent = acc.find(({ id }) => id === event.id);
+
+				if (!existingEvent) {
+					acc.push({
+						...event,
+						members: event.member
+							? [
+									{
+										id: event.member.id,
+										role: event.member.role,
+										username: event.member.username,
+										user: {
+											name: event.user.name,
+											image: event.user.image,
 										},
 									},
-								},
-							},
+								]
+							: [],
+					});
+				} else {
+					existingEvent.members.push({
+						id: event.member.id,
+						role: event.member.role,
+						username: event.member.username,
+						user: {
+							name: event.user.name,
+							image: event.user.image,
 						},
-					},
-				},
-				orderBy:
-					sortBy && sortBy === "oldest"
-						? asc(event.dateFrom)
-						: desc(event.dateFrom),
-				offset: pageIndex ? (pageIndex - 1) * pageSize : undefined,
-				limit: pageSize,
-			});
-
-			const moderatorsFiltered = (event: (typeof events)[number]) => {
-				if (moderatorsFilter && moderatorsFilter.length > 0) {
-					return event.membersOnEvent.some(
-						(memberOnEvent) =>
-							memberOnEvent.member.role === "admin" &&
-							moderatorsFilter.includes(memberOnEvent.memberId),
-					);
-				} else {
-					return true;
+					});
 				}
-			};
 
-			const memberFiltered = (event: (typeof events)[number]) => {
-				if (memberId) {
-					return event.membersOnEvent.some(
-						(memberOnEvent) => memberOnEvent.memberId === memberId,
-					);
-				} else {
-					return true;
-				}
-			};
+				return acc;
+			}, aggregatedEvents);
 
-			const filteredEvents = events.filter((event) => {
-				const passModeratorsFilter = moderatorsFiltered(event);
-				const passMemberFilter = memberFiltered(event);
-
-				return passModeratorsFilter && passMemberFilter;
-			});
-
-			const formattedEvents = filteredEvents.map((event) => {
+			// Remove unnecessary fields
+			const formattedEvents = aggregateEvents.map((event) => {
+				const { member, memberOnEvent, user, ...rest } = event;
 				return {
-					...event,
-					membersOnEvent: event.membersOnEvent.map(
-						(memberOnEvent) => {
-							const { member } = memberOnEvent;
-
-							return {
-								...{
-									...member,
-									user: {
-										name: member.user.name,
-										image: member.user.image,
-									},
-								},
-							};
-						},
-					),
+					...rest,
+					members: event.members,
 				};
 			});
 
-			const pageCount = Math.ceil(filteredEvents.length / pageSize);
+			console.log("Aggregated events:", formattedEvents);
+
+			// console.log("Aggregated events:", aggregateEvents);
+
+			const amount = 0;
+
+			const pageCount = Math.ceil(amount / pageSize);
 
 			return { events: formattedEvents, pageCount };
 		}),

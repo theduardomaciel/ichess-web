@@ -120,7 +120,7 @@ export default async function EventsPage() {
 							</Carousel>
 						</div>
 					) : (
-						<NoEvents />
+						<NoEvents className="ml-wrapper w-[calc(100%-var(--wrapper)*2)]" />
 					)}
 				</div>
 
@@ -155,7 +155,14 @@ export default async function EventsPage() {
 						<h3 className="text-start font-title text-2xl font-bold text-neutral">
 							Esta Semana
 						</h3>
-						<div className="flex w-full grid-cols-2 flex-col gap-4 md:grid">
+						<div
+							className={cn(
+								"flex w-full grid-cols-2 flex-col gap-4 md:grid",
+								{
+									"md:flex": !thisWeekInternal.length,
+								},
+							)}
+						>
 							{thisWeekInternal.length ? (
 								thisWeekInternal.map((event) => (
 									<EventPreview

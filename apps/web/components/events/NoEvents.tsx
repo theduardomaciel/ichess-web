@@ -1,7 +1,18 @@
-export function NoEvents() {
+import { cn } from "@/lib/utils";
+
+interface Props {
+	className?: string;
+}
+
+export function NoEvents({ className }: Props) {
 	return (
-		<div className="flex-1 py-5 border-2 text-center border-primary-200/50 border-dashed rounded opacity-50 pointer-events-none select-none">
-			<span className="text-foreground text-xl font-title font-bold">
+		<div
+			className={cn(
+				"pointer-events-none flex-1 select-none rounded border-2 border-dashed border-primary-200/50 py-5 text-center opacity-50",
+				className,
+			)}
+		>
+			<span className="font-title text-xl font-bold text-foreground">
 				A definir...
 			</span>
 		</div>
