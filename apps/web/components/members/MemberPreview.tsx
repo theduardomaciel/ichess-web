@@ -124,7 +124,7 @@ export function MemberGuestPreview({
 		<a href={`https://chess.com/member/${member.username}`} target="_blank">
 			<li
 				className={cn(
-					"flex w-full flex-row items-center justify-between gap-4 rounded-lg border border-primary-200/50 bg-gray-300 px-8 py-4 transition-colors hover:bg-gray-200",
+					"flex w-full flex-row flex-wrap items-center justify-between gap-4 rounded-lg border border-primary-200/50 bg-gray-300 px-8 py-4 transition-colors hover:bg-gray-200",
 					className,
 				)}
 			>
@@ -137,7 +137,7 @@ export function MemberGuestPreview({
 						className="rounded-full"
 					/>
 					<div className="flex flex-col items-start justify-start">
-						<div className="flex flex-row items-center justify-start gap-2">
+						<div className="flex flex-row flex-wrap items-center justify-start gap-0 md:gap-2">
 							<h3 className="text-left text-base font-bold">
 								{isAuthenticated
 									? member.user?.name
@@ -152,7 +152,7 @@ export function MemberGuestPreview({
 						{periodSlug ? (
 							<div className="flex flex-row items-center justify-start gap-2">
 								<SinceIcon className="h-4 w-4" />
-								<p>
+								<p className="text-sm md:text-base">
 									{member.role === "admin"
 										? "Moderador"
 										: "Membro"}{" "}
@@ -164,9 +164,14 @@ export function MemberGuestPreview({
 						)}
 					</div>
 				</div>
-				<div className="flex flex-row items-center justify-end gap-2">
-					<ChessIcon />
-					<ExternalLinkIcon width={14} height={14} />
+				<div className="flex flex-row items-center justify-end gap-3 max-lg:w-full max-[320px]:justify-start">
+					<span className="flex text-sm lg:hidden">
+						Visitar perfil no
+					</span>
+					<div className="flex flex-row items-center justify-end gap-2">
+						<ChessIcon />
+						<ExternalLinkIcon width={14} height={14} />
+					</div>
 				</div>
 			</li>
 		</a>

@@ -74,7 +74,7 @@ export default async function LandingMembers({
 			/>
 			<main className="flex min-h-screen flex-col items-start justify-start gap-6 px-wrapper py-[calc(var(--wrapper)/2)]">
 				{!isAuthenticated ? (
-					<NotLogged>
+					<NotLogged className="mb-8">
 						É membro do IChess e deseja acompanhar os eventos
 						participados, verificar sua quantidade de horas ou
 						visitar o perfil de outros membros? Entre já na
@@ -100,7 +100,7 @@ export default async function LandingMembers({
 					/>
 				</div>
 				<Suspense>
-					<ul className="mb-auto grid w-full grid-cols-2 gap-4">
+					<ul className="mb-auto flex w-full grid-cols-2 flex-col gap-4 md:grid">
 						{members &&
 							members.map((member) => {
 								return (

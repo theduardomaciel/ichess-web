@@ -42,6 +42,9 @@ export function LoadingDialog({
 				onInteractOutside={(event) => {
 					event.preventDefault();
 				}}
+				onEscapeKeyDown={(event) => {
+					event.preventDefault();
+				}}
 			>
 				<DialogHeader>
 					<DotLottiePlayer
@@ -80,6 +83,9 @@ export function SuccessDialog({
 				className="flex flex-col items-center justify-center py-16 sm:max-w-[450px]"
 				hasCloseButton={false}
 				onInteractOutside={(event) => {
+					event.preventDefault();
+				}}
+				onEscapeKeyDown={(event) => {
 					event.preventDefault();
 				}}
 			>

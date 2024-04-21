@@ -1,3 +1,5 @@
+import { env } from "@ichess/env";
+
 import { drizzleAuthAdapter } from "./drizzle-auth-adapter";
 import { googleProvider } from "./google-provider";
 
@@ -53,6 +55,7 @@ export const authConfig = {
 			if ("token" in params && session.user) {
 				session.user.id = params.token.sub!;
 				session.member = params.token.member;
+				session.projectId = env.PROJECT_ID;
 			}
 
 			// console.log("Session", session);

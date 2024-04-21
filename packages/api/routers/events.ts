@@ -29,6 +29,7 @@ import { z } from "zod";
 
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { isMemberAuthenticated } from "../auth";
 
 export const getEventsParams = z.object({
 	search: z.string().optional(),
@@ -451,7 +452,7 @@ export const eventsRouter = createTRPCRouter({
 				eventId: z.string().uuid(),
 			}),
 		)
-		.mutation(async ({ input }) => {
+		.mutation(async ({ input, ctx }) => {
 			const {
 				eventId,
 				name,
@@ -462,6 +463,16 @@ export const eventsRouter = createTRPCRouter({
 				aceId,
 				membersIds, // Inclui TODOS os membros do evento
 			} = input;
+
+			// Verificamos se o usuário tem permissão para atualizar o evento
+			const error = await isMemberAuthenticated({
+				projectId: ctx.session.projectId,
+				userId: ctx.session.user.id,
+			});
+
+			if (error) {
+				throw new TRPCError(error);
+			}
 
 			const eventToUpdate = await db.query.event.findFirst({
 				where(fields, { eq }) {
@@ -550,7 +561,7 @@ export const eventsRouter = createTRPCRouter({
 					.transform(transformSingleToArray),
 			}),
 		)
-		.mutation(async ({ input }) => {
+		.mutation(async ({ input, ctx }) => {
 			const { eventId, membersIdsToMutate } = input;
 
 			if (!membersIdsToMutate) {
@@ -558,6 +569,16 @@ export const eventsRouter = createTRPCRouter({
 					message: "Members not found.",
 					code: "BAD_REQUEST",
 				});
+			}
+
+			// Verificamos se o usuário tem permissão para atualizar o evento
+			const error = await isMemberAuthenticated({
+				projectId: ctx.session.projectId,
+				userId: ctx.session.user.id,
+			});
+
+			if (error) {
+				throw new TRPCError(error);
 			}
 
 			const currentEventMembers = await db.query.memberOnEvent.findMany({

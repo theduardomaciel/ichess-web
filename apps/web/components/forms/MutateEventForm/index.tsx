@@ -28,7 +28,6 @@ import type { RouterOutput } from "@ichess/api";
 import { dateToTimeString } from "@/components/dashboard/TimePicker";
 
 interface Props {
-	projectId: string;
 	event?: RouterOutput["getEvent"]["event"];
 }
 
@@ -44,7 +43,7 @@ export default function MutateEventForm({ projectId, event }: Props) {
 		defaultValues: {
 			name: event?.name || "",
 			description: event?.description || "",
-			members: event?.membersOnEvent.map((member) => member.id) || [],
+			members: event?.members?.map((member) => member.id) || [],
 			dateFrom: new Date(),
 			timeFrom: event ? dateToTimeString(event.dateFrom) : undefined,
 			timeTo: event ? dateToTimeString(event.dateTo) : undefined,

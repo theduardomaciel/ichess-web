@@ -72,9 +72,8 @@ export default async function MemberEventsPage({
 	return (
 		<>
 			<Hero
-				title="Próximos eventos"
-				description="Acompanhe os eventos seguintes do IChess, tanto internos,
-				como externos, e saiba quando participar!"
+				title="Seus eventos"
+				description="Acompanhe os eventos dos quais você participou e está participando"
 				outro={"2024.2"}
 				buttonProps={{
 					href: `/events`,
@@ -107,6 +106,7 @@ export default async function MemberEventsPage({
 							{events && events.length > 0 ? (
 								events.map((event) => (
 									<EventPreview
+										className="w-full"
 										key={event.id}
 										event={event}
 									/>

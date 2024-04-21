@@ -43,6 +43,8 @@ export default async function EventsPage() {
 
 	const { events } = await serverClient.getEvents({
 		projectId: env.PROJECT_ID,
+		page: 1,
+		pageSize: 100,
 	});
 
 	console.log(events);

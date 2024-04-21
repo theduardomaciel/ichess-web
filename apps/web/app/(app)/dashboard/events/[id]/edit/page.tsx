@@ -40,7 +40,7 @@ export default async function EditEventPage({
 				</Link>
 				<h1 className="text-6xl font-bold">Editar evento</h1>
 			</div>
-			<Suspense fallback={<>CARREGANDO DADOS DO EVENTO...</>}>
+			<Suspense fallback={<></>}>
 				<MutateEventForm projectId={projectId} event={event} />
 			</Suspense>
 		</main>

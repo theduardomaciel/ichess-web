@@ -13,7 +13,7 @@ export function MemberCardModal({ children }: { children: ReactNode }) {
 	return (
 		<Dialog open={isOpen}>
 			<DialogContent
-				className="gap-6 sm:max-w-[600px]"
+				className="gap-6 overflow-y-scroll sm:max-w-[600px]"
 				// hasCloseButton={false}
 				onClose={() => {
 					setIsOpen(false);

@@ -22,10 +22,12 @@ import {
 // Utils
 import { useToast } from "@/hooks/use-toast";
 
+// API
+import { trpc } from "@/lib/trpc/react";
+
 // Types
 import type { RouterOutput } from "@ichess/api";
-import { trpc } from "@/lib/trpc/react";
-type Member = RouterOutput["getEvent"]["event"]["membersOnEvent"][0];
+type Member = RouterOutput["getEvent"]["event"]["members"][number];
 
 interface Props {
 	member: {
@@ -91,6 +93,12 @@ export function MemberRemove({ member, eventId }: Props) {
 			<DialogContent
 				className="w-full sm:max-w-lg"
 				variant="compact"
+				onInteractOutside={(event) => {
+					event.preventDefault();
+				}}
+				onEscapeKeyDown={(event) => {
+					event.preventDefault();
+				}}
 				hasCloseButton={false}
 			>
 				<DialogHeader>

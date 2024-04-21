@@ -25,6 +25,7 @@ declare module "next-auth" {
 	export interface Session extends DefaultSession {
 		user: User;
 		member: CustomUser["member"];
+		projectId: string;
 	}
 }
 
