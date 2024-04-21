@@ -260,7 +260,22 @@ export const eventsRouter = createTRPCRouter({
 										ilike(event.description, `%${search}%`),
 									)
 								: undefined,
-							memberId ? eq(member.id, memberId) : undefined,
+							memberId
+								? inArray(
+										event.id,
+										db
+											.select({
+												id: memberOnEvent.eventId,
+											})
+											.from(memberOnEvent)
+											.where(
+												eq(
+													memberOnEvent.memberId,
+													memberId,
+												),
+											),
+									)
+								: undefined,
 							moderatorsFilter
 								? inArray(member.id, moderatorsFilter)
 								: undefined,
@@ -297,7 +312,22 @@ export const eventsRouter = createTRPCRouter({
 										ilike(event.description, `%${search}%`),
 									)
 								: undefined,
-							memberId ? eq(member.id, memberId) : undefined,
+							memberId
+								? inArray(
+										event.id,
+										db
+											.select({
+												id: memberOnEvent.eventId,
+											})
+											.from(memberOnEvent)
+											.where(
+												eq(
+													memberOnEvent.memberId,
+													memberId,
+												),
+											),
+									)
+								: undefined,
 							moderatorsFilter
 								? inArray(member.id, moderatorsFilter)
 								: undefined,
