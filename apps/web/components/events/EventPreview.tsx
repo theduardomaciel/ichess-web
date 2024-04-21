@@ -72,9 +72,13 @@ export function EventPreview({
 						+ de{" "}
 						<span className="underline">
 							{event.members.length - 1} membro
-							{event.members.length !== 1 && "s"}
+							{event.members.length - 1 !== 1 && "s"}
 						</span>{" "}
-						participaram
+						{event.dateTo.getTime() > Date.now()
+							? "participando"
+							: event.members.length - 1 !== 1
+								? "participaram"
+								: "participou"}
 					</p>
 				</div>
 			)}

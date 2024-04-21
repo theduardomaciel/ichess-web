@@ -107,7 +107,7 @@ export default async function EventPage({
 			<div className="flex w-full flex-col items-start justify-start gap-12 md:flex-row">
 				<div className="flex w-full flex-col items-center justify-start gap-4 md:w-3/5">
 					<MembersList
-						members={event.membersOnEvent.filter(
+						members={event.members.filter(
 							(member) => member.role === "member",
 						)}
 						eventId={event.id}
@@ -115,7 +115,7 @@ export default async function EventPage({
 					<MemberAdd
 						projectId={env.PROJECT_ID}
 						eventId={event.id}
-						alreadyAddedMembers={event.membersOnEvent.map(
+						alreadyAddedMembers={event.members.map(
 							(member) => member.id,
 						)}
 						search={searchParams.search}
@@ -123,7 +123,7 @@ export default async function EventPage({
 				</div>
 				<MembersList
 					className="md:w-2/5"
-					members={event.membersOnEvent.filter(
+					members={event.members.filter(
 						(member) => member.role === "admin",
 					)}
 					eventId={event.id}
@@ -138,7 +138,7 @@ interface MembersListProps {
 	className?: string;
 	isModerators?: boolean;
 	eventId: string;
-	members: RouterOutput["getEvent"]["event"]["membersOnEvent"];
+	members: RouterOutput["getEvent"]["event"]["members"];
 }
 
 function MembersList({

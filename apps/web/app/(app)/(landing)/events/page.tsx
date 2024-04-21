@@ -45,6 +45,8 @@ export default async function EventsPage() {
 		projectId: env.PROJECT_ID,
 	});
 
+	console.log(events);
+
 	const monthExternal = events.filter(
 		(event) =>
 			event.type === "external" &&

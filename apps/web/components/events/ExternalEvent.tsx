@@ -14,7 +14,7 @@ import { RouterOutput } from "@ichess/api";
 
 interface Props {
 	className?: string;
-	event: RouterOutput["getEvent"]["event"];
+	event: RouterOutput["getEvents"]["events"][number];
 }
 
 export function ExternalEvent({ className, event }: Props) {

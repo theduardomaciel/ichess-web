@@ -22,8 +22,8 @@ import {
 	or,
 	ilike,
 	asc,
-	count,
 	getTableColumns,
+	countDistinct,
 } from "@ichess/drizzle/orm";
 import { z } from "zod";
 
@@ -164,7 +164,7 @@ export const eventsRouter = createTRPCRouter({
 
 			const formattedEvent = {
 				...rest,
-				membersOnEvent: allMembers,
+				members: allMembers,
 			};
 
 			return {
@@ -267,14 +267,12 @@ export const eventsRouter = createTRPCRouter({
 					)
 					.orderBy(
 						sortBy === "recent"
-							? desc(event.dateFrom)
-							: asc(event.dateFrom),
-					)
-					.limit(pageSize)
-					.offset(pageIndex ? (pageIndex - 1) * pageSize : 0),
+							? asc(event.dateFrom)
+							: desc(event.dateFrom),
+					),
 				db
 					.select({
-						amount: count(),
+						amount: countDistinct(event.id),
 					})
 					.from(event)
 					.innerJoin(
@@ -360,29 +358,39 @@ export const eventsRouter = createTRPCRouter({
 			);
 
 			// Remove unnecessary fields (member, memberOnEvent, user)
-			const formattedEvents = aggregateEvents.map((event) => {
-				const { member, user, memberOnEvent, ...rest } = event;
+			const formattedEvents = aggregateEvents
+				.map((event) => {
+					const { member, user, memberOnEvent, ...rest } = event;
 
-				const typedEvent = rest as (typeof aggregateEvents)[number];
-				const members = typedEvent.members.map((member) => {
-					const { user, ...rest } = member;
+					const typedEvent = rest as (typeof aggregateEvents)[number];
+					const members = typedEvent.members.map((member) => {
+						const { user, ...rest } = member;
+
+						return {
+							...rest,
+							user: {
+								...user,
+							},
+						};
+					});
 
 					return {
 						...rest,
-						user: {
-							...user,
-						},
+						members,
 					};
-				});
+				})
+				.slice(
+					pageIndex ? (pageIndex - 1) * pageSize : 0,
+					pageIndex ? pageIndex * pageSize : pageSize,
+				);
 
-				return {
-					...rest,
-					members,
-				};
-			});
-
-			console.log("Aggregated events:", formattedEvents);
+			// console.log("Aggregated events:", formattedEvents);
 			const pageCount = Math.ceil(amount / pageSize);
+
+			console.log("Limit: ", pageSize);
+			console.log("Offset: ", pageIndex ? (pageIndex - 1) * pageSize : 0);
+			console.log("All events amount: ", aggregateEvents.length);
+			console.log("Events amount:", formattedEvents.length);
 
 			return { events: formattedEvents, pageCount };
 		}),
