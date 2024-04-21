@@ -657,8 +657,18 @@ export const eventsRouter = createTRPCRouter({
 
 	deleteEvent: protectedProcedure
 		.input(z.object({ eventId: z.string().uuid() }))
-		.mutation(async ({ input }) => {
+		.mutation(async ({ input, ctx }) => {
 			const { eventId } = input;
+
+			// Verificamos se o usuário tem permissão para remover o evento
+			const error = await isMemberAuthenticated({
+				projectId: ctx.session.projectId,
+				userId: ctx.session.user.id,
+			});
+
+			if (error) {
+				throw new TRPCError(error);
+			}
 
 			try {
 				await db.delete(event).where(eq(event.id, eventId));

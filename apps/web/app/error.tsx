@@ -23,7 +23,9 @@ export default function Error({
 	error: Error & { digest?: string };
 	reset: () => void;
 }) {
-	const isApiError = error.name === "TRPCClientError";
+	const isApiError =
+		error.name === "TRPCClientError" ||
+		(error.stack && error.stack.split(":")[0] === "TRPCError");
 	const [loading, setLoading] = useState(false);
 
 	async function handleSignOut() {
@@ -38,7 +40,7 @@ export default function Error({
 		<div className="relative z-10 flex h-screen flex-col items-center justify-start overflow-hidden lg:flex-row lg:justify-between">
 			<BoardTilt />
 			<div className="order-1 flex flex-col items-start justify-start gap-12 px-9 lg:order-3 lg:px-0">
-				<div className="flex flex-col items-start justify-start gap-8">
+				<div className="mr-24 flex flex-col items-start justify-start gap-8">
 					<div className="flex flex-col items-start justify-start">
 						<h1 className="font-title text-3xl font-black leading-tight text-neutral">
 							Parece que nos deparamos com um impasse...

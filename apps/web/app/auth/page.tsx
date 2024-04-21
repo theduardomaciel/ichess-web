@@ -24,10 +24,10 @@ export default async function AuthenticatedPage() {
 			className="relative flex min-h-screen flex-col items-center justify-center"
 		>
 			<div className="mx-wrapper inline-flex max-w-md flex-col items-start justify-start gap-4 rounded-lg border border-gray-200 bg-gray-400 p-6">
-				<div className="text-center text-lg font-bold text-white">
+				<div className="text-center text-lg font-bold text-neutral">
 					👋 Olá, {session?.user.name}!
 				</div>
-				<div className="self-stretch  text-sm font-medium leading-tight text-zinc-300">
+				<div className="text-sm font-medium leading-tight text-muted">
 					{isAuthenticated ? (
 						<>
 							Você já pode visualizar seus dados pessoais, marcar
