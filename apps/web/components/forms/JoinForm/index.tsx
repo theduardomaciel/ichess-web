@@ -23,7 +23,8 @@ import {
 import { scrollToNextSection } from "@/lib/validations";
 
 // Types
-import { User } from "@ichess/auth";
+import type { User } from "@ichess/auth";
+import type { GenericForm } from "..";
 
 export default function JoinForm({ user }: { user?: User }) {
 	const [currentState, setCurrentState] = useState<
@@ -100,9 +101,9 @@ export default function JoinForm({ user }: { user?: User }) {
 				className="flex w-full flex-col items-center justify-start gap-9 px-wrapper py-12 lg:py-24"
 			>
 				<JoinForm0 form={form} email={user?.email} />
-				<JoinForm1 form={form} />
-				<JoinForm2 form={form} />
-				<JoinForm3 form={form} />
+				<JoinForm1 form={form as unknown as GenericForm} />
+				<JoinForm2 form={form as unknown as GenericForm} />
+				<JoinForm3 form={form as unknown as GenericForm} />
 			</form>
 			<LoadingDialog
 				isOpen={currentState === "submitting"}
@@ -114,8 +115,7 @@ export default function JoinForm({ user }: { user?: User }) {
 					<>
 						Seu cadastro já foi enviado e está em análise.
 						<br />
-						Uma resposta será enviada ao seu e-mail institucional em
-						breve!
+						Uma resposta será enviada ao seu e-mail institucional em breve!
 					</>
 				}
 			/>

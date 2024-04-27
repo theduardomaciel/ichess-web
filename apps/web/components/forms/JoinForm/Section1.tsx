@@ -1,7 +1,11 @@
 "use client";
 
 // Components
-import { type FormProps, FormSection, SectionFooter } from "@/components/forms";
+import {
+	FormSection,
+	SectionFooter,
+	type GenericForm,
+} from "@/components/forms";
 import {
 	FormControl,
 	FormField,
@@ -37,7 +41,7 @@ const formTitles = {
 	period: "Período",
 };
 
-export default function JoinForm1({ form }: FormProps) {
+export default function JoinForm1({ form }: { form: GenericForm }) {
 	const section1 = section1Keys.map((key) => {
 		return {
 			name: formTitles[key],
@@ -107,11 +111,7 @@ export default function JoinForm1({ form }: FormProps) {
 						<FormItem>
 							<FormLabel>{formTitles.registrationId}</FormLabel>
 							<FormControl>
-								<Input
-									type="number"
-									placeholder=""
-									{...field}
-								/>
+								<Input type="number" placeholder="" {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -124,10 +124,7 @@ export default function JoinForm1({ form }: FormProps) {
 				render={({ field }) => (
 					<FormItem>
 						<FormLabel>{formTitles.period}</FormLabel>
-						<Select
-							onValueChange={field.onChange}
-							defaultValue={field.value}
-						>
+						<Select onValueChange={field.onChange} defaultValue={field.value}>
 							<FormControl>
 								<SelectTrigger>
 									<SelectValue placeholder="Selecione o período" />

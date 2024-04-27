@@ -2,16 +2,15 @@
 
 // Components
 import {
-	type FormProps,
 	FormSection,
 	SectionFooter,
 	ResearchHeader,
+	type GenericForm,
 } from "@/components/forms";
 import {
 	FormControl,
 	FormField,
 	FormItem,
-	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -32,7 +31,7 @@ import {
 } from "@/lib/validations/JoinForm/section3";
 
 const section3Keys = Object.keys(
-	joinFormSection3Schema.shape
+	joinFormSection3Schema.shape,
 ) as (keyof JoinFormSection3Schema)[];
 
 const formTitles = {
@@ -41,7 +40,7 @@ const formTitles = {
 	discoveryOther: undefined,
 };
 
-export default function JoinForm3({ form }: FormProps) {
+export default function JoinForm3({ form }: { form: GenericForm }) {
 	const formSection = form.watch("formType");
 	const otherIsSelected = form.watch("section3.discovery") === "other";
 
@@ -63,11 +62,7 @@ export default function JoinForm3({ form }: FormProps) {
 							&quot;O que fez você se inscrever no IChess?&quot;
 						</ResearchHeader>
 						<FormControl>
-							<Textarea
-								placeholder=""
-								className="resize-y"
-								{...field}
-							/>
+							<Textarea placeholder="" className="resize-y" {...field} />
 						</FormControl>
 						<FormMessage />
 					</FormItem>
@@ -82,22 +77,15 @@ export default function JoinForm3({ form }: FormProps) {
 							<ResearchHeader index={2}>
 								&quot;Por onde você descobriu o IChess?&quot;
 							</ResearchHeader>
-							<Select
-								onValueChange={field.onChange}
-								defaultValue={field.value}
-							>
+							<Select onValueChange={field.onChange} defaultValue={field.value}>
 								<FormControl>
 									<SelectTrigger>
 										<SelectValue placeholder="Escolha uma opção" />
 									</SelectTrigger>
 								</FormControl>
 								<SelectContent>
-									<SelectItem value="social_media">
-										Redes sociais
-									</SelectItem>
-									<SelectItem value="friends">
-										Amigos
-									</SelectItem>
+									<SelectItem value="social_media">Redes sociais</SelectItem>
+									<SelectItem value="friends">Amigos</SelectItem>
 									<SelectItem value="other">Outro</SelectItem>
 								</SelectContent>
 							</Select>

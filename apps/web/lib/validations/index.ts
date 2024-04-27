@@ -1,27 +1,18 @@
-// Schemas
-import { JoinFormSchema } from "./JoinForm";
-import { MutateEventFormSchema } from "./MutateEventForm";
-import { PresenceFormSchema } from "./PresenceForm";
-
 // Types
-import { FormState, type UseFormReturn } from "react-hook-form";
+import type { GenericForm } from "@/components/forms";
+import type { FieldError, FormState } from "react-hook-form";
 
-type FormSchema = JoinFormSchema | MutateEventFormSchema | PresenceFormSchema;
-
-export function isValid(
-	key: string,
-	section: number,
-	form: UseFormReturn<FormSchema>,
-) {
+export function isValid(key: string, section: number, form: GenericForm) {
 	const dirtyFields = form.formState.dirtyFields;
 	const errors = form.formState.errors;
 
-	const currentSection =
-		`section${section}` as keyof FormState<FormSchema>["dirtyFields"];
-	// | keyof FormState<FormSchema>["errors"]
+	const currentSection = `section${section}`;
 
 	/// Importante: "Make sure to provide defaultValues at the useForm, so hook form can have a single source of truth to compare each field's dirtiness" - da documentação do react-hook-form
-	return dirtyFields[currentSection]?.[key] && !errors[currentSection]?.[key];
+	return (
+		dirtyFields[currentSection]?.[key] &&
+		!errors[currentSection]?.[key as keyof FieldError]
+	);
 }
 
 /* 

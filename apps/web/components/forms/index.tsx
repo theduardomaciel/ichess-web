@@ -12,20 +12,21 @@ import { Button } from "@/components/ui/button";
 import { FormLabel } from "@/components/ui/form";
 
 // Types
-import type { UseFormReturn } from "react-hook-form";
-import type { MutateEventFormSchema } from "@/lib/validations/MutateEventForm";
-import {
-	type JoinFormSchema,
+import type { FieldValues, UseFormReturn } from "react-hook-form";
+import type {
+	JoinFormSchema,
 	JoinFormTypeEnum,
 } from "@/lib/validations/JoinForm";
 
 // Utils
 import { scrollToNextSection } from "@/lib/validations";
 
+export type GenericForm = UseFormReturn<FieldValues>;
+
 interface FormSectionProps {
 	title: string;
 	section: number;
-	form: UseFormReturn<JoinFormSchema | MutateEventFormSchema>;
+	form: GenericForm;
 	fields: {
 		name?: string;
 		value?: boolean;
@@ -37,10 +38,21 @@ function FormSection({ form, children, ...rest }: FormSectionProps) {
 	const formSection = form.watch("formType");
 	const sectionNumber = Number(formSection?.replace("section", ""));
 
-	const canSelect = !isNaN(sectionNumber) && rest.section < sectionNumber;
+	const canSelect =
+		!Number.isNaN(sectionNumber) && rest.section < sectionNumber;
 	const isSelected =
 		formSection === `section${rest.section}` ||
 		(rest.section === 0 && !formSection);
+
+	function handleSelect() {
+		if (!isSelected && canSelect) {
+			// Atualizamos o valor do formulário para o valor da seção atual
+			form.setValue("formType", `section${rest.section}` as JoinFormTypeEnum);
+
+			// Realizamos o scroll para a seção atual
+			scrollToNextSection(rest.section);
+		}
+	}
 
 	return (
 		<div
@@ -56,17 +68,9 @@ function FormSection({ form, children, ...rest }: FormSectionProps) {
 			<FormProgress {...rest} />
 			<div
 				className="relative flex w-full flex-col items-start justify-start gap-6 rounded-2xl border border-gray-200 p-6 md:p-9"
-				onClick={() => {
-					if (!isSelected && canSelect) {
-						// Atualizamos o valor do formulário para o valor da seção atual
-						form.setValue(
-							"formType",
-							`section${rest.section}` as JoinFormTypeEnum,
-						);
-
-						// Realizamos o scroll para a seção atual
-						scrollToNextSection(rest.section);
-					}
+				onClick={handleSelect}
+				onKeyUp={(e) => {
+					if (e.key === "Enter") handleSelect();
 				}}
 			>
 				{children}
@@ -93,7 +97,7 @@ function FormProgress({
 
 					return (
 						<li
-							key={key}
+							key={field.name}
 							className={cn(
 								"flex select-none flex-row items-center justify-start gap-2 text-sm text-neutral lg:text-base",
 								{
@@ -131,8 +135,7 @@ function Panel({
 				"inline-flex w-full flex-row items-center justify-start gap-2.5 rounded-lg px-6 py-3 text-white",
 				{
 					"bg-tertiary-200 dark:bg-tertiary-200/50": type === "error",
-					"bg-secondary-100 dark:bg-secondary-100/50":
-						type === "warning",
+					"bg-secondary-100 dark:bg-secondary-100/50": type === "warning",
 					"bg-info-100 dark:bg-info-100/50": type === "info",
 					"bg-primary-200 dark:bg-primary-200/50": type === "success",
 				},
