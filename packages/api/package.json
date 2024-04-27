@@ -4,9 +4,7 @@
   "types": "./index.ts",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-    "lint": "eslint ."
-  },
+  "scripts": {},
   "dependencies": {
     "@ichess/auth": "workspace:*",
     "@ichess/drizzle": "workspace:*",
@@ -16,15 +14,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@ichess/eslint-config": "workspace:*",
-    "@ichess/prettier-config": "workspace:*",
+    "@ichess/biome-config": "workspace:*",
     "@ichess/typescript-config": "workspace:*"
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@ichess/eslint-config/lib"
-    ]
-  },
-  "prettier": "@ichess/prettier-config"
+  }
 }

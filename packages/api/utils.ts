@@ -3,14 +3,14 @@ export const transformSingleToArray = (
 ): string[] | undefined => {
 	if (value && Array.isArray(value)) {
 		return value;
-	} else {
-		const splitted = value
-			?.toString()
-			.split(",")
-			.map((v) => v.trim());
-
-		return splitted ?? undefined;
 	}
+
+	const splitted = value
+		?.toString()
+		.split(",")
+		.map((v) => v.trim());
+
+	return splitted ?? undefined;
 };
 
 interface GetMembersIdsToMutateProps {
@@ -36,19 +36,19 @@ export function getMembersIdsToMutate({
 		);
 
 		return { idsToAdd: membersIdsToAdd, idsToRemove: membersIdsToRemove };
-	} else {
-		// Quando apenas alguns membros são passados, a diferença entre os membros atuais e os novos
-		// é a lista de membros a serem adicionados e removidos
-		const membersIdsToRemove = membersIds.filter((memberId) =>
-			currentMembersIds.includes(memberId),
-		);
-
-		const membersIdsToAdd = membersIds.filter(
-			(memberId) => !currentMembersIds.includes(memberId),
-		);
-
-		return { idsToAdd: membersIdsToAdd, idsToRemove: membersIdsToRemove };
 	}
+
+	// Quando apenas alguns membros são passados, a diferença entre os membros atuais e os novos
+	// é a lista de membros a serem adicionados e removidos
+	const membersIdsToRemove = membersIds.filter((memberId) =>
+		currentMembersIds.includes(memberId),
+	);
+
+	const membersIdsToAdd = membersIds.filter(
+		(memberId) => !currentMembersIds.includes(memberId),
+	);
+
+	return { idsToAdd: membersIdsToAdd, idsToRemove: membersIdsToRemove };
 }
 
 export function getPeriodsInterval(

@@ -14,15 +14,7 @@
     "next-auth": "beta"
   },
   "devDependencies": {
-    "@ichess/eslint-config": "workspace:*",
-    "@ichess/prettier-config": "workspace:*",
+    "@ichess/biome-config": "workspace:*",
     "@ichess/typescript-config": "workspace:*"
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@ichess/eslint-config/lib"
-    ]
-  },
-  "prettier": "@ichess/prettier-config"
+  }
 }

@@ -1,7 +1,7 @@
-import { Session } from "@ichess/auth";
-import { initTRPC, TRPCError } from "@trpc/server";
 import SuperJSON from "superjson";
+import { initTRPC, TRPCError } from "@trpc/server";
 import { ZodError } from "zod";
+import type { Session } from "@ichess/auth";
 
 type TRPCContext = {
 	session: Session | null;
