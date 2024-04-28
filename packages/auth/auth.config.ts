@@ -53,7 +53,7 @@ export const authConfig = {
 		},
 		session({ session, ...params }) {
 			if ("token" in params && session.user) {
-				session.user.id = params.token.sub!;
+				session.user.id = params.token.sub as string;
 				session.member = params.token.member;
 				session.projectId = env.PROJECT_ID;
 			}
@@ -75,19 +75,17 @@ export const authConfig = {
 			// A página de eventos é privada somente para eventos específicos (/events/[id]); a página /events é pública
 
 			const isOnPrivatePages =
-				privatePaths.some((page) =>
-					nextUrl.pathname.startsWith(page),
-				) || privatePages.some((page) => nextUrl.pathname === page);
+				privatePaths.some((page) => nextUrl.pathname.startsWith(page)) ||
+				privatePages.some((page) => nextUrl.pathname === page);
 			const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
 
-			const guestPages = ["/auth/sign-in"];
+			const guestPages = ["/auth/sign-in", "/join"];
 
 			const isOnGuestPages = guestPages.some(
 				(page) => nextUrl.pathname === page,
 			);
 
-			const isOnPublicAPIRoutes =
-				nextUrl.pathname.startsWith("/api/auth");
+			const isOnPublicAPIRoutes = nextUrl.pathname.startsWith("/api/auth");
 			const isOnAPIRoutes = nextUrl.pathname.startsWith("/api");
 
 			if (isOnPublicAPIRoutes) {
@@ -99,10 +97,7 @@ export const authConfig = {
 			}
 
 			if (isOnAPIRoutes && !isLoggedIn) {
-				return Response.json(
-					{ message: "Unauthorized." },
-					{ status: 401 },
-				);
+				return Response.json({ message: "Unauthorized." }, { status: 401 });
 			}
 
 			if ((isOnPrivatePages || isOnDashboard) && !isMember) {
@@ -110,17 +105,17 @@ export const authConfig = {
 					// Redirect user back to sign in
 					console.log("Redirecting to sign-in page");
 					return Response.redirect(
-						new URL(`/auth/error?error=NotAuthenticated`, nextUrl),
+						new URL("/auth/error?error=NotAuthenticated", nextUrl),
 					);
-				} else {
-					return false;
 				}
+
+				return false;
 			}
 
 			if (isOnDashboard && isLoggedIn && !isAdmin) {
 				console.log("Redirecting to error page");
 				return Response.redirect(
-					new URL(`/auth/error?error=PermissionLevelError`, nextUrl),
+					new URL("/auth/error?error=PermissionLevelError", nextUrl),
 				);
 			}
 

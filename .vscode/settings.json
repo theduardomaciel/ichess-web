@@ -15,6 +15,7 @@
         "tanstack",
         "trpc",
         "TRPC",
+        "ufal",
         "vaul"
     ]
 }

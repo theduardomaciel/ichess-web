@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 const ERRORS = {
 	AuthorizedCallbackError: {
 		title: "Tentar novamente",
-		href: "/sign-in",
+		href: "/join",
 		icon: {
 			instance: Repeat2Icon,
 			position: "left",

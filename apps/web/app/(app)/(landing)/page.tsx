@@ -14,7 +14,7 @@ export default function Home() {
 		<main className="flex min-h-screen flex-col items-center justify-between">
 			<div className="flex flex-col items-start justify-center w-full h-screen relative gap-12 px-wrapper pt-16">
 				<Image
-					src={`/images/hero.png`}
+					src={"/images/hero.png"}
 					priority
 					width={823}
 					height={717}
