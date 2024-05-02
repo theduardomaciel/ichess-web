@@ -1,7 +1,7 @@
 import { db } from "@ichess/drizzle";
 
 // Types
-import { TRPCError } from "@trpc/server";
+import type { TRPCError } from "@trpc/server";
 
 interface Props {
 	projectId?: string;

@@ -22,84 +22,79 @@ export const drizzleAuthAdapter: Adapter = {
 	},
 
 	async getUser(id) {
-		const authUser = await db.query.user.findFirst({
-			where(fields, { eq }) {
-				return eq(fields.id, id);
-			},
-			with: {
-				members: {
-					where: (fields, { eq, and }) =>
-						and(
-							eq(fields.userId, id),
-							eq(fields.projectId, env.PROJECT_ID),
-						),
-					columns: {
-						id: true,
-						role: true,
-						username: true,
-					},
-				},
-			},
-		});
-
-		// Precisamos unir os campos de membros com o usuário
-		// para que a resposta seja um objeto único
+		const [authUser] = await db
+			.select({
+				user: getTableColumns(user),
+				id: member.id,
+				username: member.username,
+				role: member.role,
+			})
+			.from(user)
+			.leftJoin(member, eq(member.userId, user.id))
+			.where(
+				and(
+					eq(user.id, id),
+					eq(member.projectId, env.PROJECT_ID),
+					eq(member.userId, user.id),
+				),
+			);
 
 		if (authUser) {
-			const { members, ...rest } = authUser as typeof authUser & {
-				members: typeof authUser.members;
-			};
+			const { id, username, role, ...rest } = authUser;
 
 			return {
-				...rest,
-				member: {
-					id: members[0].id,
-					role: members[0].role,
-					username: members[0].username,
-				},
+				...rest.user,
+				member: id
+					? {
+							id,
+							username,
+							role,
+						}
+					: undefined,
 			};
-		} else {
-			return null;
 		}
+
+		return null;
 	},
 
 	async getUserByEmail(email) {
-		const authUser = await db.query.user.findFirst({
-			where(fields, { eq }) {
-				return eq(fields.email, email);
-			},
-			with: {
-				members: {
-					where: (fields, { eq, and }) =>
-						and(
-							eq(fields.userId, fields.id),
-							eq(fields.projectId, env.PROJECT_ID),
-						),
-					columns: {
-						id: true,
-						role: true,
-						username: true,
-					},
-				},
-			},
+		const authUser = await db.transaction(async (trx) => {
+			const [userByEmail] = await trx
+				.select({
+					user: getTableColumns(user),
+					id: member.id,
+					username: member.username,
+					role: member.role,
+				})
+				.from(user)
+				.leftJoin(member, eq(member.userId, user.id))
+				.where(
+					and(
+						eq(user.email, email),
+						eq(member.projectId, env.PROJECT_ID),
+						eq(member.userId, user.id),
+					),
+				);
+
+			return userByEmail;
 		});
 
 		if (authUser) {
-			const { members, ...rest } = authUser as typeof authUser & {
-				members: typeof authUser.members;
-			};
+			const { id, username, role, ...rest } = authUser;
 
 			return {
-				...rest,
-				member: {
-					id: members[0].id,
-					role: members[0].role,
-					username: members[0].username,
-				},
+				...rest.user,
+				member: id
+					? {
+							id,
+							username,
+							role,
+						}
+					: undefined,
 			};
-		} else {
-			return null;
 		}
+
+		return null;
 	},
 
 	async getUserByAccount({ providerAccountId, provider }) {
@@ -127,15 +122,17 @@ export const drizzleAuthAdapter: Adapter = {
 
 			return {
 				...rest.user,
-				member: {
-					id,
-					username,
-					role,
-				},
+				member: id
+					? {
+							id,
+							username,
+							role,
+						}
+					: undefined,
 			};
-		} else {
-			return null;
 		}
+
+		return null;
 	},
 
 	async updateUser({ id, ...userToUpdate }) {
@@ -166,53 +163,16 @@ export const drizzleAuthAdapter: Adapter = {
 	},
 
 	async getSessionAndUser(sessionToken) {
-		const drizzleSession = await db.query.session.findFirst({
-			where(fields, { eq }) {
-				return eq(fields.sessionToken, sessionToken);
-			},
-			with: {
-				user: {
-					with: {
-						members: {
-							where: (fields, { eq, and }) =>
-								and(
-									eq(fields.userId, fields.id),
-									eq(fields.projectId, env.PROJECT_ID),
-								),
-							columns: {
-								id: true,
-								role: true,
-								username: true,
-							},
-						},
-					},
-				},
-			},
-		});
+		const [drizzleSession] = await db
+			.select({
+				session: getTableColumns(session),
+				user: getTableColumns(user),
+			})
+			.from(session)
+			.innerJoin(user, eq(user.id, session.userId))
+			.where(eq(session.sessionToken, sessionToken));
 
-		if (!drizzleSession) {
-			return null;
-		}
-
-		console.log("drizzleSession", drizzleSession);
-
-		const { user, ...session } = drizzleSession;
-
-		if (user) {
-			const { members, ...rest } = user as typeof user & {
-				members: typeof user.members;
-			};
-
-			return {
-				user: { ...rest, ...members[0] },
-				session,
-			};
-		}
-
-		return {
-			user,
-			session,
-		};
+		return drizzleSession;
 	},
 
 	async updateSession({ sessionToken, ...sessionToUpdate }) {

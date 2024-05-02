@@ -1,17 +1,26 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
 // Components
-import { GoogleButton } from "@/components/auth/SignInButton";
+import {
+	ContinueRegistrationButton,
+	GoogleButton,
+} from "@/components/auth/SignInButton";
 
 interface Props {
 	className?: string;
 	href?: string;
+	isAuthenticated?: boolean;
 	children: ReactNode;
 }
 
-export function NotLogged({ className, href, children }: Props) {
+export function NotLogged({
+	className,
+	href,
+	isAuthenticated,
+	children,
+}: Props) {
 	return (
 		<div
 			className={cn(
@@ -21,10 +30,13 @@ export function NotLogged({ className, href, children }: Props) {
 		>
 			<span className="font-title font-bold">Eita!</span>
 			<span className="flex-1 text-left">
-				{children ||
-					"Você precisa estar logado para ver os eventos internos."}
+				{children || "Você precisa estar logado para ver os eventos internos."}
 			</span>
-			<GoogleButton className="px-8 max-md:w-full" callbackUrl={href} />
+			{isAuthenticated ? (
+				<ContinueRegistrationButton className="px-8 max-md:w-full" />
+			) : (
+				<GoogleButton className="px-8 max-md:w-full" callbackUrl={href} />
+			)}
 		</div>
 	);
 }

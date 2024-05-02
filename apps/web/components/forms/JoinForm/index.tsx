@@ -100,7 +100,7 @@ export default function JoinForm({ user }: { user?: User }) {
 				onSubmit={form.handleSubmit(handleNextFormType)}
 				className="flex w-full flex-col items-center justify-start gap-9 px-wrapper py-12 lg:py-24"
 			>
-				<JoinForm0 form={form} email={user?.email} />
+				<JoinForm0 form={form as unknown as GenericForm} email={user?.email} />
 				<JoinForm1 form={form as unknown as GenericForm} />
 				<JoinForm2 form={form as unknown as GenericForm} />
 				<JoinForm3 form={form as unknown as GenericForm} />

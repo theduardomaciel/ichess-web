@@ -10,7 +10,8 @@ export function isValid(key: string, section: number, form: GenericForm) {
 
 	/// Importante: "Make sure to provide defaultValues at the useForm, so hook form can have a single source of truth to compare each field's dirtiness" - da documentação do react-hook-form
 	return (
-		dirtyFields[currentSection]?.[key] &&
+		(dirtyFields[currentSection]?.[key] ||
+			form.getValues(`${currentSection}.${key}`)) &&
 		!errors[currentSection]?.[key as keyof FieldError]
 	);
 }

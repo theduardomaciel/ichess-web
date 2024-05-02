@@ -1,4 +1,4 @@
-export default function Title() {
+export function Title() {
 	return (
 		<div className="flex flex-col items-start justify-center z-20">
 			<h2 className="text-neutral text-xl lg:text-2xl font-bold leading-tight lg:leading-tight font-title z-30">
@@ -22,8 +22,7 @@ export default function Title() {
 				</p>
 			</div>
 			<p className="text-neutral text-lg lg:text-2xl font-medium leading-snug lg:max-w-[70%] z-30">
-				O grupo de extensão de xadrez do Instituto de Computação da
-				UFAL.
+				O grupo de extensão de xadrez do Instituto de Computação da UFAL.
 			</p>
 		</div>
 	);

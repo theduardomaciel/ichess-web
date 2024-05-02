@@ -111,17 +111,21 @@ interface GuestProps {
 	className?: Props["className"];
 	member: Props["member"];
 	periodSlug?: string;
-	isAuthenticated?: boolean | null;
+	isMember?: boolean | null;
 }
 
 export function MemberGuestPreview({
 	className,
 	member,
 	periodSlug,
-	isAuthenticated,
+	isMember,
 }: GuestProps) {
 	return (
-		<a href={`https://chess.com/member/${member.username}`} target="_blank">
+		<a
+			href={`https://chess.com/member/${member.username}`}
+			target="_blank"
+			rel="noreferrer"
+		>
 			<li
 				className={cn(
 					"flex w-full flex-row flex-wrap items-center justify-between gap-4 rounded-lg border border-primary-200/50 bg-gray-300 px-8 py-4 transition-colors hover:bg-gray-200",
@@ -139,11 +143,9 @@ export function MemberGuestPreview({
 					<div className="flex flex-col items-start justify-start">
 						<div className="flex flex-row flex-wrap items-center justify-start gap-0 md:gap-2">
 							<h3 className="text-left text-base font-bold">
-								{isAuthenticated
-									? member.user?.name
-									: member.username}
+								{isMember ? member.user?.name : member.username}
 							</h3>
-							{isAuthenticated && (
+							{isMember && (
 								<span className="text-xs font-medium text-foreground opacity-50">
 									@{member.username}
 								</span>
@@ -153,10 +155,8 @@ export function MemberGuestPreview({
 							<div className="flex flex-row items-center justify-start gap-2">
 								<SinceIcon className="h-4 w-4" />
 								<p className="text-sm md:text-base">
-									{member.role === "admin"
-										? "Moderador"
-										: "Membro"}{" "}
-									desde {periodSlug}
+									{member.role === "admin" ? "Moderador" : "Membro"} desde{" "}
+									{periodSlug}
 								</p>
 							</div>
 						) : (
@@ -165,9 +165,7 @@ export function MemberGuestPreview({
 					</div>
 				</div>
 				<div className="flex flex-row items-center justify-end gap-3 max-lg:w-full max-[320px]:justify-start">
-					<span className="flex text-sm lg:hidden">
-						Visitar perfil no
-					</span>
+					<span className="flex text-sm lg:hidden">Visitar perfil no</span>
 					<div className="flex flex-row items-center justify-end gap-2">
 						<ChessIcon />
 						<ExternalLinkIcon width={14} height={14} />

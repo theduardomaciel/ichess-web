@@ -132,7 +132,7 @@ function Panel({
 	return (
 		<div
 			className={cn(
-				"inline-flex w-full flex-row items-center justify-start gap-2.5 rounded-lg px-6 py-3 text-white",
+				"relative inline-flex w-full flex-row items-center justify-start gap-2.5 rounded-lg px-6 py-3 text-white",
 				{
 					"bg-tertiary-200 dark:bg-tertiary-200/50": type === "error",
 					"bg-secondary-100 dark:bg-secondary-100/50": type === "warning",

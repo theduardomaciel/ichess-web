@@ -24,13 +24,13 @@ declare module "next-auth" {
 
 	export interface Session extends DefaultSession {
 		user: User;
-		member: CustomUser["member"];
+		member?: CustomUser["member"];
 		projectId: string;
 	}
 }
 
 declare module "next-auth/jwt" {
 	interface JWT extends DefaultJWT {
-		member: CustomUser["member"];
+		member?: CustomUser["member"];
 	}
 }

@@ -16,16 +16,16 @@ import ReloadIcon from "@/public/icons/reload.svg";
 // Auth
 import { signOut } from "next-auth/react";
 
-export default function Error({
+export default function ErrorPage({
 	error,
 	reset,
 }: {
 	error: Error & { digest?: string };
 	reset: () => void;
 }) {
-	const isApiError =
-		error.name === "TRPCClientError" ||
-		(error.stack && error.stack.split(":")[0] === "TRPCError");
+	const isAuthError = error.name === "TRPCClientError";
+	const isApiError = error.stack && error.stack.split(":")[0] === "TRPCError";
+
 	const [loading, setLoading] = useState(false);
 
 	async function handleSignOut() {
@@ -35,6 +35,8 @@ export default function Error({
 			callbackUrl: "/",
 		});
 	}
+
+	console.log("Message:", error);
 
 	return (
 		<div className="relative z-10 flex h-screen flex-col items-center justify-start overflow-hidden lg:flex-row lg:justify-between">
@@ -46,17 +48,16 @@ export default function Error({
 							Parece que nos deparamos com um impasse...
 						</h1>
 						<p className="max-w-[80%] text-xl font-medium text-neutral">
-							Um erro inesperado ocorreu durante a execução da sua
-							jogada.
+							Um erro inesperado ocorreu durante a execução da sua jogada.
 						</p>
 					</div>
 					<div className="max-w-[75%]">
-						<Panel type="error">
+						<Panel className="font-mono" type="error">
 							{error.message || error.digest}
 						</Panel>
 					</div>
 				</div>
-				{isApiError ? (
+				{isAuthError ? (
 					<Button
 						className="h-12 gap-4 px-9"
 						onClick={handleSignOut}

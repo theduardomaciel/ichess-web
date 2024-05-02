@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 import { cn } from "@/lib/utils";
 
@@ -15,8 +15,8 @@ import { NotLogged } from "@/components/auth/NotLogged";
 import { EventPreview } from "@/components/events/EventPreview";
 
 // Validation
-import { z } from "zod";
-import { getEventsParams } from "@ichess/api/routers/events";
+import type { z } from "zod";
+import type { getEventsParams } from "@ichess/api/routers/events";
 
 // API
 import { env } from "@ichess/env";
@@ -39,7 +39,7 @@ export type EventsPageParams = z.infer<typeof getEventsParams>;
 
 export default async function EventsPage() {
 	const session = await auth();
-	const isAuthenticated = session && !!session.member?.role;
+	const isMember = session && !!session.member?.role;
 
 	const { events } = await serverClient.getEvents({
 		projectId: env.PROJECT_ID,
@@ -78,7 +78,7 @@ export default async function EventsPage() {
 				como externos, e saiba quando participar!"
 				outro={"2024.2"}
 				buttonProps={
-					isAuthenticated
+					isMember
 						? {
 								href: `/events/${session?.member?.id}`,
 								title: "Ver meus eventos",
@@ -91,9 +91,7 @@ export default async function EventsPage() {
 				<StyledTitle title="Evento Externos" />
 
 				<div className="flex w-full flex-col items-start justify-start gap-6">
-					<h3 className="pl-wrapper font-title text-2xl font-bold">
-						Este Mês
-					</h3>
+					<h3 className="pl-wrapper font-title text-2xl font-bold">Este Mês</h3>
 					{monthExternal.length > 0 ? (
 						<div className="flex w-full flex-col items-center justify-start gap-4">
 							<Carousel
@@ -130,19 +128,16 @@ export default async function EventsPage() {
 
 				<StyledTitle title="Eventos Internos" />
 
-				{!isAuthenticated ? (
-					<NotLogged className="w-[calc(100%-var(--wrapper)*2)]">
-						Para acessar os eventos internos você precisa ser membro
-						integrante do IChess :( <br />
-						Caso você seja parte do IC, e tem interesse em
-						participar,{" "}
-						<Link
-							className="underline transition-colors hover:text-primary-200"
-							href={`/join`}
-						>
-							ingresse já
-						</Link>{" "}
-						no projeto!
+				{!isMember ? (
+					<NotLogged
+						className="w-[calc(100%-var(--wrapper)*2)]"
+						isAuthenticated={!!session}
+						href="/join"
+					>
+						Para acessar os eventos internos você precisa ser membro integrante
+						do IChess :( <br />
+						Caso você não faça parte do IC, mas tem interesse, dê uma olhada nos
+						eventos públicos acima!
 					</NotLogged>
 				) : null}
 
@@ -150,8 +145,7 @@ export default async function EventsPage() {
 					className={cn(
 						"flex w-full flex-col items-start justify-start gap-16 px-wrapper",
 						{
-							"pointer-events-none select-none opacity-50":
-								!isAuthenticated,
+							"pointer-events-none select-none opacity-50": !isMember,
 						},
 					)}
 				>
@@ -160,12 +154,9 @@ export default async function EventsPage() {
 							Esta Semana
 						</h3>
 						<div
-							className={cn(
-								"flex w-full grid-cols-2 flex-col gap-4 md:grid",
-								{
-									"md:flex": !thisWeekInternal.length,
-								},
-							)}
+							className={cn("flex w-full grid-cols-2 flex-col gap-4 md:grid", {
+								"md:flex": !thisWeekInternal.length,
+							})}
 						>
 							{thisWeekInternal.length ? (
 								thisWeekInternal.map((event) => (

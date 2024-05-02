@@ -9,14 +9,19 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import GoogleColorIcon from "@/public/logos/google.svg";
 
-import { Button } from "@/components/ui/button";
+import { Button, type ButtonProps } from "@/components/ui/button";
+import Link from "next/link";
 
-interface Props {
-	className?: string;
+interface Props extends ButtonProps {
 	callbackUrl?: string;
 }
 
-export function GoogleButton({ className, callbackUrl }: Props) {
+export function GoogleButton({
+	className,
+	disabled,
+	callbackUrl,
+	...rest
+}: Props) {
 	const [loading, setLoading] = useState(false);
 
 	async function handleSignIn() {
@@ -36,7 +41,8 @@ export function GoogleButton({ className, callbackUrl }: Props) {
 				className,
 			)}
 			onClick={handleSignIn}
-			disabled={loading}
+			disabled={disabled || loading}
+			{...rest}
 		>
 			{loading ? (
 				<Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -46,6 +52,21 @@ export function GoogleButton({ className, callbackUrl }: Props) {
 			<div className="text-sm font-medium text-neutral">
 				Continuar com Google
 			</div>
+		</Button>
+	);
+}
+
+export function ContinueRegistrationButton({ className, ...rest }: Props) {
+	return (
+		<Button
+			variant={"default"}
+			type="button"
+			className={cn("inline-flex gap-3 px-3 py-5", className)}
+			{...rest}
+		>
+			<Link className="text-sm font-medium text-neutral" href={"/join"}>
+				Continuar cadastro
+			</Link>
 		</Button>
 	);
 }

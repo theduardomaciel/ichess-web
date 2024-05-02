@@ -1,5 +1,5 @@
-import { Metadata } from "next";
 import { Suspense } from "react";
+import type { Metadata } from "next";
 
 // Icons
 import AccountIcon from "@/public/icons/account.svg";
@@ -44,7 +44,7 @@ export default async function LandingMembers({
 		membersPageParams.parse(searchParams);
 
 	const session = await auth();
-	const isAuthenticated = session && !!session.member?.role;
+	const isMember = session && !!session.member?.role;
 
 	const { members, pageCount } = await serverClient.getMembers({
 		projectId: env.PROJECT_ID,
@@ -63,7 +63,7 @@ export default async function LandingMembers({
 				description="Acompanhe a lista de atuais membros do IChess"
 				outro={"2024.2"}
 				buttonProps={
-					isAuthenticated
+					isMember
 						? {
 								href: `/members/${session?.member?.id}`,
 								title: "Ver meu perfil",
@@ -73,12 +73,11 @@ export default async function LandingMembers({
 				}
 			/>
 			<main className="flex min-h-screen flex-col items-start justify-start gap-6 px-wrapper py-[calc(var(--wrapper)/2)]">
-				{!isAuthenticated ? (
-					<NotLogged className="mb-8">
-						É membro do IChess e deseja acompanhar os eventos
-						participados, verificar sua quantidade de horas ou
-						visitar o perfil de outros membros? Entre já na
-						plataforma com seu e-mail institucional!
+				{!isMember ? (
+					<NotLogged className="mb-8" isAuthenticated={!!session} href="/join">
+						É membro do IChess e deseja acompanhar os eventos participados,
+						verificar sua quantidade de horas ou visitar o perfil de outros
+						membros? Entre já na plataforma com seu e-mail institucional!
 					</NotLogged>
 				) : null}
 				<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
@@ -101,25 +100,22 @@ export default async function LandingMembers({
 				</div>
 				<Suspense>
 					<ul className="mb-auto flex w-full grid-cols-2 flex-col gap-4 md:grid">
-						{members &&
-							members.map((member) => {
-								return (
-									<MemberGuestPreview
-										key={member.id}
-										member={member}
-										periodSlug={
-											periods.find(
-												(period) =>
-													period.from <=
-														member.joinedAt &&
-													period.to >=
-														member.joinedAt,
-											)?.slug
-										}
-										isAuthenticated={isAuthenticated}
-									/>
-								);
-							})}
+						{members?.map((member) => {
+							return (
+								<MemberGuestPreview
+									key={member.id}
+									member={member}
+									periodSlug={
+										periods.find(
+											(period) =>
+												period.from <= member.joinedAt &&
+												period.to >= member.joinedAt,
+										)?.slug
+									}
+									isMember={isMember}
+								/>
+							);
+						})}
 					</ul>
 				</Suspense>
 				<PagesDisplay currentPage={page || 1} pageCount={pageCount} />

@@ -7,7 +7,7 @@ import { googleProvider } from "./google-provider";
 import type { NextAuthConfig, Session } from "next-auth";
 import type { GoogleProfile } from "next-auth/providers/google";
 
-const icDomain = "ic.ufal.br";
+const icDomain = "@ic.ufal.br";
 
 export const authConfig = {
 	adapter: drizzleAuthAdapter,
@@ -22,22 +22,19 @@ export const authConfig = {
 	},
 	callbacks: {
 		async signIn({ account, profile }) {
+			console.log("Sign in", { account, profile });
+
 			if (account?.provider === "google") {
 				const googleProfile = profile as GoogleProfile;
-				const [, emailDomain] = googleProfile.email.split("@");
 
-				if (!emailDomain || emailDomain !== icDomain) {
-					return false;
-				}
-
-				return googleProfile.email_verified;
+				return googleProfile.email.endsWith(icDomain);
 			}
 
 			return false;
 		},
 		async jwt({ token, user, session, trigger }) {
-			if (user) {
-				// console.log("User", user);
+			console.log("O usuário é membro do grupo de extensão? ", !!user.member);
+			if (user.member) {
 				token.member = user.member;
 			}
 
@@ -47,6 +44,8 @@ export const authConfig = {
 
 			if (trigger === "update" && isSessionAvailable(session)) {
 				token.name = session.user.name;
+				token.email = session.user.email;
+				token.member = session.member;
 			}
 
 			return token;
@@ -70,13 +69,18 @@ export const authConfig = {
 			console.log("Authorized", { isLoggedIn, isMember, isAdmin });
 			// console.log("Pathname", nextUrl.pathname);
 
-			const privatePages = ["/auth"];
+			const authenticatedPages = ["/auth"];
 			const privatePaths = ["/events/", "/members/"];
 			// A página de eventos é privada somente para eventos específicos (/events/[id]); a página /events é pública
 
-			const isOnPrivatePages =
-				privatePaths.some((page) => nextUrl.pathname.startsWith(page)) ||
-				privatePages.some((page) => nextUrl.pathname === page);
+			const isOnPrivatePages = privatePaths.some((page) =>
+				nextUrl.pathname.startsWith(page),
+			);
+			// privatePages.some((page) => nextUrl.pathname === page)
+			const isOnAuthenticatedPages = authenticatedPages.some(
+				(page) => nextUrl.pathname === page,
+			);
+
 			const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
 
 			const guestPages = ["/auth/sign-in", "/join"];
@@ -92,14 +96,21 @@ export const authConfig = {
 				return true;
 			}
 
-			if (isOnGuestPages && isMember) {
-				return Response.redirect(new URL("/", nextUrl));
-			}
-
 			if (isOnAPIRoutes && !isLoggedIn) {
 				return Response.json({ message: "Unauthorized." }, { status: 401 });
 			}
 
+			// Páginas públicas que não devem ser acessadas por membros
+			if (isOnGuestPages && isMember) {
+				return Response.redirect(new URL("/", nextUrl));
+			}
+
+			// Páginas exclusivas para usuários autenticados
+			if (isOnAuthenticatedPages && !isLoggedIn) {
+				return false;
+			}
+
+			// Páginas exclusivas para membros
 			if ((isOnPrivatePages || isOnDashboard) && !isMember) {
 				if (isLoggedIn) {
 					// Redirect user back to sign in
@@ -112,6 +123,7 @@ export const authConfig = {
 				return false;
 			}
 
+			// Páginas exclusivas para administradores
 			if (isOnDashboard && isLoggedIn && !isAdmin) {
 				console.log("Redirecting to error page");
 				return Response.redirect(
