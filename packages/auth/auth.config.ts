@@ -6,6 +6,7 @@ import { googleProvider } from "./google-provider";
 // Types
 import type { NextAuthConfig, Session } from "next-auth";
 import type { GoogleProfile } from "next-auth/providers/google";
+import { db } from "@ichess/drizzle";
 
 const icDomain = "@ic.ufal.br";
 
@@ -33,9 +34,14 @@ export const authConfig = {
 			return false;
 		},
 		async jwt({ token, user, session, trigger }) {
-			console.log("O usuário é membro do grupo de extensão? ", !!user.member);
-			if (user.member) {
-				token.member = user.member;
+			if (user) {
+				const member = await db.query.member.findFirst({
+					where: (memberUser, { eq }) => eq(memberUser.id, user.id as string),
+				});
+	
+				if (member) {
+					token.member = member;
+				}
 			}
 
 			function isSessionAvailable(session: unknown): session is Session {

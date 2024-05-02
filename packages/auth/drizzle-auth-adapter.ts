@@ -22,76 +22,24 @@ export const drizzleAuthAdapter: Adapter = {
 	},
 
 	async getUser(id) {
-		const [authUser] = await db
-			.select({
-				user: getTableColumns(user),
-				id: member.id,
-				username: member.username,
-				role: member.role,
-			})
-			.from(user)
-			.leftJoin(member, eq(member.userId, user.id))
-			.where(
-				and(
-					eq(user.id, id),
-					eq(member.projectId, env.PROJECT_ID),
-					eq(member.userId, user.id),
-				),
-			);
+		const authUser = await db.query.user.findFirst({
+			where: (user, { eq }) => eq(user.id, id),
+		});
 
 		if (authUser) {
-			const { id, username, role, ...rest } = authUser;
-
-			return {
-				...rest.user,
-				member: id
-					? {
-							id,
-							username,
-							role,
-						}
-					: undefined,
-			};
+			return authUser;
 		}
 
 		return null;
 	},
 
 	async getUserByEmail(email) {
-		const authUser = await db.transaction(async (trx) => {
-			const [userByEmail] = await trx
-				.select({
-					user: getTableColumns(user),
-					id: member.id,
-					username: member.username,
-					role: member.role,
-				})
-				.from(user)
-				.leftJoin(member, eq(member.userId, user.id))
-				.where(
-					and(
-						eq(user.email, email),
-						eq(member.projectId, env.PROJECT_ID),
-						eq(member.userId, user.id),
-					),
-				);
-
-			return userByEmail;
+		const authUser = await db.query.user.findFirst({
+			where: (user, { eq }) => eq(user.email, email),
 		});
 
 		if (authUser) {
-			const { id, username, role, ...rest } = authUser;
-
-			return {
-				...rest.user,
-				member: id
-					? {
-							id,
-							username,
-							role,
-						}
-					: undefined,
-			};
+			return authUser;
 		}
 
 		return null;
@@ -101,35 +49,18 @@ export const drizzleAuthAdapter: Adapter = {
 		const [authUser] = await db
 			.select({
 				user: getTableColumns(user),
-				id: member.id,
-				username: member.username,
-				role: member.role,
 			})
 			.from(user)
-			.leftJoin(member, eq(member.userId, user.id))
 			.innerJoin(account, eq(account.userId, user.id))
 			.where(
 				and(
 					eq(account.provider, provider),
 					eq(account.providerAccountId, providerAccountId),
-					eq(member.projectId, env.PROJECT_ID),
-					eq(member.userId, user.id),
 				),
 			);
 
 		if (authUser) {
-			const { id, username, role, ...rest } = authUser;
-
-			return {
-				...rest.user,
-				member: id
-					? {
-							id,
-							username,
-							role,
-						}
-					: undefined,
-			};
+			return authUser.user;
 		}
 
 		return null;
