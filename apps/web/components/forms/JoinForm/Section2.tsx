@@ -2,10 +2,10 @@
 
 // Components
 import {
-	type FormProps,
 	FormSection,
 	SectionFooter,
 	Panel,
+	type GenericForm,
 } from "@/components/forms";
 import {
 	FormControl,
@@ -39,7 +39,7 @@ const formTitles = {
 	username: "Nick no Chess.com",
 };
 
-export default function JoinForm2({ form }: FormProps) {
+export default function JoinForm2({ form }: { form: GenericForm }) {
 	const section2 = section2Keys.map((key) => {
 		return {
 			name: formTitles[key],
@@ -60,36 +60,28 @@ export default function JoinForm2({ form }: FormProps) {
 				render={({ field }) => (
 					<FormItem>
 						<FormLabel>{formTitles.experience}</FormLabel>
-						<Select
-							onValueChange={field.onChange}
-							defaultValue={field.value}
-						>
+						<Select onValueChange={field.onChange} defaultValue={field.value}>
 							<FormControl>
 								<SelectTrigger>
 									<SelectValue placeholder="Escolha uma opção" />
 								</SelectTrigger>
 							</FormControl>
 							<SelectContent>
-								<SelectItem value="inexperienced">
+								<SelectItem value="beginner">
 									Nunca joguei nem sei como se mexe as peças
 								</SelectItem>
-								<SelectItem value="rookie">
-									Já joguei algumas vezes, mas não sei muita
-									coisa
+								<SelectItem value="intermediate">
+									Já joguei algumas vezes, mas não sei muita coisa
 								</SelectItem>
-								<SelectItem value="competitor">
-									Jogo frequentemente e já participei de
-									torneios
+								<SelectItem value="advanced">
+									Jogo frequentemente e já participei de torneios
 								</SelectItem>
-								<SelectItem value="master">
-									Sou um mestre do xadrez
-								</SelectItem>
+								<SelectItem value="expert">Sou um mestre do xadrez</SelectItem>
 							</SelectContent>
 						</Select>
 						<Panel type="success">
-							Não se acanhe ao escolher uma opção! Estamos aqui
-							para garantir que você aprenda e se divirta com o
-							xadrez!
+							Não se acanhe ao escolher uma opção! Estamos aqui para garantir
+							que você aprenda e se divirta com o xadrez!
 						</Panel>
 						<FormMessage />
 					</FormItem>

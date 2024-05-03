@@ -1,1 +1,0 @@
-ALTER TABLE "aces" ADD COLUMN "name" text NOT NULL;

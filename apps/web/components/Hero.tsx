@@ -1,14 +1,15 @@
+import type React from "react";
 import Link from "next/link";
 
 // Components
 import { Button } from "@/components/ui/button";
-import React from "react";
 
 interface Props {
 	buttonProps?: React.ComponentProps<typeof Button> & {
 		icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 		iconClassName?: string;
 		href: string;
+		scroll?: boolean;
 	};
 	title: string;
 	description?: string;
@@ -42,15 +43,15 @@ export function Hero({ buttonProps, title, description, outro }: Props) {
 					{title}
 				</h1>
 				{description && (
-					<p className="text-neutral/80 md:max-w-[57%]">
-						{description}
-					</p>
+					<p className="text-neutral/80 md:max-w-[57%]">{description}</p>
 				)}
 			</div>
 			{buttonProps && (
 				<Button asChild size={"lg"} title={buttonTitle} {...rest}>
 					{href ? (
-						<Link href={href}>{buttonChildren}</Link>
+						<Link href={href} scroll={buttonProps.scroll}>
+							{buttonChildren}
+						</Link>
 					) : (
 						buttonChildren
 					)}

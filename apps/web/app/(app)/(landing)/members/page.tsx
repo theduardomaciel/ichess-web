@@ -68,6 +68,7 @@ export default async function LandingMembers({
 								href: `/members/${session?.member?.id}`,
 								title: "Ver meu perfil",
 								icon: AccountIcon,
+								scroll: false,
 							}
 						: undefined
 				}

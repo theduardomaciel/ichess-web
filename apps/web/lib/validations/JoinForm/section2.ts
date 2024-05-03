@@ -1,7 +1,8 @@
 import { z } from "zod";
+import { memberExperiences } from "@ichess/drizzle/schema";
 
 export const joinFormSection2Schema = z.object({
-	experience: z.enum(["inexperienced", "rookie", "competitor", "master"], {
+	experience: z.enum(memberExperiences, {
 		required_error: "Por favor, selecione uma opção",
 	}),
 	username: z.string({ required_error: "Obrigatório" }).min(4, {

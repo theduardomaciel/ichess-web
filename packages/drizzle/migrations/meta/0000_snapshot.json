@@ -1,5 +1,5 @@
 {
-  "id": "e900aabd-68c1-4470-89f2-3aa21641579a",
+  "id": "d76395ef-285e-44f8-ab80-d8503a67e109",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -406,6 +406,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "experience": {
+          "name": "experience",
+          "type": "experience",
+          "primaryKey": false,
+          "notNull": true
+        },
         "role": {
           "name": "role",
           "type": "role",
@@ -552,6 +558,12 @@
           "primaryKey": true,
           "notNull": true
         },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "description": {
           "name": "description",
           "type": "text",
@@ -682,6 +694,15 @@
         "6": "6",
         "7": "7",
         "8": "8"
+      }
+    },
+    "experience": {
+      "name": "experience",
+      "values": {
+        "beginner": "beginner",
+        "intermediate": "intermediate",
+        "advanced": "advanced",
+        "expert": "expert"
       }
     },
     "role": {

@@ -1,3 +1,4 @@
+import { userCourses, userPeriods } from "@ichess/drizzle/schema";
 import { z } from "zod";
 
 export const joinFormSection1Schema = z.object({
@@ -7,7 +8,7 @@ export const joinFormSection1Schema = z.object({
 			message: "Um nome deve conter no mínimo 2 caracteres.",
 		})
 		.refine((value) => value.split(" ").length >= 2, {
-			message: `Um nome completo deve conter pelo menos um sobrenome.`,
+			message: "Um nome completo deve conter pelo menos um sobrenome.",
 		})
 		.transform((value) => {
 			return value
@@ -17,14 +18,14 @@ export const joinFormSection1Schema = z.object({
 				})
 				.join(" ");
 		}),
-	course: z.enum(["cc", "ec"], { required_error: "Selecione uma opção" }),
+	course: z.enum(userCourses, { required_error: "Selecione uma opção" }),
 	registrationId: z
 		.string({ required_error: "Obrigatório" })
 		.min(7, {
 			message: "O número de matrícula é inválido.",
 		})
 		.max(9, { message: "O número de matrícula é inválido" }),
-	period: z.enum(["1", "2", "3", "4", "5", "6", "7", "8"], {
+	period: z.enum(userPeriods, {
 		required_error: "Selecione uma opção",
 	}),
 });

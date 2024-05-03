@@ -6,7 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 // Components
 import { Form } from "@/components/ui/form";
-import { LoadingDialog, SuccessDialog } from "@/components/forms/dialogs";
+import {
+	ErrorDialog,
+	LoadingDialog,
+	SuccessDialog,
+} from "@/components/forms/dialogs";
 
 // Sections
 import JoinForm0 from "./Section0";
@@ -26,10 +30,15 @@ import { scrollToNextSection } from "@/lib/validations";
 import type { User } from "@ichess/auth";
 import type { GenericForm } from "..";
 
+// API
+import { trpc } from "@/lib/trpc/react";
+
 export default function JoinForm({ user }: { user?: User }) {
 	const [currentState, setCurrentState] = useState<
-		false | "submitting" | "submitted"
+		false | "submitting" | "error" | "submitted"
 	>(false);
+
+	const mutation = trpc.updateUser.useMutation();
 
 	// 1. Define your form.
 	const form = useForm<JoinFormSchema>({
@@ -64,17 +73,58 @@ export default function JoinForm({ user }: { user?: User }) {
 	}
 
 	async function submitData() {
+		setCurrentState("submitting");
+
+		if (!user) {
+			console.error("User not found.");
+			setCurrentState(false);
+			return;
+		}
+
 		// ✅ This will be type-safe and validated.
 		const values = form.getValues();
-		console.log(values);
 
-		setCurrentState("submitting");
+		// Send the research data to Google Sheets.
+		try {
+			const response = await fetch("/api/google", {
+				method: "POST",
+				body: JSON.stringify({
+					data: {
+						...values.section3,
+						registrationId: values.section1.registrationId,
+					},
+				}),
+			});
+
+			if (response.status !== 200) {
+				console.error("Error: Invalid data.");
+			}
+		} catch (error) {
+			console.error(error);
+		}
+
+		// Send the data to the server.
+		try {
+			await mutation.mutateAsync({
+				name: values.section1.name,
+				course: values.section1.course,
+				registrationId: values.section1.registrationId,
+				period: values.section1.period,
+				experience: values.section2.experience,
+				username: values.section2.username,
+			});
+		} catch (error) {
+			console.error(error);
+			setCurrentState("error");
+			return;
+		}
+
 		setCurrentState("submitted");
 	}
 
 	// 2. Define a submit handler.
 	async function handleNextFormType() {
-		// 3. Switch between form sections.
+		// Switch between form sections.
 		switch (formType) {
 			case "section0":
 				setFormType(JoinFormTypeEnum.Section1);
@@ -118,6 +168,12 @@ export default function JoinForm({ user }: { user?: User }) {
 						Uma resposta será enviada ao seu e-mail institucional em breve!
 					</>
 				}
+			/>
+			<ErrorDialog
+				isOpen={currentState === "error"}
+				title="Erro ao enviar o formulário"
+				onClose={() => setCurrentState(false)}
+				description="Por favor, tente novamente mais tarde. Se o erro persistir, entre em contato com o suporte."
 			/>
 		</Form>
 	);

@@ -17,6 +17,12 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ CREATE TYPE "experience" AS ENUM('beginner', 'intermediate', 'advanced', 'expert');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "role" AS ENUM('member', 'admin');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -79,6 +85,7 @@ CREATE TABLE IF NOT EXISTS "members" (
 	"user_id" uuid NOT NULL,
 	"project_id" uuid NOT NULL,
 	"username" text NOT NULL,
+	"experience" "experience" NOT NULL,
 	"role" "role" DEFAULT 'member' NOT NULL,
 	"joined_at" timestamp DEFAULT now() NOT NULL
 );
@@ -99,6 +106,7 @@ CREATE TABLE IF NOT EXISTS "periods" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "aces" (
 	"id" "smallserial" PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
 	"description" text NOT NULL,
 	"hours" integer NOT NULL,
 	"project_id" uuid NOT NULL

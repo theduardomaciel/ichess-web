@@ -38,7 +38,7 @@ export const authConfig = {
 				const member = await db.query.member.findFirst({
 					where: (memberUser, { eq }) => eq(memberUser.id, user.id as string),
 				});
-	
+
 				if (member) {
 					token.member = member;
 				}
@@ -50,7 +50,6 @@ export const authConfig = {
 
 			if (trigger === "update" && isSessionAvailable(session)) {
 				token.name = session.user.name;
-				token.email = session.user.email;
 				token.member = session.member;
 			}
 

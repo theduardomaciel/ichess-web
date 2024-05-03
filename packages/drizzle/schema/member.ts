@@ -10,6 +10,15 @@ import {
 
 import { memberOnEvent, project, user } from ".";
 
+export const memberExperiences = [
+	"beginner",
+	"intermediate",
+	"advanced",
+	"expert",
+] as const;
+export const experienceEnum = pgEnum("experience", memberExperiences);
+export type Experience = (typeof memberExperiences)[number];
+
 export const memberRoles = ["member", "admin"] as const;
 export const roleEnum = pgEnum("role", memberRoles);
 export type Role = (typeof memberRoles)[number];
@@ -31,6 +40,7 @@ export const member = pgTable(
 				onUpdate: "cascade",
 			}),
 		username: text("username").notNull(),
+		experience: experienceEnum("experience").notNull(),
 		role: roleEnum("role").notNull().default("member"),
 		joinedAt: timestamp("joined_at").notNull().defaultNow(),
 	},

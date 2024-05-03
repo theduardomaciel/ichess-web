@@ -55,11 +55,9 @@ const mutateEventParams = z.object({
 	description: z.string().optional(),
 	dateFrom: z.date(),
 	dateTo: z.date(),
-	membersIds: z
-		.union([z.array(z.string()), z.string()])
-		.transform((value) => {
-			return Array.isArray(value) ? value : [value];
-		}),
+	membersIds: z.union([z.array(z.string()), z.string()]).transform((value) => {
+		return Array.isArray(value) ? value : [value];
+	}),
 	type: z.enum(eventTypes),
 	aceId: z.string().transform((value) => Number(value)),
 });
@@ -138,7 +136,9 @@ export const eventsRouter = createTRPCRouter({
 					message: "Event not found.",
 					code: "BAD_REQUEST",
 				});
-			} else if (!member && selectedEvent.type === "internal") {
+			}
+
+			if (!member && selectedEvent.type === "internal") {
 				throw new TRPCError({
 					message: "User is not a member of the project.",
 					code: "FORBIDDEN",
@@ -237,10 +237,7 @@ export const eventsRouter = createTRPCRouter({
 						},
 					})
 					.from(event)
-					.innerJoin(
-						memberOnEvent,
-						eq(event.id, memberOnEvent.eventId),
-					)
+					.innerJoin(memberOnEvent, eq(event.id, memberOnEvent.eventId))
 					.innerJoin(member, eq(memberOnEvent.memberId, member.id))
 					.innerJoin(user, eq(member.userId, user.id))
 					.innerJoin(ace, eq(event.aceId, ace.id))
@@ -248,10 +245,7 @@ export const eventsRouter = createTRPCRouter({
 						and(
 							eq(event.projectId, projectId),
 							dateFrom && dateTo
-								? and(
-										gte(event.dateFrom, dateFrom),
-										lte(event.dateTo, dateTo),
-									)
+								? and(gte(event.dateFrom, dateFrom), lte(event.dateTo, dateTo))
 								: undefined,
 							aces ? inArray(event.aceId, aces) : undefined,
 							search
@@ -268,12 +262,7 @@ export const eventsRouter = createTRPCRouter({
 												id: memberOnEvent.eventId,
 											})
 											.from(memberOnEvent)
-											.where(
-												eq(
-													memberOnEvent.memberId,
-													memberId,
-												),
-											),
+											.where(eq(memberOnEvent.memberId, memberId)),
 									)
 								: undefined,
 							moderatorsFilter
@@ -282,28 +271,20 @@ export const eventsRouter = createTRPCRouter({
 						),
 					)
 					.orderBy(
-						sortBy === "recent"
-							? asc(event.dateFrom)
-							: desc(event.dateFrom),
+						sortBy === "recent" ? asc(event.dateFrom) : desc(event.dateFrom),
 					),
 				db
 					.select({
 						amount: countDistinct(event.id),
 					})
 					.from(event)
-					.innerJoin(
-						memberOnEvent,
-						eq(event.id, memberOnEvent.eventId),
-					)
+					.innerJoin(memberOnEvent, eq(event.id, memberOnEvent.eventId))
 					.innerJoin(member, eq(memberOnEvent.memberId, member.id))
 					.where(
 						and(
 							eq(event.projectId, projectId),
 							dateFrom && dateTo
-								? and(
-										gte(event.dateFrom, dateFrom),
-										lte(event.dateTo, dateTo),
-									)
+								? and(gte(event.dateFrom, dateFrom), lte(event.dateTo, dateTo))
 								: undefined,
 							aces ? inArray(event.aceId, aces) : undefined,
 							search
@@ -320,12 +301,7 @@ export const eventsRouter = createTRPCRouter({
 												id: memberOnEvent.eventId,
 											})
 											.from(memberOnEvent)
-											.where(
-												eq(
-													memberOnEvent.memberId,
-													memberId,
-												),
-											),
+											.where(eq(memberOnEvent.memberId, memberId)),
 									)
 								: undefined,
 							moderatorsFilter
@@ -364,8 +340,8 @@ export const eventsRouter = createTRPCRouter({
 											role: event.member.role,
 											username: event.member.username,
 											user: {
-												name: event.user.name!,
-												image: event.user.image!,
+												name: event.user.name as string,
+												image: event.user.image as string,
 											},
 										},
 									]
@@ -377,8 +353,8 @@ export const eventsRouter = createTRPCRouter({
 							role: event.member.role,
 							username: event.member.username,
 							user: {
-								name: event.user.name!,
-								image: event.user.image!,
+								name: event.user.name as string,
+								image: event.user.image as string,
 							},
 						});
 					}
@@ -531,7 +507,7 @@ export const eventsRouter = createTRPCRouter({
 			const { idsToAdd, idsToRemove } =
 				currentEventMembers && membersIds
 					? getMembersIdsToMutate({
-							membersIds: membersIds!,
+							membersIds: membersIds as string[],
 							currentMembersIds: currentEventMembers.map(
 								(memberOnEvent) => memberOnEvent.memberId,
 							),
@@ -549,9 +525,7 @@ export const eventsRouter = createTRPCRouter({
 						dateFrom,
 						dateTo,
 						type,
-						aceId: !isNaN(Number(aceId))
-							? Number(aceId)
-							: undefined,
+						aceId: !Number.isNaN(Number(aceId)) ? Number(aceId) : undefined,
 					})
 					.where(eq(event.id, eventId))
 					.returning();
