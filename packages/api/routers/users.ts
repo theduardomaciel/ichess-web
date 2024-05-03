@@ -46,8 +46,6 @@ export const usersRouter = createTRPCRouter({
 				})
 				.where(eq(user.id, userId));
 
-			console.log("userId", userId);
-
 			// Then we create the member
 			const createdMember = await db
 				.insert(member)

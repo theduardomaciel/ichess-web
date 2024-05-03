@@ -15,21 +15,41 @@ import {
 import { GoogleButton } from "@/components/auth/SignInButton";
 import { Logged } from "@/components/auth/LoginStatus";
 
-export default function JoinForm0({
+// Validation
+import { isValid } from "@/lib/validations";
+import {
+	type PresenceFormSection0Schema,
+	presenceFormSection0Schema,
+} from "@/lib/validations/PresenceForm/section0";
+
+const section0Keys = Object.keys(
+	presenceFormSection0Schema.shape,
+) as (keyof PresenceFormSection0Schema)[];
+
+const formTitles = {
+	email: "E-mail institucional",
+	rememberMe: undefined,
+};
+
+export default function PresenceForm0({
 	form,
 	email,
 }: { form: GenericForm; email?: string | null }) {
+	const formSection = form.watch("formType");
+
+	const section0 = section0Keys.map((key) => {
+		return {
+			name: formTitles[key],
+			value: isValid(key, 0, form),
+		};
+	});
+
 	return (
 		<FormSection
 			title="Identificação"
 			section={0}
 			form={form}
-			fields={[
-				{
-					name: "E-mail institucional",
-					value: !!email,
-				},
-			]}
+			fields={section0}
 		>
 			<FormField
 				control={form.control}

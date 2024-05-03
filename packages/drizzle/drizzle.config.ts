@@ -1,7 +1,7 @@
 import { env } from "@ichess/env";
 import type { Config } from "drizzle-kit";
 
-console.log(env.DATABASE_URL);
+// console.log(env.DATABASE_URL);
 
 export default {
 	schema: "./schema/index.ts",

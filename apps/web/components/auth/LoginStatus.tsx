@@ -1,14 +1,19 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 
 import { cn } from "@/lib/utils";
+
+// Icons
+import ManageAccountIcon from "@/public/icons/manage_account.svg";
 
 // Components
 import {
 	ContinueRegistrationButton,
 	GoogleButton,
 } from "@/components/auth/SignInButton";
+import { Panel } from "@/components/forms";
 
-interface Props {
+interface NotLoggedProps {
 	className?: string;
 	href?: string;
 	isAuthenticated?: boolean;
@@ -20,7 +25,7 @@ export function NotLogged({
 	href,
 	isAuthenticated,
 	children,
-}: Props) {
+}: NotLoggedProps) {
 	return (
 		<div
 			className={cn(
@@ -38,5 +43,20 @@ export function NotLogged({
 				<GoogleButton className="px-8 max-md:w-full" callbackUrl={href} />
 			)}
 		</div>
+	);
+}
+
+interface LoggedProps {
+	email: string;
+}
+
+export function Logged({ email }: LoggedProps) {
+	return (
+		<Panel type="success" showIcon>
+			Você está logado como <strong>{email}</strong>.
+			<Link href="/auth" className="absolute top-1/2 right-4 -translate-y-1/2">
+				<ManageAccountIcon width={22} height={22} />
+			</Link>
+		</Panel>
 	);
 }

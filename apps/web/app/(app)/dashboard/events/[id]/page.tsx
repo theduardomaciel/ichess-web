@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { cn, isDateDifferent } from "@/lib/utils";
+import { cn, getDateString, getTimeString } from "@/lib/utils";
 
 // Icons
 import EditIcon from "@/public/icons/edit.svg";
@@ -42,29 +42,9 @@ export default async function EventPage({
 		projectId: env.PROJECT_ID,
 	});
 
-	const dateString = `${event.dateFrom.toLocaleDateString("pt-BR", {
-		month: "2-digit",
-		day: "2-digit",
-		year: event.dateTo ? undefined : "numeric",
-	})}${
-		isDateDifferent(event.dateFrom, event.dateTo)
-			? ` - ${event.dateTo.toLocaleDateString("pt-BR", {
-					year: "numeric",
-					month: "2-digit",
-					day: "2-digit",
-				})}`
-			: ""
-	}`;
-
-	const timeFrom = event.dateFrom.toLocaleTimeString("pt-BR", {
-		hour: "2-digit",
-		minute: "2-digit",
-	});
-
-	const timeTo = event.dateTo.toLocaleTimeString("pt-BR", {
-		hour: "2-digit",
-		minute: "2-digit",
-	});
+	const dateString = getDateString(event);
+	const timeFrom = getTimeString(event.dateFrom);
+	const timeTo = getTimeString(event.dateTo);
 
 	return (
 		<main className="flex min-h-screen flex-col items-start justify-start gap-12 px-wrapper py-12">

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 // Components
-import { Form } from "@/components/ui/form";
+import { Form, FormWrapper } from "@/components/ui/form";
 import {
 	ErrorDialog,
 	LoadingDialog,
@@ -146,15 +146,17 @@ export default function JoinForm({ user }: { user?: User }) {
 
 	return (
 		<Form {...form}>
-			<form
-				onSubmit={form.handleSubmit(handleNextFormType)}
-				className="flex w-full flex-col items-center justify-start gap-9 px-wrapper py-12 lg:py-24"
-			>
-				<JoinForm0 form={form as unknown as GenericForm} email={user?.email} />
-				<JoinForm1 form={form as unknown as GenericForm} />
-				<JoinForm2 form={form as unknown as GenericForm} />
-				<JoinForm3 form={form as unknown as GenericForm} />
-			</form>
+			<FormWrapper>
+				<form onSubmit={form.handleSubmit(handleNextFormType)}>
+					<JoinForm0
+						form={form as unknown as GenericForm}
+						email={user?.email}
+					/>
+					<JoinForm1 form={form as unknown as GenericForm} />
+					<JoinForm2 form={form as unknown as GenericForm} />
+					<JoinForm3 form={form as unknown as GenericForm} />
+				</form>
+			</FormWrapper>
 			<LoadingDialog
 				isOpen={currentState === "submitting"}
 				title="Estamos realizando seu cadastro..."

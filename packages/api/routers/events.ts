@@ -394,10 +394,10 @@ export const eventsRouter = createTRPCRouter({
 			// console.log("Aggregated events:", formattedEvents);
 			const pageCount = Math.ceil(amount / pageSize);
 
-			console.log("Limit: ", pageSize);
-			console.log("Offset: ", pageIndex ? (pageIndex - 1) * pageSize : 0);
-			console.log("All events amount: ", aggregateEvents.length);
-			console.log("Events amount:", formattedEvents.length);
+			// console.log("Limit: ", pageSize);
+			// console.log("Offset: ", pageIndex ? (pageIndex - 1) * pageSize : 0);
+			// console.log("All events amount: ", aggregateEvents.length);
+			// console.log("Events amount:", formattedEvents.length);
 
 			return { events: formattedEvents, pageCount };
 		}),

@@ -1,13 +1,13 @@
 "use client";
 
 import * as React from "react";
-import * as LabelPrimitive from "@radix-ui/react-label";
+import type * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
 import {
 	Controller,
-	ControllerProps,
-	FieldPath,
-	FieldValues,
+	type ControllerProps,
+	type FieldPath,
+	type FieldValues,
 	FormProvider,
 	useFormContext,
 } from "react-hook-form";
@@ -15,7 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 
 import { Label } from "@/components/ui/label";
-import { Panel, PanelProps } from "../forms";
+import { Panel, type PanelProps } from "../forms";
 
 // Icons
 import ExclamationIcon from "@/public/icons/exclamation.svg";
@@ -85,11 +85,7 @@ const FormItem = React.forwardRef<
 
 	return (
 		<FormItemContext.Provider value={{ id }}>
-			<div
-				ref={ref}
-				className={cn("w-full space-y-2", className)}
-				{...props}
-			/>
+			<div ref={ref} className={cn("w-full space-y-2", className)} {...props} />
 		</FormItemContext.Provider>
 	);
 });
@@ -174,12 +170,7 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
 
 		if (error?.type === "custom" && type) {
 			return (
-				<Panel
-					type={type}
-					showIcon={showIcon}
-					className={className}
-					{...props}
-				>
+				<Panel type={type} showIcon={showIcon} className={className} {...props}>
 					{body}
 				</Panel>
 			);
@@ -202,6 +193,14 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
 );
 FormMessage.displayName = "FormMessage";
 
+function FormWrapper({ children }: { children: React.ReactNode }) {
+	return (
+		<Slot className="flex w-full flex-col items-center justify-start gap-9 px-wrapper py-12 lg:py-24">
+			{children}
+		</Slot>
+	);
+}
+
 export {
 	useFormField,
 	Form,
@@ -211,4 +210,5 @@ export {
 	FormDescription,
 	FormMessage,
 	FormField,
+	FormWrapper,
 };

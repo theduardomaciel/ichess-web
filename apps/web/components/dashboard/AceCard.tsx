@@ -16,11 +16,11 @@ export function AceCard({ className, ace }: AceCardProps) {
 	return (
 		<div
 			className={cn(
-				"inline-flex flex-row flex-wrap items-start justify-between gap-4 rounded-lg border border-gray-200 bg-gray-300 px-6 py-3",
+				"flex flex-row flex-wrap h-fit items-start justify-between gap-4 rounded-lg border border-gray-200 bg-gray-300 px-6 py-3",
 				className,
 			)}
 		>
-			<div className="inline-flex items-center justify-start gap-4 self-stretch">
+			<div className="inline-flex items-center justify-start gap-4">
 				<AceIcon />
 				<p className="shrink grow basis-0 text-base font-medium text-neutral">
 					{ace.name}
@@ -40,9 +40,7 @@ export function AceLabel({ ace }: { ace: AceCardProps["ace"] }) {
 	return (
 		<div className="flex flex-row items-center justify-start gap-4">
 			<AceIcon className="min-w-fit text-neutral" />
-			<p className="text-left text-sm leading-tight lg:text-base">
-				{ace.name}
-			</p>
+			<p className="text-left text-sm leading-tight lg:text-base">{ace.name}</p>
 		</div>
 	);
 }

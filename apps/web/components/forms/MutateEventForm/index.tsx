@@ -28,6 +28,7 @@ import type { RouterOutput } from "@ichess/api";
 import { dateToTimeString } from "@/components/dashboard/TimePicker";
 
 interface Props {
+	projectId: string;
 	event?: RouterOutput["getEvent"]["event"];
 }
 
@@ -62,7 +63,7 @@ export default function MutateEventForm({ projectId, event }: Props) {
 	async function onSubmit(data: MutateEventFormSchema) {
 		setCurrentState("submitting");
 
-		console.log(data);
+		// console.log(data);
 		const { dateFrom, timeFrom, timeTo, members, ...rest } = data;
 
 		const dateFromWithTime = new Date(dateFrom);
@@ -122,9 +123,8 @@ export default function MutateEventForm({ projectId, event }: Props) {
 				href={`/dashboard/events/${submittedEventId.current}`}
 				description={
 					<>
-						O evento foi {event ? "atualizado" : "criado"} por
-						sucesso e já pode ser acessado por todos os membros do
-						grupo!
+						O evento foi {event ? "atualizado" : "criado"} por sucesso e já pode
+						ser acessado por todos os membros do grupo!
 						<br />
 						{!event &&
 							"Agora, você pode visualizá-lo a qualquer momento através da página de eventos."}

@@ -1,13 +1,13 @@
 import { z } from "zod";
 
 export const presenceFormSection1Schema = z.object({
-	email: z
+	uniqueCode: z
 		.string({
-			required_error:
-				"Por favor, faça login com seu e-mail institucional.",
+			required_error: "Por favor, insira o código único.",
 		})
-		.optional(),
-	rememberMe: z.boolean().default(false),
+		.refine((value) => value.length === 6, {
+			message: "O código único deve ter 6 caracteres.",
+		}),
 });
 
 export type PresenceFormSection1Schema = z.infer<

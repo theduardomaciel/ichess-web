@@ -14,8 +14,8 @@ export default async function JoinPage() {
 					Formulário de Inscrição
 				</h1>
 				<h2 className="text-center font-semibold lg:max-w-[35%]">
-					O projeto de extensão IChess está aberto e gostaríamos de
-					saber um pouco mais sobre você!
+					O projeto de extensão IChess está aberto e gostaríamos de saber um
+					pouco mais sobre você!
 				</h2>
 			</div>
 			<JoinForm user={session?.user || undefined} />

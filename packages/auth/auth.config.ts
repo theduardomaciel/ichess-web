@@ -23,7 +23,7 @@ export const authConfig = {
 	},
 	callbacks: {
 		async signIn({ account, profile }) {
-			console.log("Sign in", { account, profile });
+			// console.log("Sign in", { account, profile });
 
 			if (account?.provider === "google") {
 				const googleProfile = profile as GoogleProfile;
@@ -36,12 +36,18 @@ export const authConfig = {
 		async jwt({ token, user, session, trigger }) {
 			if (user) {
 				const member = await db.query.member.findFirst({
-					where: (memberUser, { eq }) => eq(memberUser.id, user.id as string),
+					where: (dbMember, { eq }) => eq(dbMember.userId, user.id as string),
 				});
 
+				// console.log("member", member);
+				// console.log("userId", user.id);
+
 				if (member) {
+					console.log("JWT Member found");
 					token.member = member;
 				}
+
+				console.log("JWT User found", user);
 			}
 
 			function isSessionAvailable(session: unknown): session is Session {
@@ -58,11 +64,12 @@ export const authConfig = {
 		session({ session, ...params }) {
 			if ("token" in params && session.user) {
 				session.user.id = params.token.sub as string;
-				session.member = params.token.member;
 				session.projectId = env.PROJECT_ID;
-			}
 
-			// console.log("Session", session);
+				if (params.token.member) {
+					session.member = params.token.member;
+				}
+			}
 
 			return session;
 		},

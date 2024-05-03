@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 // Icons
 import ArrowRight from "@/public/icons/arrow_right.svg";
@@ -9,6 +9,7 @@ import { EventPreview } from "@/components/events/EventPreview";
 import { PagesDisplay } from "@/components/Pagination";
 import { Empty } from "@/components/Empty";
 import { Hero } from "@/components/Hero";
+import { Wrapper } from "@/components/Wrapper";
 
 // Filters and Sorting
 import { SearchBar } from "@/components/dashboard/SearchBar";
@@ -40,17 +41,16 @@ const eventsPageParams = getEventsParams.extend({
 export type EventsPageParams = z.infer<typeof eventsPageParams>;
 
 export default async function MemberEventsPage({
-	params,
+	params: { memberId },
 	searchParams,
 }: {
 	params: {
-		id: string;
+		memberId: string;
 	};
 	searchParams: EventsPageParams;
 }) {
 	const session = await auth();
 
-	const memberId = params?.id;
 	const { page, pageSize, search, sortBy, periods, aces, moderators, r } =
 		eventsPageParams.parse(searchParams);
 
@@ -74,15 +74,15 @@ export default async function MemberEventsPage({
 			<Hero
 				title="Seus eventos"
 				description="Acompanhe os eventos dos quais você participou e está participando"
-				outro={"2024.2"}
+				preTitle="2024.1"
 				buttonProps={{
-					href: `/events`,
+					href: "/events",
 					title: "Voltar",
 					icon: ArrowRight,
 					iconClassName: "-scale-x-100",
 				}}
 			/>
-			<main className="flex min-h-screen flex-col items-start justify-start gap-[var(--wrapper)] px-wrapper py-12 lg:flex-row lg:gap-12">
+			<Wrapper>
 				<div className="flex flex-1 flex-col items-start justify-center gap-4">
 					<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
 						<SearchBar
@@ -118,10 +118,7 @@ export default async function MemberEventsPage({
 					}
 					{events && events.length > 0 && (
 						<Suspense fallback={null}>
-							<PagesDisplay
-								currentPage={page || 1}
-								pageCount={pageCount}
-							/>
+							<PagesDisplay currentPage={page || 1} pageCount={pageCount} />
 						</Suspense>
 					)}
 				</div>
@@ -130,7 +127,7 @@ export default async function MemberEventsPage({
 					<AceFilter />
 					<ModeratorFilter projectId={env.PROJECT_ID} />
 				</Filters>
-			</main>
+			</Wrapper>
 		</>
 	);
 }

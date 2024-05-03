@@ -1,13 +1,13 @@
 import { z } from "zod";
 
 export const presenceFormSection2Schema = z.object({
-	uniqueCode: z
-		.string({
-			required_error: "Por favor, insira o código único.",
+	rating: z.number().int().min(1).max(5).optional(),
+	comments: z
+		.string()
+		.max(500, {
+			message: "O campo deve ter no máximo 500 caracteres",
 		})
-		.refine((value) => value.length === 6, {
-			message: "O código único deve ter 6 caracteres.",
-		}),
+		.optional(),
 });
 
 export type PresenceFormSection2Schema = z.infer<

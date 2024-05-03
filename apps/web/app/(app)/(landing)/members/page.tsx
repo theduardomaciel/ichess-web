@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Fragment, Suspense } from "react";
 import type { Metadata } from "next";
 
 // Icons
@@ -6,7 +6,8 @@ import AccountIcon from "@/public/icons/account.svg";
 
 // Components
 import { Hero } from "@/components/Hero";
-import { NotLogged } from "@/components/auth/NotLogged";
+import { Wrapper } from "@/components/Wrapper";
+import { NotLogged } from "@/components/auth/LoginStatus";
 import { SearchBar } from "@/components/dashboard/SearchBar";
 import { PagesDisplay } from "@/components/Pagination";
 import { MemberGuestPreview } from "@/components/members/MemberPreview";
@@ -57,11 +58,11 @@ export default async function LandingMembers({
 	const { periods } = await serverClient.getPeriods();
 
 	return (
-		<>
+		<Fragment>
 			<Hero
 				title="Lista de Membros"
 				description="Acompanhe a lista de atuais membros do IChess"
-				outro={"2024.2"}
+				preTitle={"2024.2"}
 				buttonProps={
 					isMember
 						? {
@@ -73,7 +74,7 @@ export default async function LandingMembers({
 						: undefined
 				}
 			/>
-			<main className="flex min-h-screen flex-col items-start justify-start gap-6 px-wrapper py-[calc(var(--wrapper)/2)]">
+			<Wrapper>
 				{!isMember ? (
 					<NotLogged className="mb-8" isAuthenticated={!!session} href="/join">
 						É membro do IChess e deseja acompanhar os eventos participados,
@@ -120,7 +121,7 @@ export default async function LandingMembers({
 					</ul>
 				</Suspense>
 				<PagesDisplay currentPage={page || 1} pageCount={pageCount} />
-			</main>
-		</>
+			</Wrapper>
+		</Fragment>
 	);
 }

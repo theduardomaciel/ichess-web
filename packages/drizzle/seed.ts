@@ -1,7 +1,7 @@
 import { env } from "@ichess/env";
 import { faker } from "@faker-js/faker";
 
-import { neon, NeonQueryFunction } from "@neondatabase/serverless";
+import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 
 import {
@@ -13,6 +13,7 @@ import {
 	member,
 	userCourses,
 	memberRoles,
+	memberExperiences,
 	userPeriods,
 	memberOnEvent,
 } from "./schema";
@@ -74,6 +75,8 @@ export async function seedUsersAndMembers() {
 
 		const randomRole =
 			memberRoles[Math.floor(Math.random() * memberRoles.length)];
+		const randomExperience =
+			memberExperiences[Math.floor(Math.random() * memberExperiences.length)];
 
 		data.push({
 			id: faker.string.uuid(),
@@ -87,10 +90,11 @@ export async function seedUsersAndMembers() {
 		});
 
 		memberData.push({
-			userId: data[i].id!,
+			userId: data[i].id as string,
 			projectId: env.PROJECT_ID,
 			username: faker.internet.userName(),
 			role: randomRole,
+			experience: randomExperience,
 			joinedAt: faker.date.recent(),
 		});
 	}
@@ -146,8 +150,8 @@ export async function seedMembersOnEvents() {
 		for (const member of members) {
 			if (Math.random() > 0.5) {
 				data.push({
-					memberId: member.id!,
-					eventId: event.id!,
+					memberId: member.id as string,
+					eventId: event.id as string,
 				});
 			}
 		}
@@ -159,9 +163,9 @@ export async function seedMembersOnEvents() {
 }
 
 export async function seed() {
-	/* await seedAces();
+	await seedAces();
 	await seedPeriods();
-	await seedUsersAndMembers(); */
+	await seedUsersAndMembers();
 	await seedEvents();
 	await seedMembersOnEvents();
 }

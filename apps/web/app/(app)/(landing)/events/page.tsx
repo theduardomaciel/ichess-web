@@ -11,7 +11,7 @@ import { NoEvents } from "@/components/events/NoEvents";
 import { Hero } from "@/components/Hero";
 import { StyledTitle } from "@/components/events/StyledTitle";
 import { ExternalEvent } from "@/components/events/ExternalEvent";
-import { NotLogged } from "@/components/auth/NotLogged";
+import { NotLogged } from "@/components/auth/LoginStatus";
 import { EventPreview } from "@/components/events/EventPreview";
 
 // Validation
@@ -47,8 +47,6 @@ export default async function EventsPage() {
 		pageSize: 100,
 	});
 
-	console.log(events);
-
 	const monthExternal = events.filter(
 		(event) =>
 			event.type === "external" &&
@@ -76,7 +74,7 @@ export default async function EventsPage() {
 				title="Próximos eventos"
 				description="Acompanhe os eventos seguintes do IChess, tanto internos,
 				como externos, e saiba quando participar!"
-				outro={"2024.2"}
+				preTitle="2024.1"
 				buttonProps={
 					isMember
 						? {
