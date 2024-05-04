@@ -22,7 +22,6 @@ import {
 // API
 import { trpc } from "@/lib/trpc/react";
 import { Skeleton } from "../ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
 
 interface CodeGeneratorProps {
 	charactersAmount?: number;
@@ -43,7 +42,6 @@ export function CodeGenerator({
 	lifetime = 30000,
 }: CodeGeneratorProps) {
 	const [code, setCode] = useState<string | undefined | null>(undefined);
-	const toast = useToast();
 
 	const [currentDate, setCurrentDate] = useState<Date>(new Date());
 	const [expiringDate, setExpiringDate] = useState<Date | undefined>(undefined);
@@ -161,22 +159,12 @@ export function CodeGenerator({
 				) : (
 					<ul className="flex w-full flex-row items-center justify-between gap-2.5">
 						{code?.split("").map((character, i) => (
-							<button
-								type="button"
+							<li
 								key={i}
-								className="flex w-full items-center justify-center rounded-sm bg-gray-200 px-1 py-6 text-4xl font-extrabold text-neutral cursor-default group group-hover:bg-primary-100"
-								onClick={() => {
-									navigator.clipboard.writeText(code);
-									toast.toast({
-										title: "Código copiado",
-										description:
-											"O código foi copiado para a área de transferência",
-										variant: "success",
-									});
-								}}
+								className="flex w-full items-center justify-center rounded-sm bg-gray-200 px-1 py-6 text-4xl font-extrabold text-neutral"
 							>
 								{character}
-							</button>
+							</li>
 						))}
 					</ul>
 				)}
