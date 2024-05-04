@@ -2,33 +2,38 @@ import { db } from "@ichess/drizzle";
 
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { verificationToken } from "@ichess/drizzle/schema";
+
+const DEFAULT_CHARACTERS_AMOUNT = 6;
+const DEFAULT_LIFETIME = 30000;
 
 export const verificationCodesRouter = createTRPCRouter({
-	getVerificationCodes: protectedProcedure.query(async () => {
-		const verificationCodes = await db.query.ace.findMany();
-
-		return {
-			verificationCodes,
-		};
-	}),
-
 	getVerificationCode: protectedProcedure
 		.input(
 			z.object({
-				aceId: z.number().int(),
+				charactersAmount: z.number().optional(),
+				lifetime: z.number().optional(),
 			}),
 		)
 		.query(async ({ input }) => {
-			const { aceId } = input;
+			const { charactersAmount } = input;
 
-			const ace = await db.query.ace.findFirst({
-				where(fields, { eq }) {
-					return eq(fields.id, aceId);
-				},
+			const code = Array.from(
+				{ length: charactersAmount || DEFAULT_CHARACTERS_AMOUNT },
+				() => Math.floor(Math.random() * 10),
+			);
+
+			const codeString = code.join("");
+			const expireDate = new Date(
+				Date.now() + (input.lifetime || DEFAULT_LIFETIME),
+			);
+
+			await db.insert(verificationToken).values({
+				expiresAt: expireDate,
+				token: codeString,
+				identifier: "verification",
 			});
 
-			return {
-				ace,
-			};
+			return codeString;
 		}),
 });
