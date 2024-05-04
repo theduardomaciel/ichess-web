@@ -1,16 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.7.1/schema.json",
-	"organizeImports": {
-		"enabled": true
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true
-		}
-	},
-	"formatter": {
-		"indentStyle": "tab",
-		"indentWidth": 4
-	}
+	"extends": [
+		"@ichess/biome-config/biome.json"
+	]
 }

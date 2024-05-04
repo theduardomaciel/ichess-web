@@ -6,7 +6,11 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 1.7.1
+        version: 1.7.1
 
   apps/web:
     dependencies:
@@ -30,7 +34,7 @@ importers:
         version: link:../../packages/drizzle
       '@ichess/env':
         specifier: workspace:*
-        version: link:../../packages/env
+        version: link:../../packages/socketio
       '@radix-ui/react-checkbox':
         specifier: ^1.0.4
         version: 1.0.4(@types/react-dom@18.2.19)(@types/react@18.2.58)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -189,7 +193,7 @@ importers:
         version: link:../drizzle
       '@ichess/env':
         specifier: workspace:*
-        version: link:../env
+        version: link:../socketio
       '@trpc/server':
         specifier: next
         version: 11.0.0-rc.334
@@ -217,7 +221,7 @@ importers:
         version: link:../drizzle
       '@ichess/env':
         specifier: workspace:*
-        version: link:../env
+        version: link:../socketio
       next-auth:
         specifier: beta
         version: 5.0.0-beta.13(next@14.2.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
@@ -239,7 +243,7 @@ importers:
         version: 8.4.1
       '@ichess/env':
         specifier: workspace:*
-        version: link:../env
+        version: link:../socketio
       '@neondatabase/serverless':
         specifier: ^0.9.0
         version: 0.9.0
@@ -267,6 +271,25 @@ importers:
         version: 8.11.5
 
   packages/env:
+    dependencies:
+      '@t3-oss/env-nextjs':
+        specifier: 0.8.0
+        version: 0.8.0(typescript@5.4.4)(zod@3.22.4)
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
+    devDependencies:
+      '@ichess/biome-config':
+        specifier: workspace:*
+        version: link:../../config/biome
+      '@ichess/typescript-config':
+        specifier: workspace:*
+        version: link:../../config/typescript
+      '@types/node':
+        specifier: ^20
+        version: 20.11.20
+
+  packages/socketio:
     dependencies:
       '@t3-oss/env-nextjs':
         specifier: 0.8.0
