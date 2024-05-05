@@ -28,6 +28,7 @@ import { scrollToNextSection } from "@/lib/validations";
 
 // Types
 import type { GenericForm } from "..";
+import { Button } from "@/components/ui/button";
 
 export default function PresenceForm({ email }: { email?: string | null }) {
 	const router = useRouter();
@@ -86,8 +87,27 @@ export default function PresenceForm({ email }: { email?: string | null }) {
 		}
 	}
 
+	async function testing() {
+		console.log("testing");
+		try {
+			await fetch("/api/webhooks", {
+				method: "POST",
+				body: JSON.stringify({
+					event: "USE_VERIFICATION_CODE",
+					payload: {
+						codeId: "123",
+					},
+				}),
+			});
+			console.log("success");
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
 	return (
 		<Form {...form}>
+			<Button onClick={testing}>testando o cosio</Button>
 			<FormWrapper>
 				<form onSubmit={form.handleSubmit(handleNextFormType)}>
 					<PresenceForm0 form={form as unknown as GenericForm} email={email} />

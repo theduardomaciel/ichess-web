@@ -15,6 +15,11 @@ export const env = createEnv({
 		GOOGLE_SHEET_CLIENT_EMAIL: z.string().min(1),
 		GOOGLE_SHEET_PRIVATE_KEY: z.string().min(1),
 		GOOGLE_SHEET_ID: z.string().min(1),
+		QSTASH_TOKEN: z.string().min(1),
+		QSTASH_VALIDATE_SIGNATURE: z
+			.string()
+			.transform((value) => value === "true")
+			.default("true"),
 	},
 	client: {
 		NEXT_PUBLIC_VERCEL_URL: z.string().url(),
@@ -31,6 +36,8 @@ export const env = createEnv({
 		GOOGLE_SHEET_CLIENT_EMAIL: process.env.GOOGLE_SHEET_CLIENT_EMAIL,
 		GOOGLE_SHEET_PRIVATE_KEY: process.env.GOOGLE_SHEET_PRIVATE_KEY,
 		GOOGLE_SHEET_ID: process.env.GOOGLE_SHEET_ID,
+		QSTASH_TOKEN: process.env.QSTASH_TOKEN,
+		QSTASH_VALIDATE_SIGNATURE: process.env.QSTASH_VALIDATE_SIGNATURE,
 	},
 	emptyStringAsUndefined: true,
 });
