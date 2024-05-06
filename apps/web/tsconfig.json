@@ -15,7 +15,7 @@
 		".next/types/**/*.ts",
 		// Middleware (na raiz do projeto)
 		"./middleware/**/*.ts",
-		"./middleware/**/*.tsx",
+		"./middleware/**/*.tsx"
 	],
 	"exclude": ["node_modules"]
 }

@@ -12,7 +12,7 @@ export const verificationCodesRouter = createTRPCRouter({
 	getVerificationCode: protectedProcedure
 		.input(
 			z.object({
-				charactersAmount: z.number().optional(),
+				charactersAmount: z.number().nullable().optional(),
 				lifetime: z.number().optional(),
 			}),
 		)

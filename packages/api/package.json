@@ -1,20 +1,21 @@
 {
-  "name": "@ichess/api",
-  "main": "./index.ts",
-  "types": "./index.ts",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {},
-  "dependencies": {
-    "@ichess/auth": "workspace:*",
-    "@ichess/drizzle": "workspace:*",
-    "@ichess/env": "workspace:*",
-    "@trpc/server": "next",
-    "superjson": "^2.2.1",
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "@ichess/biome-config": "workspace:*",
-    "@ichess/typescript-config": "workspace:*"
-  }
+	"name": "@ichess/api",
+	"main": "./index.ts",
+	"types": "./index.ts",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {},
+	"dependencies": {
+		"@ichess/auth": "workspace:*",
+		"@ichess/drizzle": "workspace:*",
+		"@ichess/env": "workspace:*",
+		"@trpc/server": "next",
+		"pusher": "^5.2.0",
+		"superjson": "^2.2.1",
+		"zod": "^3.22.4"
+	},
+	"devDependencies": {
+		"@ichess/biome-config": "workspace:*",
+		"@ichess/typescript-config": "workspace:*"
+	}
 }

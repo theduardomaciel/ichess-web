@@ -48,9 +48,9 @@ export function MemberAdd({
 
 	const [isOpen, setIsOpen] = useState(false);
 
-	const [addedUsersAmount, setAddedUsersAmount] = useState<
-		number | undefined
-	>(undefined);
+	const [addedUsersAmount, setAddedUsersAmount] = useState<number | undefined>(
+		undefined,
+	);
 	const [isMutating, startTransition] = useTransition();
 
 	const mutations = trpc.updateEventMembers.useMutation();
@@ -66,12 +66,8 @@ export function MemberAdd({
 	const filteredMembers = search
 		? members?.filter(
 				(member) =>
-					member.user?.name
-						?.toLowerCase()
-						.includes(search.toLowerCase()) ||
-					member.username
-						.toLowerCase()
-						.includes(search.toLowerCase()),
+					member.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+					member.username.toLowerCase().includes(search.toLowerCase()),
 			)
 		: members;
 
@@ -88,8 +84,7 @@ export function MemberAdd({
 		if (selectedMembers.length === 0) {
 			toast({
 				title: "Nenhum participante selecionado",
-				description:
-					"Selecione ao menos um participante para adicionar.",
+				description: "Selecione ao menos um participante para adicionar.",
 				variant: "warning",
 			});
 			return;
@@ -144,10 +139,7 @@ export function MemberAdd({
 					<AddIcon className="h-6 w-6" />
 				</Button>
 			</DialogTrigger>
-			<DialogContent
-				className="w-full sm:max-w-lg"
-				hasCloseButton={false}
-			>
+			<DialogContent className="w-full sm:max-w-lg" hasCloseButton={false}>
 				<DialogHeader>
 					<DialogTitle>Adicionar participante</DialogTitle>
 					<DialogDescription>
@@ -173,7 +165,7 @@ export function MemberAdd({
 								<ul className="flex h-full w-full flex-col items-start justify-start gap-4">
 									{filteredMembers.map((member, i) => (
 										<li
-											key={i}
+											key={member.id}
 											className="flex w-full flex-row items-center justify-between"
 										>
 											<div className="flex flex-row items-center justify-start gap-4">
@@ -188,8 +180,7 @@ export function MemberAdd({
 													alt="Member profile picture"
 												/>
 												<span className="text-left text-base font-semibold leading-tight text-neutral">
-													{member.user?.name ??
-														`@${member.username}`}
+													{member.user?.name ?? `@${member.username}`}
 												</span>
 											</div>
 											<div className="flex flex-row items-center justify-end gap-4">

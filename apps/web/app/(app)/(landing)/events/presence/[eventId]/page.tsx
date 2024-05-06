@@ -46,7 +46,7 @@ export default async function PresencePage({
 			>
 				<AceCard ace={event.ace} />
 			</Hero>
-			<PresenceForm email={session?.user.email} />
+			<PresenceForm email={session?.user.email} eventId={eventId} />
 		</>
 	);
 }

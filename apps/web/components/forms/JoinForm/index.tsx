@@ -86,7 +86,7 @@ export default function JoinForm({ user }: { user?: User }) {
 
 		// Send the research data to Google Sheets.
 		try {
-			const response = await fetch("/api/google", {
+			const response = await fetch("/api/research/members", {
 				method: "POST",
 				body: JSON.stringify({
 					data: {

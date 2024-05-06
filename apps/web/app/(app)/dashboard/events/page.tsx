@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 import Link from "next/link";
 // import { unstable_noStore } from "next/cache";
@@ -65,9 +65,7 @@ export default async function DashboardEventsPage({
 				<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
 					<SearchBar key={r} placeholder="Pesquisar eventos" />
 					<div className="flex flex-row items-center justify-between gap-4 max-sm:w-full sm:justify-end">
-						<span className="text-nowrap text-sm font-medium">
-							Ordenar por
-						</span>
+						<span className="text-nowrap text-sm font-medium">Ordenar por</span>
 						<SortBy sortBy={sortBy} />
 					</div>
 				</div>
@@ -84,16 +82,13 @@ export default async function DashboardEventsPage({
 								</Link>
 							))
 						) : (
-							<Empty href={`/dashboard/events`} />
+							<Empty href={"/dashboard/events"} />
 						)}
 					</ul>
 				}
 				{events && events.length > 0 && (
 					<Suspense fallback={null}>
-						<PagesDisplay
-							currentPage={page || 1}
-							pageCount={pageCount}
-						/>
+						<PagesDisplay currentPage={page || 1} pageCount={pageCount} />
 					</Suspense>
 				)}
 			</div>

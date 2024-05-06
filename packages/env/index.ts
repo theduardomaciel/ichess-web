@@ -14,15 +14,13 @@ export const env = createEnv({
 		VERCEL_URL: z.string().url(),
 		GOOGLE_SHEET_CLIENT_EMAIL: z.string().min(1),
 		GOOGLE_SHEET_PRIVATE_KEY: z.string().min(1),
-		GOOGLE_SHEET_ID: z.string().min(1),
-		QSTASH_TOKEN: z.string().min(1),
-		QSTASH_VALIDATE_SIGNATURE: z
-			.string()
-			.transform((value) => value === "true")
-			.default("true"),
+		PUSHER_APP_ID: z.string().min(1),
+		PUSHER_SECRET: z.string().min(1),
+		PUSHER_CLUSTER: z.string().min(1),
 	},
 	client: {
 		NEXT_PUBLIC_VERCEL_URL: z.string().url(),
+		NEXT_PUBLIC_PUSHER_KEY: z.string().min(1),
 	},
 	runtimeEnv: {
 		NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
@@ -35,9 +33,10 @@ export const env = createEnv({
 		GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
 		GOOGLE_SHEET_CLIENT_EMAIL: process.env.GOOGLE_SHEET_CLIENT_EMAIL,
 		GOOGLE_SHEET_PRIVATE_KEY: process.env.GOOGLE_SHEET_PRIVATE_KEY,
-		GOOGLE_SHEET_ID: process.env.GOOGLE_SHEET_ID,
-		QSTASH_TOKEN: process.env.QSTASH_TOKEN,
-		QSTASH_VALIDATE_SIGNATURE: process.env.QSTASH_VALIDATE_SIGNATURE,
+		PUSHER_APP_ID: process.env.PUSHER_APP_ID,
+		NEXT_PUBLIC_PUSHER_KEY: process.env.NEXT_PUBLIC_PUSHER_KEY,
+		PUSHER_SECRET: process.env.PUSHER_SECRET,
+		PUSHER_CLUSTER: process.env.PUSHER_CLUSTER,
 	},
 	emptyStringAsUndefined: true,
 });

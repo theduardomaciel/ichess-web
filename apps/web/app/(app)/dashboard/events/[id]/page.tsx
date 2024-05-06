@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useEffect } from "react";
 
 import { cn, getDateString, getTimeString } from "@/lib/utils";
 
@@ -21,6 +22,7 @@ import { z } from "zod";
 import { env } from "@ichess/env";
 import { serverClient } from "@/lib/trpc/server";
 import type { RouterOutput } from "@ichess/api";
+import { ShareDialog } from "@/components/dashboard/ShareDialog";
 
 const eventDetailsPageParams = z.object({
 	id: z.string(),
@@ -81,31 +83,30 @@ export default async function EventPage({
 							<EditIcon className="h-5 w-5" />
 						</Link>
 					</Button>
-					<CodeGenerator />
+					<CodeGenerator PUSHER_CLUSTER={env.PUSHER_CLUSTER} />
 				</div>
 			</div>
 			<div className="flex w-full flex-col items-start justify-start gap-12 md:flex-row">
 				<div className="flex w-full flex-col items-center justify-start gap-4 md:w-3/5">
 					<MembersList
-						members={event.members.filter(
-							(member) => member.role === "member",
-						)}
+						members={event.members.filter((member) => member.role === "member")}
 						eventId={event.id}
 					/>
-					<MemberAdd
-						projectId={env.PROJECT_ID}
-						eventId={event.id}
-						alreadyAddedMembers={event.members.map(
-							(member) => member.id,
-						)}
-						search={searchParams.search}
-					/>
+					<div className="flex flex-col items-center justify-start sm:flex-row sm:justify-between w-full gap-4">
+						<MemberAdd
+							projectId={env.PROJECT_ID}
+							eventId={event.id}
+							alreadyAddedMembers={event.members.map((member) => member.id)}
+							search={searchParams.search}
+						/>
+						<ShareDialog
+							url={`https://localhost:3000/events/presence/${event.id}`}
+						/>
+					</div>
 				</div>
 				<MembersList
 					className="md:w-2/5"
-					members={event.members.filter(
-						(member) => member.role === "admin",
-					)}
+					members={event.members.filter((member) => member.role === "admin")}
 					eventId={event.id}
 					isModerators
 				/>

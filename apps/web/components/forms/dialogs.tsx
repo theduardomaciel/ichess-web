@@ -47,18 +47,13 @@ export function LoadingDialog({
 				}}
 			>
 				<DialogHeader>
-					<DotLottiePlayer
-						src="/animations/loading.lottie"
-						autoplay
-						loop
-					/>
+					<DotLottiePlayer src="/animations/loading.lottie" autoplay loop />
 					<DialogTitle className="text-center font-title text-2xl font-extrabold">
 						{title || "Estamos quase lá!"}
 					</DialogTitle>
 				</DialogHeader>
 				<DialogDescription className="max-w-[80%] text-center text-lg font-medium">
-					{description ||
-						"Aguarde um pouquinho enquanto processamos tudo!"}
+					{description || "Aguarde um pouquinho enquanto processamos tudo!"}
 				</DialogDescription>
 			</DialogContent>
 		</Dialog>

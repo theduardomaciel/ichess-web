@@ -1,5 +1,5 @@
-import { AppRouter } from "@ichess/api";
-import { createTRPCClient, httpBatchLink, TRPCLink } from "@trpc/client";
+import type { AppRouter } from "@ichess/api";
+import { createTRPCClient, httpBatchLink, type TRPCLink } from "@trpc/client";
 import SuperJSON from "superjson";
 
 function getBaseUrl() {
@@ -9,7 +9,7 @@ function getBaseUrl() {
 }
 
 export function getUrl() {
-	return getBaseUrl() + "/api/trpc";
+	return `${getBaseUrl()}/api/trpc`;
 }
 
 export const trpcLinks: TRPCLink<AppRouter>[] = [

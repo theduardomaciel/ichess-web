@@ -16,10 +16,10 @@ import AddIcon from "@/public/icons/add.svg";
 import ChevronUp from "@/public/icons/chevron_up.svg";
 
 const SECTIONS = [
-	{
+	/* {
 		title: "Visão Geral",
 		href: "/dashboard",
-	},
+	}, */
 	{
 		title: "Eventos",
 		href: "/dashboard/events",
@@ -41,14 +41,15 @@ export default function DashboardHeader() {
 				"bg-gray-400 md:bg-transparent",
 				{
 					"max-h-[50rem]": isExpanded,
-				}
+				},
 			)}
 		>
 			<div className="flex flex-row items-center justify-between w-full md:w-[25%] h-14">
-				<Link href={`/dashboard`}>
+				<Link href={"/dashboard"}>
 					<Logo />
 				</Link>
 				<button
+					type="button"
 					title="Toggle menu expansion"
 					className="inline-flex md:hidden w-10 h-10 p-2 bg-gray-300 hover:bg-gray-400 transition-colors rounded-lg justify-center items-center gap-2.5"
 					onClick={() => setIsExpanded((prev) => !prev)}
@@ -67,7 +68,7 @@ export default function DashboardHeader() {
 						{
 							"opacity-0 translate-y-[-1rem]": !isExpanded,
 							"opacity-100 translate-y-0": isExpanded,
-						}
+						},
 					)}
 				>
 					{SECTIONS.map(({ title, href }) => (
@@ -77,7 +78,7 @@ export default function DashboardHeader() {
 								"text-base font-semibold tracking-tight text-center transition-opacity",
 								{
 									"opacity-50": pathname !== href,
-								}
+								},
 							)}
 						>
 							<Link href={href} className="relative text-nowrap">
@@ -89,24 +90,23 @@ export default function DashboardHeader() {
 										{
 											"translate-y-0 -translate-x-1/2 opacity-80":
 												pathname === href,
-										}
+										},
 									)}
 								/>
 							</Link>
 						</li>
 					))}
 				</ul>
-				<Link className="w-full md:w-[25%]" href={`/dashboard/add`}>
+				<Link className="w-full md:w-[25%]" href={"/dashboard/add"}>
 					<Button
 						variant={"outline"}
 						className={cn(
 							"text-xs uppercase border-primary-100 hover:bg-primary-100 w-full transition-[opacity,transform,background-color] duration-300 px-4",
 							{
-								"opacity-0 max-sm:translate-x-[-1rem]":
-									!isExpanded,
+								"opacity-0 max-sm:translate-x-[-1rem]": !isExpanded,
 								"opacity-100 translate-y-0": isExpanded,
 								"bg-primary-100": pathname === "/dashboard/add",
-							}
+							},
 						)}
 					>
 						<AddIcon className="w-4 h-4" />

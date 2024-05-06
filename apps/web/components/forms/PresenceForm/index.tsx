@@ -26,11 +26,19 @@ import {
 } from "@/lib/validations/PresenceForm";
 import { scrollToNextSection } from "@/lib/validations";
 
+// API
+import { trpc } from "@/lib/trpc/react";
+
 // Types
 import type { GenericForm } from "..";
-import { Button } from "@/components/ui/button";
 
-export default function PresenceForm({ email }: { email?: string | null }) {
+// Actions
+import { markVerificationCode } from "@/lib/actions/websockets/verification-code";
+
+export default function PresenceForm({
+	eventId,
+	email,
+}: { eventId: string; email?: string | null }) {
 	const router = useRouter();
 	const [currentState, setCurrentState] = useState<
 		false | "submitting" | "error" | "submitted"
@@ -60,11 +68,11 @@ export default function PresenceForm({ email }: { email?: string | null }) {
 		form.setValue("formType", formType);
 	}
 
+	const mutation = trpc.updateMemberPresence.useMutation();
+
 	// 2. Define a submit handler.
 	async function handleNextFormType() {
 		const formSection = formType.replace("section", "");
-
-		const values = form.getValues();
 
 		// Switch between form sections.
 		switch (formType) {
@@ -76,38 +84,62 @@ export default function PresenceForm({ email }: { email?: string | null }) {
 				setFormType(PresenceFormTypeEnum.Section2);
 				scrollToNextSection(Number(formSection) + 1);
 				break;
-			case "section2":
+			case "section2": {
 				// ✅ This will be type-safe and validated.
 				setCurrentState("submitting");
 
-				setCurrentState("submitted");
+				const values = form.getValues();
+				const verificationCode = values.section1.uniqueCode;
+
+				// Submit the form.
+				try {
+					await mutation.mutateAsync({
+						eventId,
+						verificationCode,
+					});
+
+					setCurrentState("submitted");
+				} catch (error) {
+					console.error(error);
+					setCurrentState("error");
+				}
+
+				// Informamos ao Pusher que o código de verificação foi utilizado
+				try {
+					await markVerificationCode({ verificationCode });
+				} catch (error) {
+					console.error(error);
+				}
+
+				// Send the research data to Google Sheets.
+				try {
+					const response = await fetch("/api/research/events", {
+						method: "POST",
+						body: JSON.stringify({
+							data: {
+								eventId,
+								rating: values.section2.rating,
+								comments: values.section2.comments,
+							},
+						}),
+					});
+
+					if (response.status !== 200) {
+						console.error("Error: Invalid data.");
+					}
+				} catch (error) {
+					console.error(error);
+				}
+
 				break;
+			}
 			default:
 				break;
 		}
 	}
 
-	async function testing() {
-		console.log("testing");
-		try {
-			await fetch("/api/webhooks", {
-				method: "POST",
-				body: JSON.stringify({
-					event: "USE_VERIFICATION_CODE",
-					payload: {
-						codeId: "123",
-					},
-				}),
-			});
-			console.log("success");
-		} catch (error) {
-			console.error(error);
-		}
-	}
-
 	return (
 		<Form {...form}>
-			<Button onClick={testing}>testando o cosio</Button>
 			<FormWrapper>
 				<form onSubmit={form.handleSubmit(handleNextFormType)}>
 					<PresenceForm0 form={form as unknown as GenericForm} email={email} />
@@ -116,10 +148,23 @@ export default function PresenceForm({ email }: { email?: string | null }) {
 				</form>
 			</FormWrapper>
 			<LoadingDialog isOpen={currentState === "submitting"} />
-			<SuccessDialog isOpen={currentState === "submitted"} />
+			<SuccessDialog
+				isOpen={currentState === "submitted"}
+				description={
+					<>Sua presença foi confirmada com sucesso! Obrigado por participar.</>
+				}
+			/>
 			<ErrorDialog
 				isOpen={currentState === "error"}
 				onClose={() => setCurrentState(false)}
+				description={
+					<>
+						Por favor, verifique se o código de verificação está correto e tente
+						novamente.
+						<br />
+						Caso o erro persista, entre em contato com a administração.
+					</>
+				}
 			/>
 		</Form>
 	);

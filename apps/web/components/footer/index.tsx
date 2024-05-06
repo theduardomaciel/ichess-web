@@ -18,35 +18,36 @@ export default function Footer() {
 			<div className="flex flex-col items-start justify-center gap-12">
 				<div className="flex flex-col items-start justify-center gap-4">
 					<div className="flex flex-row flex-wrap items-center justify-start gap-5">
-						<Link href={`/`}>
+						<Link href={"/"}>
 							<Logo />
 						</Link>
 						<div className="h-8 w-[1px] bg-neutral/50" />
 						<a
 							title="Repositório do IChess no Github"
 							target="_blank"
-							href={`https://github.com/theduardomaciel/ichess-web`}
+							rel="noreferrer"
+							href={"https://github.com/theduardomaciel/ichess-web"}
 						>
 							<GithubIcon />
 						</a>
 						<a
 							title="Servidor no Discord do IChess"
 							target="_blank"
-							href={`https://discord.gg/jrMfHpRnCf`}
+							rel="noreferrer"
+							href={"https://discord.gg/jrMfHpRnCf"}
 						>
 							<DiscordIcon width={28} />
 						</a>
 						<a
 							title="Perfil no Instagram do IChess"
 							target="_blank"
-							href={`https://instagram.com/ichess.ufal`}
+							rel="noreferrer"
+							href={"https://instagram.com/ichess.ufal"}
 						>
 							<InstagramIcon />
 						</a>
 					</div>
-					<p>
-						Copyright @ 2024 IChess. Todos os direitos reservados.
-					</p>
+					<p>Copyright @ 2024 IChess. Todos os direitos reservados.</p>
 				</div>
 				<div className="flex flex-row flex-wrap items-start justify-start gap-9">
 					<ThemePicker />
@@ -79,7 +80,7 @@ export default function Footer() {
 						},
 						{
 							label: "Dashboard",
-							href: "/dashboard",
+							href: "/dashboard/events",
 						},
 					]}
 				/>

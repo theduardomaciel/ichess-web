@@ -1,6 +1,11 @@
 import { db } from "@ichess/drizzle";
 
-import { member, memberRoles, user } from "@ichess/drizzle/schema";
+import {
+	member,
+	memberOnEvent,
+	memberRoles,
+	user,
+} from "@ichess/drizzle/schema";
 import {
 	and,
 	asc,
@@ -18,6 +23,7 @@ import {
 // Validation
 import { z } from "zod";
 import { getPeriodsInterval, transformSingleToArray } from "../utils";
+import { isMemberAuthenticated } from "../auth";
 
 // API
 import { TRPCError } from "@trpc/server";
@@ -87,8 +93,7 @@ export const membersRouter = createTRPCRouter({
 
 			const requestMember = requestUserId
 				? await db.query.member.findFirst({
-						where: (fields, { eq }) =>
-							eq(fields.userId, requestUserId),
+						where: (fields, { eq }) => eq(fields.userId, requestUserId),
 					})
 				: undefined;
 
@@ -100,10 +105,7 @@ export const membersRouter = createTRPCRouter({
 				});
 			}
 
-			if (
-				requestMember?.role === "member" &&
-				requestUserId !== member.userId
-			) {
+			if (requestMember?.role === "member" && requestUserId !== member.userId) {
 				throw new TRPCError({
 					code: "FORBIDDEN",
 					message: "You are not authorized to view this member",
@@ -115,8 +117,7 @@ export const membersRouter = createTRPCRouter({
 
 			const periodFrom = periods.find(
 				(period) =>
-					period.from <= member.joinedAt &&
-					period.to >= member.joinedAt,
+					period.from <= member.joinedAt && period.to >= member.joinedAt,
 			);
 
 			const totalHours = member.membersOnEvent.reduce(
@@ -224,5 +225,78 @@ export const membersRouter = createTRPCRouter({
 				members,
 				pageCount,
 			};
+		}),
+	updateMemberPresence: protectedProcedure
+		.input(
+			z.object({
+				eventId: z.string().uuid(),
+				verificationCode: z.string(),
+			}),
+		)
+		.mutation(async ({ input, ctx }) => {
+			const { eventId, verificationCode } = input;
+			const memberId = ctx.session.member?.id;
+
+			// Verificamos se o usuário tem permissão para atualizar a presença
+			const error = await isMemberAuthenticated({
+				projectId: ctx.session.projectId,
+				userId: ctx.session.user.id,
+			});
+
+			if (error) {
+				throw new TRPCError(error);
+			}
+
+			if (!memberId) {
+				throw new TRPCError({
+					message: "Member not found.",
+					code: "BAD_REQUEST",
+				});
+			}
+
+			// Checamos a validade do código de verificação
+			const verification = await db.query.verificationToken.findFirst({
+				where(fields, { eq }) {
+					return and(eq(fields.token, verificationCode));
+				},
+			});
+
+			const isVerificationValid =
+				verification && verification.expires > new Date();
+
+			if (!verification || !isVerificationValid) {
+				console.log("verification", verification);
+				throw new TRPCError({
+					message: "Invalid verification code.",
+					code: "BAD_REQUEST",
+				});
+			}
+
+			// Verificamos se o membro já está presente no evento
+			const memberAlreadyPresent = await db.query.memberOnEvent.findFirst({
+				where(fields, { and, eq }) {
+					return and(
+						eq(fields.eventId, eventId),
+						eq(fields.memberId, memberId),
+					);
+				},
+			});
+
+			if (memberAlreadyPresent) {
+				// return;
+				throw new TRPCError({
+					message: "Member is already present on the event.",
+					code: "BAD_REQUEST",
+				});
+			}
+
+			// Atualizamos a presença do membro no evento
+			await db.insert(memberOnEvent).values({
+				eventId,
+				memberId,
+				joinedAt: new Date(),
+			});
+
+			return { success: true };
 		}),
 });

@@ -1,10 +1,4 @@
-import { env } from "@ichess/env";
-import { google } from "googleapis";
-
-const SCOPES = [
-	"https://www.googleapis.com/auth/spreadsheets",
-	"https://www.googleapis.com/auth/drive.file",
-];
+import sheets from "..";
 
 export async function POST(request: Request) {
 	const res = await request.json();
@@ -13,21 +7,8 @@ export async function POST(request: Request) {
 
 	if (reason && (discovery || discoveryOther)) {
 		try {
-			const auth = new google.auth.GoogleAuth({
-				credentials: {
-					client_email: env.GOOGLE_SHEET_CLIENT_EMAIL,
-					private_key: env.GOOGLE_SHEET_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-				},
-				scopes: SCOPES,
-			});
-
-			const sheets = google.sheets({
-				auth,
-				version: "v4",
-			});
-
 			await sheets.spreadsheets.values.append({
-				spreadsheetId: process.env.GOOGLE_SHEET_ID,
+				spreadsheetId: "1EjRbDpi-sSIqYHIQTp08e85h258vftaHsazHac84bfg",
 				range: "A1:D1",
 				valueInputOption: "USER_ENTERED",
 				requestBody: {

@@ -20,10 +20,14 @@ import {
 } from "@/components/ui/dialog";
 
 // API
+import { env } from "@ichess/env";
 import { trpc } from "@/lib/trpc/react";
-import { Skeleton } from "../ui/skeleton";
+
+// Pusher
+import Pusher from "pusher-js";
 
 interface CodeGeneratorProps {
+	PUSHER_CLUSTER: string;
 	charactersAmount?: number;
 	lifetime?: number;
 }
@@ -38,8 +42,9 @@ function resetProgress() {
 }
 
 export function CodeGenerator({
+	PUSHER_CLUSTER,
 	charactersAmount,
-	lifetime = 30000,
+	lifetime = 75000,
 }: CodeGeneratorProps) {
 	const [code, setCode] = useState<string | undefined | null>(undefined);
 
@@ -52,7 +57,7 @@ export function CodeGenerator({
 
 	const mutation = trpc.getVerificationCode.useMutation();
 
-	async function generateCode() {
+	async function generateCode(overrideCache?: boolean) {
 		setCode(undefined);
 
 		try {
@@ -61,8 +66,9 @@ export function CodeGenerator({
 
 			const localStorageExpires = localStorage.getItem("expires");
 
-			// Restore code if it's still valid
+			// Restore code if it's still valid (and not forced to regenerate)
 			if (
+				!overrideCache &&
 				localStorageExpires &&
 				new Date(localStorageExpires).getTime() > new Date().getTime()
 			) {
@@ -106,6 +112,26 @@ export function CodeGenerator({
 	}
 
 	useEffect(() => {
+		const pusher = new Pusher(env.NEXT_PUBLIC_PUSHER_KEY, {
+			cluster: PUSHER_CLUSTER,
+		});
+
+		const channel = pusher.subscribe("verification-channel");
+		channel.bind(
+			"use-verification-code",
+			({ verificationCode }: { verificationCode: string }) => {
+				if (code === verificationCode) {
+					generateCode(true);
+				}
+			},
+		);
+
+		return () => {
+			pusher.disconnect();
+		};
+	}, [PUSHER_CLUSTER, generateCode, code]);
+
+	useEffect(() => {
 		const timer = setInterval(() => {
 			setCurrentDate(new Date());
 		}, 1000);
@@ -143,11 +169,11 @@ export function CodeGenerator({
 						})}
 					</DialogDescription>
 				</DialogHeader>
-				{code === undefined ? (
+				{code === undefined || remainingTime <= 0 ? (
 					<ul className="flex w-full flex-row items-center justify-between gap-2.5">
 						{Array.from({ length: charactersAmount || 6 }, (_, i) => (
 							<li
-								key={i}
+								key={`${charactersAmount || 6}-${i}`}
 								className="w-full h-[88px] bg-gray-200 rounded-sm animate-pulse"
 							/>
 						))}
@@ -160,7 +186,7 @@ export function CodeGenerator({
 					<ul className="flex w-full flex-row items-center justify-between gap-2.5">
 						{code?.split("").map((character, i) => (
 							<li
-								key={i}
+								key={`${charactersAmount || 6}-${i}`}
 								className="flex w-full items-center justify-center rounded-sm bg-gray-200 px-1 py-6 text-4xl font-extrabold text-neutral"
 							>
 								{character}
@@ -183,7 +209,7 @@ export function CodeGenerator({
 					className="group h-14 w-full justify-between p-4"
 					size={"xl"}
 					variant={"secondary"}
-					onClick={generateCode}
+					onClick={() => generateCode()}
 					disabled={remainingTime > 0 || !code}
 				>
 					Gerar novo código
