@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { DateDisplay } from "@/components/ui/calendar";
 
 // API
-import { RouterOutput } from "@ichess/api";
+import type { RouterOutput } from "@ichess/api";
 
 interface Props {
 	className?: string;
@@ -33,11 +33,9 @@ export function ExternalEvent({ className, event }: Props) {
 			</p>
 
 			<div className="flex w-full flex-wrap items-center justify-between gap-4">
-				<Button asChild className="" size={"lg"}>
-					<Link href="/">
-						Quero participar
-						<ArrowIcon />
-					</Link>
+				<Button size={"lg"} disabled>
+					Quero participar
+					<ArrowIcon />
 				</Button>
 
 				<DateDisplay

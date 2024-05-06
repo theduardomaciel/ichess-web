@@ -9,10 +9,18 @@ import PawnIcon from "@/public/icons/pawn.svg";
 // Components
 import { NoEvents } from "@/components/events/NoEvents";
 import { Hero } from "@/components/Hero";
+import { Wrapper } from "@/components/Wrapper";
 import { StyledTitle } from "@/components/events/StyledTitle";
 import { ExternalEvent } from "@/components/events/ExternalEvent";
 import { NotLogged } from "@/components/auth/LoginStatus";
 import { EventPreview } from "@/components/events/EventPreview";
+import {
+	Carousel,
+	CarouselContent,
+	CarouselItem,
+	CarouselControl,
+	CarouselDotButtons,
+} from "@/components/ui/carousel";
 
 // Validation
 import type { z } from "zod";
@@ -22,13 +30,6 @@ import type { getEventsParams } from "@ichess/api/routers/events";
 import { env } from "@ichess/env";
 import { auth } from "@ichess/auth";
 import { serverClient } from "@/lib/trpc/server";
-import {
-	Carousel,
-	CarouselContent,
-	CarouselItem,
-	CarouselControl,
-	CarouselDotButtons,
-} from "@/components/ui/carousel";
 
 export const metadata: Metadata = {
 	title: "Eventos",
@@ -85,7 +86,7 @@ export default async function EventsPage() {
 						: undefined
 				}
 			/>
-			<main className="flex flex-col items-center justify-start gap-16 py-[calc(var(--wrapper)/2)]">
+			<Wrapper className="gap-16 px-0 items-center">
 				<StyledTitle title="Evento Externos" />
 
 				<div className="flex w-full flex-col items-start justify-start gap-6">
@@ -191,7 +192,7 @@ export default async function EventsPage() {
 						</div>
 					</div>
 				</div>
-			</main>
+			</Wrapper>
 		</>
 	);
 }

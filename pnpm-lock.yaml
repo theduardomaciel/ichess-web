@@ -205,7 +205,7 @@ importers:
         version: link:../env
       '@trpc/server':
         specifier: next
-        version: 11.0.0-rc.334
+        version: 11.0.0-rc.364
       pusher:
         specifier: ^5.2.0
         version: 5.2.0
@@ -213,8 +213,8 @@ importers:
         specifier: ^2.2.1
         version: 2.2.1
       zod:
-        specifier: ^3.22.4
-        version: 3.22.4
+        specifier: ^3.23.6
+        version: 3.23.6
     devDependencies:
       '@ichess/biome-config':
         specifier: workspace:*
@@ -2208,9 +2208,6 @@ packages:
       '@trpc/server': 11.0.0-rc.364+d95fb467b
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
-
-  '@trpc/server@11.0.0-rc.334':
-    resolution: {integrity: sha512-ckg+f4z3Lc0wYvm1Cx8Zjz8b2hguNlUFQeF8vLrtWYBL8HEolshmxOHMG9MLc6WDE6T1R7DZrG+xEwjI44XH9w==}
 
   '@trpc/server@11.0.0-rc.364':
     resolution: {integrity: sha512-sGlrb2jSCiU74TrJ+N+WxIcJIUDyo0WOy0y30vIArw6oHFXjeithgxjvIu+PbN+VWt/Gt4ee8kVhnmxCW4X/Qw==}
@@ -5736,8 +5733,6 @@ snapshots:
       '@trpc/server': 11.0.0-rc.364
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-
-  '@trpc/server@11.0.0-rc.334': {}
 
   '@trpc/server@11.0.0-rc.364': {}
 
