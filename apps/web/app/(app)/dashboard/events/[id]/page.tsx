@@ -100,7 +100,7 @@ export default async function EventPage({
 							search={searchParams.search}
 						/>
 						<ShareDialog
-							url={`https://localhost:3000/events/presence/${event.id}`}
+							url={`https://ichess-web.vercel.app:3000/events/presence/${event.id}`}
 						/>
 					</div>
 				</div>
