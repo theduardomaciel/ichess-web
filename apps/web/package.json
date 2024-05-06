@@ -34,6 +34,7 @@
 		"clsx": "^2.1.1",
 		"cmdk": "^0.2.1",
 		"date-fns": "^3.6.0",
+		"embla-carousel-auto-height": "^8.0.4",
 		"embla-carousel-react": "^8.0.4",
 		"googleapis": "^136.0.0",
 		"lucide-react": "^0.323.0",

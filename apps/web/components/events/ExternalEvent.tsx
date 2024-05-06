@@ -21,7 +21,7 @@ export function ExternalEvent({ className, event }: Props) {
 	return (
 		<li
 			className={cn(
-				"w-full cursor-default list-none rounded-md border-2 border-primary-200 bg-gray-300 p-9",
+				"w-full cursor-default list-none rounded-md border-2 border-primary-200 bg-gray-300 p-6 md:p-9",
 				className,
 			)}
 		>
@@ -33,7 +33,7 @@ export function ExternalEvent({ className, event }: Props) {
 			</p>
 
 			<div className="flex w-full flex-wrap items-center justify-between gap-4">
-				<Button size={"lg"} disabled>
+				<Button size={"lg"} className="max-w-full" disabled>
 					Quero participar
 					<ArrowIcon />
 				</Button>

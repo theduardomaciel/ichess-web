@@ -89,6 +89,9 @@ importers:
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
+      embla-carousel-auto-height:
+        specifier: ^8.0.4
+        version: 8.0.4(embla-carousel@8.0.4)
       embla-carousel-react:
         specifier: ^8.0.4
         version: 8.0.4(react@18.3.1)
@@ -2664,6 +2667,11 @@ packages:
 
   electron-to-chromium@1.4.756:
     resolution: {integrity: sha512-RJKZ9+vEBMeiPAvKNWyZjuYyUqMndcP1f335oHqn3BEQbs2NFtVrnK5+6Xg5wSM9TknNNpWghGDUCKGYF+xWXw==}
+
+  embla-carousel-auto-height@8.0.4:
+    resolution: {integrity: sha512-aDw47waoxGlBEBuEZiZ91dVMrPyyVb2OlKOTYmz3Lx8Rf9ALLlzcIx6HjtCFZslxwmAOeBDgdOiIFnH2CWhqAg==}
+    peerDependencies:
+      embla-carousel: 8.0.4
 
   embla-carousel-react@8.0.4:
     resolution: {integrity: sha512-3NlOmBmRhaGhtI0It9243yg9fz2wPRML5gGLDIE69Oyb/CuGsJnxpcgG74j905NQBDgReTEfFJwzOtIFAjeBfg==}
@@ -6141,6 +6149,10 @@ snapshots:
       safe-buffer: 5.2.1
 
   electron-to-chromium@1.4.756: {}
+
+  embla-carousel-auto-height@8.0.4(embla-carousel@8.0.4):
+    dependencies:
+      embla-carousel: 8.0.4
 
   embla-carousel-react@8.0.4(react@18.3.1):
     dependencies:

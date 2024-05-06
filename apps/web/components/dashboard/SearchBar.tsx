@@ -64,7 +64,11 @@ export function SearchBar({
 				{...props}
 			/>
 
-			<div className="absolute right-4 top-1/2 flex -translate-y-1/2 flex-row items-center justify-end gap-2">
+			<div
+				className={
+					"absolute right-4 top-1/2 flex -translate-y-1/2 flex-row items-center justify-end gap-2"
+				}
+			>
 				{isPendingSearchTransition ? (
 					<Loader2 className="h-4 w-4 origin-center animate-spin text-muted" />
 				) : value ? (
@@ -77,8 +81,8 @@ export function SearchBar({
 					/>
 				) : null}
 				{tag && (
-					<div className="pointer-events-none flex select-none rounded-sm bg-gray-200 px-2.5 py-1">
-						<span className="text-base text-muted">{tag}</span>
+					<div className="pointer-events-none hidden md:flex select-none rounded-sm bg-gray-200 px-2.5 py-1 -mr-2">
+						<span className="text-muted text-sm">{tag}</span>
 					</div>
 				)}
 			</div>

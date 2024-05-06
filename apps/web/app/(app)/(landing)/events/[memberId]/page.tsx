@@ -82,7 +82,7 @@ export default async function MemberEventsPage({
 					iconClassName: "-scale-x-100",
 				}}
 			/>
-			<Wrapper>
+			<Wrapper className="py-12 lg:flex-row gap-12">
 				<div className="flex flex-1 flex-col items-start justify-center gap-4">
 					<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
 						<SearchBar

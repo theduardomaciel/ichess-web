@@ -51,9 +51,7 @@ export default async function AuthenticatedPage() {
 					<Button variant={"outline"}>Deslogar</Button>
 					<Button asChild>
 						{isAuthenticated ? (
-							<Link href={`/members/${session?.member?.id}`}>
-								Ver meu perfil
-							</Link>
+							<a href={`/members/${session?.member?.id}`}>Ver meu perfil</a>
 						) : (
 							<Link href="/join">Continuar cadastro</Link>
 						)}

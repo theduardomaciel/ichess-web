@@ -15,7 +15,7 @@ export function Wrapper({ children, className, asChild }: Props) {
 	return (
 		<Comp
 			className={cn(
-				"flex min-h-screen flex-col items-start justify-start gap-6 px-wrapper py-[calc(var(--wrapper)/2)]",
+				"flex min-h-screen flex-col items-start justify-start gap-6 px-wrapper py-wrapper lg:py-[calc(var(--wrapper)/2)]",
 				className,
 			)}
 		>

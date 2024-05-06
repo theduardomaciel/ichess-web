@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 
 import { cn } from "@/lib/utils";
@@ -14,6 +13,8 @@ import { StyledTitle } from "@/components/events/StyledTitle";
 import { ExternalEvent } from "@/components/events/ExternalEvent";
 import { NotLogged } from "@/components/auth/LoginStatus";
 import { EventPreview } from "@/components/events/EventPreview";
+
+// Carousel
 import {
 	Carousel,
 	CarouselContent,
@@ -86,7 +87,7 @@ export default async function EventsPage() {
 						: undefined
 				}
 			/>
-			<Wrapper className="gap-16 px-0 items-center">
+			<Wrapper className="gap-16 px-0 max-md:py-16 items-center">
 				<StyledTitle title="Evento Externos" />
 
 				<div className="flex w-full flex-col items-start justify-start gap-6">
@@ -110,7 +111,7 @@ export default async function EventsPage() {
 										</CarouselItem>
 									))}
 								</CarouselContent>
-								<div className="mt-4 flex w-full flex-row items-center justify-between gap-4 px-wrapper">
+								<div className="mt-4 flex w-full flex-col-reverse md:flex-row items-center md:justify-between gap-4 px-wrapper">
 									<div className="flex flex-row items-center justify-start gap-4">
 										<CarouselControl direction="prev" />
 										<CarouselControl direction="next" />

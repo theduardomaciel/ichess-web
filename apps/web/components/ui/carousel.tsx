@@ -1,9 +1,12 @@
 "use client";
 
 import * as React from "react";
+
 import useEmblaCarousel, {
 	type UseEmblaCarouselType,
 } from "embla-carousel-react";
+
+// Icons
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -16,7 +19,7 @@ type CarouselPlugin = UseCarouselParameters[1];
 
 type CarouselProps = {
 	opts?: CarouselOptions;
-	plugins?: CarouselPlugin;
+	plugins?: "autoHeight"[];
 	orientation?: "horizontal" | "vertical";
 	setApi?: (api: CarouselApi) => void;
 };
@@ -30,6 +33,11 @@ type CarouselContextProps = {
 	canScrollNext: boolean;
 	selectedIndex: number;
 } & CarouselProps;
+
+// Plugins - precisam ser exportados pois caso sejam importados de Server Componentes, um erro é gerado
+import AutoHeight from "embla-carousel-auto-height";
+
+const PLUGINS = [AutoHeight];
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
 
@@ -52,13 +60,15 @@ const Carousel = React.forwardRef<
 			orientation = "horizontal",
 			opts,
 			setApi,
-			plugins,
+			plugins: argPlugins,
 			className,
 			children,
 			...props
 		},
 		ref,
 	) => {
+		const plugins = [AutoHeight()];
+
 		const [carouselRef, api] = useEmblaCarousel(
 			{
 				...opts,
@@ -150,8 +160,7 @@ const Carousel = React.forwardRef<
 					api,
 					opts,
 					orientation:
-						orientation ||
-						(opts?.axis === "y" ? "vertical" : "horizontal"),
+						orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
 					scrollPrev,
 					scrollNext,
 					canScrollPrev,
@@ -298,9 +307,7 @@ const CarouselControl = React.forwardRef<
 				variant={variant}
 				size={size}
 				className={cn("relative h-10 w-10 rounded-md p-0", className)}
-				disabled={
-					direction === "prev" ? !canScrollPrev : !canScrollNext
-				}
+				disabled={direction === "prev" ? !canScrollPrev : !canScrollNext}
 				onClick={direction === "prev" ? scrollPrev : scrollNext}
 				{...props}
 			>
@@ -328,23 +335,18 @@ const CarouselDotButtons = React.forwardRef<
 		return null;
 	}
 
-	const dots = Array.from(
-		{ length: api.scrollSnapList().length },
-		(_, i) => i,
-	);
+	const dots = Array.from({ length: api.scrollSnapList().length }, (_, i) => i);
 
 	return (
 		<div
 			ref={ref}
-			className={cn(
-				"flex flex-row items-center justify-end gap-2",
-				className,
-			)}
+			className={cn("flex flex-row items-center justify-end gap-2", className)}
 			{...props}
 		>
-			{dots.map((_, index) => (
+			{dots.map((other, index) => (
 				<button
-					key={index}
+					type="button"
+					key={other}
 					className={cn(
 						"flex h-3 w-3 rounded-full",
 						"bg-gray-300 transition-colors",
