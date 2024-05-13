@@ -92,7 +92,7 @@ export default async function EventPage({
 						members={event.members.filter((member) => member.role === "member")}
 						eventId={event.id}
 					/>
-					<div className="flex flex-col items-center justify-start sm:flex-row sm:justify-between w-full gap-4">
+					<div className="flex flex-col items-center justify-start xs:flex-row xs:justify-between w-full gap-4">
 						<MemberAdd
 							projectId={env.PROJECT_ID}
 							eventId={event.id}

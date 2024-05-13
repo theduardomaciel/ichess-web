@@ -57,12 +57,13 @@ export function ShareDialog({ url }: ShareDialogProps) {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button size={"icon"} className="h-11">
+				<Button size={"icon"} className="h-11 max-xs:w-full">
+					<span className="flex xs:hidden">Compartilhar</span>
 					<ShareIcon className="h-5 w-5" />
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="w-full sm:max-w-lg">
-				<DialogHeader>
+			<DialogContent className="w-full sm:max-w-lg overflow-y-scroll">
+				<DialogHeader className="w-full">
 					<DialogTitle>Compartilhar evento</DialogTitle>
 					<DialogDescription>
 						O link abaixo permite que os membros marquem presença no evento
@@ -77,11 +78,11 @@ export function ShareDialog({ url }: ShareDialogProps) {
 						height={200}
 					/>
 					<Button
-						className="flex h-auto px-4 py-2 text-left bg-gray-300 whitespace-normal"
+						className="flex h-auto px-4 py-2 text-left bg-gray-300 whitespace-normal max-w-full"
 						variant={"modal"}
 						onClick={copyLink}
 					>
-						<p className="text-sm font-medium text-neutral">{url}</p>
+						<p className="text-sm font-medium text-neutral break-all">{url}</p>
 						<div className="relative min-w-5">
 							<ShareIcon
 								className={cn(

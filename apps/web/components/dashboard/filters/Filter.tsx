@@ -1,8 +1,8 @@
 "use client";
 
 import {
-	Dispatch,
-	SetStateAction,
+	type Dispatch,
+	type SetStateAction,
 	useEffect,
 	useState,
 	useTransition,
@@ -87,9 +87,7 @@ export function Filter({
 			router.push(
 				toUrl({
 					[`${prefix}`]:
-						debouncedValue.length === 0
-							? undefined
-							: debouncedValue.join(","),
+						debouncedValue.length === 0 ? undefined : debouncedValue.join(","),
 				}),
 				{
 					scroll: false,
@@ -157,7 +155,7 @@ function SelectFilter({
 				<SelectScrollUpButton />
 				{items.map((item, index) => (
 					<SelectItem
-						key={index}
+						key={item.name}
 						value={item.value}
 						className={cn({
 							"pointer-events-none animate-pulse select-none":
@@ -226,14 +224,11 @@ function CheckboxFilter({
 			>
 				{items.map((item, index) => (
 					<li
-						key={index}
-						className={cn(
-							"flex w-full items-center justify-start gap-2",
-							{
-								"pointer-events-none animate-pulse select-none":
-									isPendingFilterTransition,
-							},
-						)}
+						key={item.value}
+						className={cn("flex w-full items-center justify-start gap-2", {
+							"pointer-events-none animate-pulse select-none":
+								isPendingFilterTransition,
+						})}
 					>
 						<Checkbox
 							id={item.value}
@@ -243,9 +238,7 @@ function CheckboxFilter({
 							onCheckedChange={(checked) => {
 								handleFilterChange(
 									item.value,
-									checked === "indeterminate"
-										? false
-										: checked,
+									checked === "indeterminate" ? false : checked,
 								);
 							}}
 						/>
@@ -265,10 +258,7 @@ function CheckboxFilter({
 				// If the amount of filters is greater than the MAX_VISIBLE_FILTERS
 				// we show the "ExpandMore" button
 				items.length > MAX_VISIBLE_FILTERS && (
-					<ExpandMore
-						isExpanded={isExpanded}
-						setIsExpanded={setIsExpanded}
-					/>
+					<ExpandMore isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
 				)
 			}
 		</>
@@ -284,6 +274,7 @@ function ExpandMore({
 }) {
 	return (
 		<button
+			type="button"
 			className="flex flex-row items-center justify-start gap-4 text-sm"
 			onClick={() => setIsExpanded((prev) => !prev)}
 		>

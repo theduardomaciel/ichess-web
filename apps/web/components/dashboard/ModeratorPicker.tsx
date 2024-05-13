@@ -86,7 +86,7 @@ export function ModeratorPicker({
 
 	useEffect(() => {
 		onSelect?.(debouncedValue);
-	}, [debouncedValue]);
+	}, [debouncedValue, onSelect]);
 
 	if (isDesktop) {
 		return (
@@ -157,10 +157,7 @@ function ModeratorPreview({
 				<span>{moderator.user?.name}</span>
 			</div>
 			<Check
-				className={cn(
-					"h-4 w-4",
-					isActive ? "opacity-100" : "opacity-0",
-				)}
+				className={cn("h-4 w-4", isActive ? "opacity-100" : "opacity-0")}
 			/>
 		</div>
 	);
@@ -202,9 +199,7 @@ const SelectorTrigger = forwardRef<
 		className={cn(
 			"h-fit min-h-[52px] w-full justify-between px-3 text-sm font-normal hover:bg-gray-300 hover:text-neutral lg:px-4 lg:text-base",
 			!moderators ||
-				(moderators &&
-					moderators.length === 0 &&
-					"text-muted-foreground"),
+				(moderators && moderators.length === 0 && "text-muted-foreground"),
 			className,
 		)}
 		{...props}

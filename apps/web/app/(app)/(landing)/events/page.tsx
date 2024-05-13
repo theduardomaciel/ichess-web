@@ -87,7 +87,7 @@ export default async function EventsPage() {
 						: undefined
 				}
 			/>
-			<Wrapper className="gap-16 px-0 max-md:py-16 items-center">
+			<Wrapper className="gap-16 !px-0 max-md:py-16 items-center">
 				<StyledTitle title="Evento Externos" />
 
 				<div className="flex w-full flex-col items-start justify-start gap-6">

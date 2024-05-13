@@ -66,21 +66,33 @@ export default async function MemberEventsPage({
 		memberId,
 	});
 
+	const isMyEvents = session?.member?.id === memberId;
+
 	// O "r" equivale ao estado da barra de pesquisa quando o usuário clica em "Limpar filtros"
 	// Isso é feito por meio da mudança de key do componente SearchBar
 
 	return (
 		<>
 			<Hero
-				title="Seus eventos"
-				description="Acompanhe os eventos dos quais você participou e está participando"
-				preTitle="2024.1"
-				buttonProps={{
-					href: "/events",
-					title: "Voltar",
-					icon: ArrowRight,
-					iconClassName: "-scale-x-100",
-				}}
+				title={
+					isMyEvents ? "Meus eventos" : `Eventos de ${memberId.split("-")[0]}`
+				}
+				description={
+					isMyEvents
+						? "Veja todos os eventos que você criou"
+						: "Veja todos os eventos do membro desde sua entrada no grupo de extensão"
+				}
+				preTitle={isMyEvents ? "2024.1" : undefined}
+				buttonProps={
+					isMyEvents
+						? {
+								href: "/events",
+								title: "Voltar",
+								icon: ArrowRight,
+								iconClassName: "-scale-x-100",
+							}
+						: undefined
+				}
 			/>
 			<Wrapper className="py-12 lg:flex-row gap-12">
 				<div className="flex flex-1 flex-col items-start justify-center gap-4">

@@ -111,6 +111,9 @@ const config = {
 				"accordion-up": "accordion-up 0.2s ease-out",
 				"one-spin": "one-spin 1s bounce",
 			},
+			screens: {
+				xs: "375px",
+			},
 		},
 	},
 	plugins: [

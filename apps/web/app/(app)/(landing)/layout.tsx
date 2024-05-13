@@ -1,14 +1,10 @@
-import Header from "@/components/Header";
-// import { auth } from "@ichess/auth";
+import Header from "@/components/header";
 
 export default function LandingLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	/* const session = await auth();
-	const isMember = !!session?.member?.role; */
-
 	return (
 		<>
 			<Header />
