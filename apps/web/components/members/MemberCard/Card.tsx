@@ -70,7 +70,7 @@ export async function MemberCard({ id: memberId, variant }: Props) {
 					<ActionItem variant={variant} asChild>
 						<a
 							href={`https://chess.com/member/${member.username}`}
-							target="_blank"
+							target="_blank" rel="noreferrer"
 						>
 							<div className="hidden flex-row items-center justify-start gap-2 lg:flex">
 								<span className="text-base font-semibold">
@@ -98,13 +98,13 @@ export async function MemberCard({ id: memberId, variant }: Props) {
 			<DialogFooter>
 				{requestClientRole === "admin" && member.role === "member" ? (
 					<Button variant={"destructive"} className="w-full" asChild>
-						<Link href={`/auth`} className="w-full">
+						<Link href={"/auth"} className="w-full">
 							Remover membro
 						</Link>
 					</Button>
 				) : (
 					<Button className="w-full" asChild>
-						<Link href={`/auth`} className="w-full">
+						<Link href={"/auth"} className="w-full">
 							<ManageAccountIcon width={24} height={24} />
 							Gerenciar minha conta
 						</Link>

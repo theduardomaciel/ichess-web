@@ -71,10 +71,7 @@ export default function MutateEventFormContent({
 							<FormItem>
 								<FormLabel>Nome</FormLabel>
 								<FormControl>
-									<Input
-										placeholder="Reunião Semanal"
-										{...field}
-									/>
+									<Input placeholder="Reunião Semanal" {...field} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -109,12 +106,8 @@ export default function MutateEventFormContent({
 										</SelectTrigger>
 									</FormControl>
 									<SelectContent>
-										<SelectItem value="internal">
-											Interno
-										</SelectItem>
-										<SelectItem value="external">
-											Externo
-										</SelectItem>
+										<SelectItem value="internal">Interno</SelectItem>
+										<SelectItem value="external">Externo</SelectItem>
 									</SelectContent>
 								</Select>
 								<FormMessage />
@@ -225,9 +218,7 @@ export default function MutateEventFormContent({
 
 						return (
 							<FormItem>
-								<FormLabel>
-									Ação Curricularizada de Extensão
-								</FormLabel>
+								<FormLabel>Ação Curricularizada de Extensão</FormLabel>
 								<Select
 									onValueChange={field.onChange}
 									defaultValue={field.value}
@@ -239,21 +230,15 @@ export default function MutateEventFormContent({
 										</SelectTrigger>
 									</FormControl>
 									<SelectContent>
-										{aces &&
-											aces.map((ace) => (
-												<SelectItem
-													key={ace.id}
-													value={ace.id.toString()}
-												>
-													{ace.name} - {ace.hours}h
-												</SelectItem>
-											))}
+										{aces?.map((ace) => (
+											<SelectItem key={ace.id} value={ace.id.toString()}>
+												{ace.name} - {ace.hours}h
+											</SelectItem>
+										))}
 									</SelectContent>
 								</Select>
 								{currentAce && (
-									<Panel type="info">
-										{currentAce.description}
-									</Panel>
+									<Panel type="info">{currentAce.description}</Panel>
 								)}
 								<FormMessage />
 							</FormItem>

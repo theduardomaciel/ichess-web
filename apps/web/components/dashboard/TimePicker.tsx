@@ -138,7 +138,7 @@ export function dateToTimeString(date: Date) {
 
 function checkDiscrepancy(form: Props["form"]) {
 	const dateFrom = form.getValues("dateFrom");
-	const dateTo = form.getValues("dateTo") ?? dateFrom;
+	const dateTo = /* form.getValues("dateTo") ?? */ dateFrom;
 
 	const timeFrom = form.getValues("timeFrom");
 	const timeTo = form.getValues("timeTo");
@@ -151,7 +151,7 @@ function checkDiscrepancy(form: Props["form"]) {
 	);
 
 	if (timeToDate <= timeFromDate) {
-		const formattedTime = `${((parseInt(timeFrom.slice(0, 2)) + 1) % 24)
+		const formattedTime = `${((Number.parseInt(timeFrom.slice(0, 2)) + 1) % 24)
 			.toString()
 			.padStart(2, "0")}:${timeFrom.slice(3)}`;
 
@@ -185,20 +185,13 @@ export function TimePicker({ form, field, placeholder }: Props) {
 
 								// Formatamos como HH:MM
 								if (newString.length > 2) {
-									newString = `${newString.slice(
-										0,
-										2,
-									)}:${newString.slice(2)}`;
+									newString = `${newString.slice(0, 2)}:${newString.slice(2)}`;
 								}
 
-								form.setValue(
-									field.name as TimeFields,
-									newString,
-								);
+								form.setValue(field.name as TimeFields, newString);
 							}}
 							onBlur={() => {
-								if (!field.value || field.value.length === 0)
-									return;
+								if (!field.value || field.value.length === 0) return;
 
 								let newString = field.value;
 
@@ -210,32 +203,23 @@ export function TimePicker({ form, field, placeholder }: Props) {
 
 								// Se houver pelo menos uma parte, formatamos as horas e os minutos
 								if (timeParts.length > 0) {
-									let hours = parseInt(timeParts[0], 10) || 0;
-									let minutes =
-										parseInt(timeParts[1], 10) || 0;
+									let hours = Number.parseInt(timeParts[0], 10) || 0;
+									let minutes = Number.parseInt(timeParts[1], 10) || 0;
 
 									// Garantimos que as horas estejam no intervalo de 0 a 23
 									hours = Math.min(Math.max(hours, 0), 23);
 
 									// Garantimos que os minutos estejam no intervalo de 0 a 59
-									minutes = Math.min(
-										Math.max(minutes, 0),
-										59,
-									);
+									minutes = Math.min(Math.max(minutes, 0), 59);
 
 									// Formatamos as horas e os minutos como duas casas decimais
-									newString = `${hours
-										.toString()
-										.padStart(2, "0")}:${minutes
+									newString = `${hours.toString().padStart(2, "0")}:${minutes
 										.toString()
 										.padStart(2, "0")}`;
 								}
 
 								// Agora, newString contém o formato corrigido (HH:MM)
-								form.setValue(
-									field.name as TimeFields,
-									newString,
-								);
+								form.setValue(field.name as TimeFields, newString);
 
 								// Verificamos se o horário final é menor que o horário inicial
 								checkDiscrepancy(form);
@@ -256,10 +240,7 @@ export function TimePicker({ form, field, placeholder }: Props) {
 								key={time}
 								className="lg:py-3"
 								onSelect={(currentValue) => {
-									form.setValue(
-										field.name as TimeFields,
-										currentValue,
-									);
+									form.setValue(field.name as TimeFields, currentValue);
 
 									// Verificamos se o horário final é menor que o horário inicial
 									checkDiscrepancy(form);

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import type React from "react";
 import Link from "next/link";
 import { DotLottiePlayer } from "@dotlottie/react-player";
 
@@ -99,7 +99,7 @@ export function SuccessDialog({
 					)}
 				</DialogDescription>
 				<DialogFooter>
-					<Link href={href ?? `/`} prefetch={false}>
+					<Link href={href ?? "/"} prefetch={false}>
 						<Button type="button" className="h-11 px-6">
 							{buttonText || "Entendi!"}
 						</Button>

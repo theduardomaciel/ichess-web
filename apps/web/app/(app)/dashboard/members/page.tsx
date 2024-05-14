@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 // Components
 import { MemberPreview } from "@/components/members/MemberPreview";
@@ -79,7 +79,7 @@ export default async function DashboardMembersPage({
 								/>
 							))
 						) : (
-							<Empty href={`/dashboard/members`} />
+							<Empty href={"/dashboard/members"} />
 						)}
 					</ul>
 				}

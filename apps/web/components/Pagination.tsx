@@ -44,6 +44,7 @@ export function PagesDisplay({ currentPage, pageCount }: Props) {
 				{Array.from(
 					{ length: Math.min(pageCount, MAX_PAGINATION_PAGES) },
 					(_, i) => (
+						// biome-ignore lint: the index is used as page number
 						<PaginationItem key={i}>
 							<PaginationLink
 								href={toUrl({ page: (i + 1).toString() })}

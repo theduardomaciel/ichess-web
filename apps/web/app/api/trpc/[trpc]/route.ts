@@ -1,7 +1,7 @@
 import { auth } from "@ichess/auth";
 import { appRouter } from "@ichess/api";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 const handler = async (req: NextRequest) => {
 	const response = await fetchRequestHandler({

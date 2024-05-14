@@ -1,30 +1,30 @@
 {
-  "name": "@ichess/drizzle",
-  "main": "./index.ts",
-  "types": "./index.ts",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "db:generate": "drizzle-kit generate:pg",
-    "db:drop": "drizzle-kit drop",
-    "db:migrate": "pnpm tsx ./migrate.ts",
-    "db:studio": "drizzle-kit studio",
-    "db:seed": "pnpm tsx ./seed.ts",
-    "lint": "eslint ."
-  },
-  "dependencies": {
-    "@auth/core": "^0.25.0",
-    "@faker-js/faker": "^8.4.1",
-    "@ichess/env": "workspace:*",
-    "@neondatabase/serverless": "^0.9.0",
-    "tsx": "^4.7.1",
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "@ichess/biome-config": "workspace:*",
-    "@ichess/typescript-config": "workspace:*",
-    "drizzle-kit": "^0.20.17",
-    "drizzle-orm": "^0.30.8",
-    "pg": "^8.11.5"
-  }
+	"name": "@ichess/drizzle",
+	"main": "./index.ts",
+	"types": "./index.ts",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"db:generate": "drizzle-kit generate:pg",
+		"db:drop": "drizzle-kit drop",
+		"db:migrate": "pnpm tsx ./migrate.ts",
+		"db:studio": "drizzle-kit studio",
+		"db:seed": "pnpm tsx ./seed.ts",
+		"lint": "pnpm biome lint ."
+	},
+	"dependencies": {
+		"@auth/core": "^0.25.0",
+		"@faker-js/faker": "^8.4.1",
+		"@ichess/env": "workspace:*",
+		"@neondatabase/serverless": "^0.9.0",
+		"tsx": "^4.7.1",
+		"zod": "^3.22.4"
+	},
+	"devDependencies": {
+		"@ichess/biome-config": "workspace:*",
+		"@ichess/typescript-config": "workspace:*",
+		"drizzle-kit": "^0.20.17",
+		"drizzle-orm": "^0.30.8",
+		"pg": "^8.11.5"
+	}
 }

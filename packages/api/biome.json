@@ -1,5 +1,3 @@
 {
-	"extends": [
-		"@ichess/biome-config/biome.json"
-	]
+	"extends": ["node_modules/@ichess/biome-config/biome.json"]
 }

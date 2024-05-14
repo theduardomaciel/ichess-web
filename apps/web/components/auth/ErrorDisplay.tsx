@@ -24,7 +24,7 @@ const ERRORS: { [key: string]: Error } = {
 				atividades, confira os{" "}
 				<Link
 					className="underline hover:text-primary-100"
-					href={`/events`}
+					href={"/events"}
 				>
 					Eventos abertos ao público
 				</Link>

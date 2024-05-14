@@ -23,7 +23,7 @@ export function EventPreview({
 	const moderators = event.members.filter((m) => m.role === "admin");
 	const moderatorsImages = moderators
 		.filter((m) => m.user.image)
-		.map((m) => m.user.image!);
+		.map((m) => m.user.image);
 
 	const lastModerator = moderators.length > 1 ? moderators.pop() : null;
 

@@ -11,7 +11,7 @@ import { Panel } from "@/components/forms";
 import Logo from "@/public/logo.svg";
 import ReloadIcon from "@/public/icons/reload.svg";
 
-export default function Error({
+export default function GlobalError({
 	error,
 	reset,
 }: {
@@ -28,15 +28,13 @@ export default function Error({
 							Parece que suas jogadas foram longe demais...
 						</h1>
 						<p className="max-w-[80%] text-xl font-medium text-neutral">
-							Um erro inesperado ocorreu durante a execução da sua
-							jogada. Envie-o para o time de desenvolvimento para
-							que possamos resolvê-lo.
+							Um erro inesperado ocorreu durante a execução da sua jogada.
+							Envie-o para o time de desenvolvimento para que possamos
+							resolvê-lo.
 						</p>
 					</div>
 					<div className="max-w-[75%]">
-						<Panel type="error">
-							{error.message || error.digest}
-						</Panel>
+						<Panel type="error">{error.message || error.digest}</Panel>
 					</div>
 				</div>
 				<Button className="h-12 gap-4 px-9" onClick={() => reset()}>

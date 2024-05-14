@@ -14,12 +14,10 @@ interface FooterSectionProps {
 export default function FooterSection({ title, items }: FooterSectionProps) {
 	return (
 		<div className="flex flex-col items-start justify-center gap-6">
-			<h6 className="font-title text-base font-black text-neutral">
-				{title}
-			</h6>
+			<h6 className="font-title text-base font-black text-neutral">{title}</h6>
 			<ul className="flex flex-col items-start justify-center gap-5">
 				{items.map((item, index) => (
-					<li key={index}>
+					<li key={item.href}>
 						<Link
 							href={item.href}
 							target={item.target ?? "_self"}

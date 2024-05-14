@@ -86,7 +86,7 @@ export function MemberRemove({ member, eventId }: Props) {
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
-				<button title="Remover presença do membro">
+				<button type="button" title="Remover presença do membro">
 					<BlockIcon className="h-6 w-6" />
 				</button>
 			</DialogTrigger>
@@ -111,11 +111,9 @@ export function MemberRemove({ member, eventId }: Props) {
 						<strong className="scale-105 text-nowrap text-neutral">
 							{member.name}
 						</strong>{" "}
-						{isAdmin && <>da moderação </>}
+						{isAdmin && "da moderação"}
 						do evento? <br />
-						{!isAdmin && (
-							<>As horas atribuídas a ele serão removidas.</>
-						)}
+						{!isAdmin && "As horas atribuídas a ele serão removidas."}
 					</DialogDescription>
 				</DialogHeader>
 				<DialogFooter className="w-full gap-2 sm:justify-start">

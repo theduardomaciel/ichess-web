@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 // Icons
 import IChessLogo from "@/public/logo.svg";
