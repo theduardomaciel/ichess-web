@@ -1,8 +1,6 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-// console.log(process.env.NEXT_PUBLIC_VERCEL_URL);
-
 export const env = createEnv({
 	server: {
 		NODE_ENV: z.enum(["development", "production", "test"]),
@@ -11,7 +9,7 @@ export const env = createEnv({
 		NEXTAUTH_SECRET: z.string().min(1),
 		GOOGLE_CLIENT_ID: z.string().min(1),
 		GOOGLE_CLIENT_SECRET: z.string().min(1),
-		VERCEL_URL: z.string().url(),
+		VERCEL_URL: z.string(),
 		GOOGLE_SHEET_CLIENT_EMAIL: z.string().min(1),
 		GOOGLE_SHEET_PRIVATE_KEY: z.string().min(1),
 		PUSHER_APP_ID: z.string().min(1),
@@ -19,7 +17,7 @@ export const env = createEnv({
 		PUSHER_CLUSTER: z.string().min(1),
 	},
 	client: {
-		NEXT_PUBLIC_VERCEL_URL: z.string().url(),
+		NEXT_PUBLIC_VERCEL_URL: z.string(),
 		NEXT_PUBLIC_PUSHER_KEY: z.string().min(1),
 	},
 	runtimeEnv: {
