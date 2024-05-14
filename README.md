@@ -20,13 +20,13 @@ Uma dashboard para o controle da frequência dos membros do projeto de extensão
 
 ## ✨ Tecnologias
 
--   `[Base]` Next.js
--   `[Estilização]` TailwindCSS + Shadcn
--   `[Banco de dados]`
--   `[Hospedagem]` Vercel
+- `[Base]` Next.js
+- `[Estilização]` TailwindCSS + Shadcn
+- `[Banco de dados]` Neon (PostgreSQL)
+- `[Hospedagem]` Vercel
 
 > [!WARNING]
-> O projeto ainda encontra-se em desenvolvimento, portanto, diversos aspectos estarão inacabados e/ou não funcionais, à medida que a aplicação torna-se mais robusta.
+> O projeto ainda está em desenvolvimento, portanto, diversos aspectos estarão inacabados e/ou não funcionais à medida que a aplicação torna-se mais robusta.
 
 <br />
 
@@ -42,8 +42,43 @@ Uma dashboard para o controle da frequência dos membros do projeto de extensão
 
 ## 🚧 Roadmap
 
--   [ ] Implementar o frontend de todas as páginas
--   [ ] Verificar a possibilidade da conversão do repositório em um monorepo
+- [ ] Implementar o frontend de todas as páginas
+- [x] Verificar a possibilidade da conversão do repositório em um monorepo
+
+<br />
+
+## 👣 Como iniciar o projeto
+
+Antes mesmo de clonar o código do projeto, é necessário instalar algumas dependências globalmente. Recomendamos o uso do `pnpm` por sua disponibilidade em todas as principais plataformas (Windows, Linux e Mac) e sua velocidade quando comparado ao `npm` tradicional.
+Caso o `pnpm` não esteja instalado, é possível [https://pnpm.io/installation](baixá-lo aqui).
+
+Para o correto funcionamento da aplicação, instale as seguintes dependências:
+
+```
+pnpm install --global turbo dotenv-cli
+```
+
+Após instalar as dependências globais, clone o repositório e utilize `pnpm install` para instalar as dependências do projeto.
+
+Com tudo instalado, agora basta acessar o projeto por meio de um editor de texto ou IDE de preferência, como o VSCode:
+
+```
+cd ichess
+code .
+```
+
+> [!WARNING]
+> Após a instalação das dependências, certifique-se de reiniciar tudo que possa estar carregando o projeto no momento, como o VSCode ou terminais.
+
+Para dar início ao servidor local de desenvolvimento, utilize `dotenv -- turbo dev`
+
+## 🎲 Dados
+
+Para a migração de um novo esquema para o banco de dados, utilize `dotenv -- turbo db:generate` para a criação do arquivo `.sql` com a migração, e em seguida `dotenv -- turbo db:migrate` para enviar os dados para a rede.  
+Para a visualização do banco de dados, utilize `dotenv -- turbo db:studio`
+
+> [!WARNING]
+> Execute esse comando sempre na raiz do projeto para evitar erros com o arquivo `.env`.
 
 <br />
 

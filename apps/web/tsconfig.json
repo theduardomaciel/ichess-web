@@ -1,0 +1,21 @@
+{
+	"extends": "@ichess/typescript-config/nextjs.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./*"],
+			"@server/*": ["./server/*"]
+		}
+	},
+	"include": [
+		"next-env.d.ts",
+		"./**/*.ts",
+		"./**/*.tsx",
+		".next/types",
+		".next/types/**/*.ts",
+		// Middleware (na raiz do projeto)
+		"./middleware/**/*.ts",
+		"./middleware/**/*.tsx"
+	],
+	"exclude": ["node_modules"]
+}
