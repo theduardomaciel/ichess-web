@@ -48,7 +48,7 @@ export default function MutateEventForm({ projectId, event }: Props) {
 			dateFrom: new Date(),
 			timeFrom: event ? dateToTimeString(event.dateFrom) : undefined,
 			timeTo: event ? dateToTimeString(event.dateTo) : undefined,
-			aceId: event?.aceId.toString() || "",
+			aceId: event?.aceId.toString() || undefined,
 			type: event?.type || "internal",
 		},
 	});
@@ -68,6 +68,8 @@ export default function MutateEventForm({ projectId, event }: Props) {
 
 		const dateFromWithTime = new Date(dateFrom);
 		setTimeOnDate(dateFromWithTime, timeFrom);
+
+		console.log("dateFromWithTime: ", dateFromWithTime);
 
 		const dateToWithTime = new Date(dateFrom);
 		setTimeOnDate(dateToWithTime, timeTo);
