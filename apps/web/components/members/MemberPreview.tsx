@@ -128,7 +128,7 @@ export function MemberGuestPreview({
 		>
 			<li
 				className={cn(
-					"flex w-full flex-row flex-wrap items-center justify-between gap-4 rounded-lg border border-primary-200/50 bg-gray-300 px-8 py-4 transition-colors hover:bg-gray-200",
+					"content-stretch w-full items-center justify-between rounded-lg border border-primary-200/50 bg-gray-300 px-8 py-4 transition-colors hover:bg-gray-200",
 					className,
 				)}
 			>
@@ -141,7 +141,7 @@ export function MemberGuestPreview({
 						className="rounded-full"
 					/>
 					<div className="flex flex-col items-start justify-start">
-						<div className="flex flex-row flex-wrap items-center justify-start gap-0 md:gap-2">
+						<div className="flex flex-row items-center justify-start gap-0 md:gap-2">
 							<h3 className="text-left text-base font-bold">
 								{isMember ? member.user?.name : member.username}
 							</h3>
@@ -164,7 +164,7 @@ export function MemberGuestPreview({
 						)}
 					</div>
 				</div>
-				<div className="flex flex-row items-center justify-end gap-3 max-lg:w-full max-[320px]:justify-start">
+				<div className="flex flex-row items-center justify-end gap-3 max-lg:w-full max-[320px]:justify-start max-lg:mt-4">
 					<span className="flex text-sm lg:hidden">Visitar perfil no</span>
 					<div className="flex flex-row items-center justify-end gap-2">
 						<ChessIcon />

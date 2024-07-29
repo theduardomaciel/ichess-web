@@ -49,7 +49,7 @@ export default function Footer() {
 					</div>
 					<p>Copyright @ 2024 IChess. Todos os direitos reservados.</p>
 				</div>
-				<div className="flex flex-row flex-wrap items-start justify-start gap-9">
+				<div className="flex flex-row flex-wrap items-center justify-start gap-9">
 					<ThemePicker />
 					<Status />
 				</div>

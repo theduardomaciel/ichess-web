@@ -53,8 +53,8 @@ export const getEventsParams = z.object({
 const mutateEventParams = z.object({
 	name: z.string().min(1),
 	description: z.string().optional(),
-	dateFrom: z.date(),
-	dateTo: z.date(),
+	dateFrom: z.coerce.date(),
+	dateTo: z.coerce.date(),
 	membersIds: z.union([z.array(z.string()), z.string()]).transform((value) => {
 		return Array.isArray(value) ? value : [value];
 	}),

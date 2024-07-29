@@ -16,6 +16,9 @@ Uma dashboard para o controle da frequência dos membros do projeto de extensão
 
 #### 🧭 Disponível para Web
 
+> [!NOTE]
+> O design do frontend do projeto está disponível no [https://www.figma.com/file/DKXZoEFnCNbtVV6XGPXGv0/Design?type=design&node-id=0%3A1&mode=design&t=Fkxlh0xGwJ7xfDvd-1](Figma)
+
 <br />
 
 ## ✨ Tecnologias
@@ -37,12 +40,9 @@ Uma dashboard para o controle da frequência dos membros do projeto de extensão
 
 <br />
 
-> [!NOTE]
-> O design do frontend do projeto está disponível no [https://www.figma.com/file/DKXZoEFnCNbtVV6XGPXGv0/Design?type=design&node-id=0%3A1&mode=design&t=Fkxlh0xGwJ7xfDvd-1](Figma)
-
 ## 🚧 Roadmap
 
-- [ ] Implementar o frontend de todas as páginas
+- [x] Implementar o frontend de todas as páginas
 - [x] Verificar a possibilidade da conversão do repositório em um monorepo
 
 <br />
@@ -70,12 +70,14 @@ code .
 > [!WARNING]
 > Após a instalação das dependências, certifique-se de reiniciar tudo que possa estar carregando o projeto no momento, como o VSCode ou terminais.
 
-Para dar início ao servidor local de desenvolvimento, utilize `dotenv -- turbo dev`
+Para dar início ao servidor local de desenvolvimento, utilize `dotenv turbo dev`
+
+<br />
 
 ## 🎲 Dados
 
-Para a migração de um novo esquema para o banco de dados, utilize `dotenv -- turbo db:generate` para a criação do arquivo `.sql` com a migração, e em seguida `dotenv -- turbo db:migrate` para enviar os dados para a rede.  
-Para a visualização do banco de dados, utilize `dotenv -- turbo db:studio`
+Para a migração de um novo esquema para o banco de dados, utilize `dotenv turbo db:generate` para a criação do arquivo `.sql` com a migração, e em seguida `dotenv turbo db:migrate` para enviar os dados para a rede.  
+Para a visualização do banco de dados, utilize `dotenv turbo db:studio`
 
 > [!WARNING]
 > Execute esse comando sempre na raiz do projeto para evitar erros com o arquivo `.env`.

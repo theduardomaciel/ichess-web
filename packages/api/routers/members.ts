@@ -192,7 +192,7 @@ export const membersRouter = createTRPCRouter({
 						),
 					)
 					.orderBy(
-						member.joinedAt,
+						asc(member.username),
 						sortBy && sortBy === "oldest"
 							? asc(member.joinedAt)
 							: desc(member.joinedAt),

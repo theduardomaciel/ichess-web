@@ -124,9 +124,7 @@ export default function MutateEventFormContent({
 								<ModeratorPicker
 									projectId={projectId}
 									initialModerators={field.value}
-									onSelect={(moderatorsIds) => {
-										field.onChange(moderatorsIds);
-									}}
+									onSelect={field.onChange}
 								/>
 								<FormMessage />
 							</FormItem>

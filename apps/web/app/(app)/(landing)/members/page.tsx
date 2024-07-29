@@ -102,7 +102,7 @@ export default async function LandingMembers({
 				</div>
 				<Suspense>
 					<ul className="mb-auto flex w-full grid-cols-2 flex-col gap-4 md:grid">
-						{members?.map((member) => {
+						{members.map((member) => {
 							return (
 								<MemberGuestPreview
 									key={member.id}
