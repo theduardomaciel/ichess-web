@@ -17,7 +17,7 @@ Uma dashboard para o controle da frequência dos membros do projeto de extensão
 #### 🧭 Disponível para Web
 
 > [!NOTE]
-> O design do frontend do projeto está disponível no [Figma](https://www.figma.com/file/DKXZoEFnCNbtVV6XGPXGv0/Design?type=design&node-id=0:1&mode=design&t=Fkxlh0xGwJ7xfDvd-1).
+> O design do frontend do projeto [está disponível no Figma](https://www.figma.com/file/DKXZoEFnCNbtVV6XGPXGv0/Design?type=design&node-id=0:1&mode=design&t=Fkxlh0xGwJ7xfDvd-1).
 
 <br />
 
