@@ -11,7 +11,7 @@ const nextConfig = {
 			},
 		},
 	},
-	webpack: (config) => {
+	webpack: (config: any) => {
 		config.module.rules.push({
 			test: /\.svg$/i,
 			loader: "@svgr/webpack",

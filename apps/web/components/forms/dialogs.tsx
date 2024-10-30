@@ -2,7 +2,7 @@
 
 import type React from "react";
 import Link from "next/link";
-import { DotLottiePlayer } from "@lottiefiles/dotlottie-react";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,7 @@ export function LoadingDialog({
 				}}
 			>
 				<DialogHeader>
-					<DotLottiePlayer src="/animations/loading.lottie" autoplay loop />
+					<DotLottieReact src="/animations/loading.lottie" autoplay loop />
 					<DialogTitle className="text-center font-title text-2xl font-extrabold">
 						{title || "Estamos quase lá!"}
 					</DialogTitle>

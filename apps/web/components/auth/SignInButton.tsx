@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 
 import { cn } from "@/lib/utils";
 
@@ -10,7 +9,10 @@ import { Loader2 } from "lucide-react";
 import GoogleColorIcon from "@/public/logos/google.svg";
 
 import { Button, type ButtonProps } from "@/components/ui/button";
+
+// Navigation
 import Link from "next/link";
+import { login } from "@/app/auth/actions";
 
 interface Props extends ButtonProps {
 	callbackUrl?: string;
@@ -27,9 +29,7 @@ export function GoogleButton({
 	async function handleSignIn() {
 		setLoading(true);
 
-		await signIn("google", {
-			callbackUrl: callbackUrl || "/auth",
-		});
+		login(callbackUrl);
 	}
 
 	return (

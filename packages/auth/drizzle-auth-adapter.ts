@@ -46,21 +46,26 @@ export const drizzleAuthAdapter: Adapter = {
 	},
 
 	async getUserByAccount({ providerAccountId, provider }) {
-		const [authUser] = await db
-			.select({
-				user: getTableColumns(user),
-			})
-			.from(user)
-			.innerJoin(account, eq(account.userId, user.id))
-			.where(
-				and(
-					eq(account.provider, provider),
-					eq(account.providerAccountId, providerAccountId),
-				),
-			);
+		try {
+			const [authUser] = await db
+				.select({
+					user: getTableColumns(user),
+				})
+				.from(user)
+				.innerJoin(account, eq(account.userId, user.id))
+				.where(
+					and(
+						eq(account.provider, provider),
+						eq(account.providerAccountId, providerAccountId),
+					),
+				);
 
-		if (authUser) {
-			return authUser.user;
+			if (authUser) {
+				return authUser.user;
+			}
+		} catch (error) {
+			console.error("getUserByAccount", error);
+			return null;
 		}
 
 		return null;

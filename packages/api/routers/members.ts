@@ -93,8 +93,8 @@ export const membersRouter = createTRPCRouter({
 
 			const requestMember = requestUserId
 				? await db.query.member.findFirst({
-						where: (fields, { eq }) => eq(fields.userId, requestUserId),
-					})
+					where: (fields, { eq }) => eq(fields.userId, requestUserId),
+				})
 				: undefined;
 
 			if (!requestUserId || !requestMember) {
@@ -149,18 +149,18 @@ export const membersRouter = createTRPCRouter({
 			const periods =
 				periodsFilter && periodsFilter.length > 0
 					? await db.query.period.findMany({
-							where(fields) {
-								return inArray(fields.slug, periodsFilter);
-							},
-						})
+						where(fields) {
+							return inArray(fields.slug, periodsFilter);
+						},
+					})
 					: undefined;
 
-			console.log("periods", periods);
+			// console.log("periods", periods);
 
 			const { dateFrom, dateTo } = getPeriodsInterval(periods);
 
-			console.log("dateFrom", dateFrom);
-			console.log("dateTo", dateTo);
+			// console.log("dateFrom", dateFrom);
+			// console.log("dateTo", dateTo);
 
 			const [members, [{ amount }]] = await Promise.all([
 				await db
@@ -178,15 +178,15 @@ export const membersRouter = createTRPCRouter({
 							eq(member.projectId, projectId),
 							search
 								? or(
-										ilike(user.name, `%${search}%`),
-										ilike(member.username, `%${search}%`),
-									)
+									ilike(user.name, `%${search}%`),
+									ilike(member.username, `%${search}%`),
+								)
 								: undefined,
 							dateFrom && dateTo
 								? and(
-										gte(member.joinedAt, dateFrom),
-										lte(member.joinedAt, dateTo),
-									)
+									gte(member.joinedAt, dateFrom),
+									lte(member.joinedAt, dateTo),
+								)
 								: undefined,
 							role ? eq(member.role, role) : undefined,
 						),
@@ -208,9 +208,9 @@ export const membersRouter = createTRPCRouter({
 							eq(member.projectId, projectId),
 							search
 								? or(
-										ilike(user.name, `%${search}%`),
-										ilike(member.username, `%${search}%`),
-									)
+									ilike(user.name, `%${search}%`),
+									ilike(member.username, `%${search}%`),
+								)
 								: undefined,
 							role ? eq(member.role, role) : undefined,
 						),
@@ -218,8 +218,8 @@ export const membersRouter = createTRPCRouter({
 			]);
 
 			const pageCount = Math.ceil(amount / pageSize);
-			console.log("amount", amount);
-			console.log("pageCount", pageCount);
+			// console.log("amount", amount);
+			// console.log("pageCount", pageCount);
 
 			return {
 				members,

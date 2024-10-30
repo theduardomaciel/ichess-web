@@ -17,6 +17,7 @@ export const authConfig = {
 		signIn: "/auth/sign-in",
 		error: "/auth/error",
 	},
+	debug: true,
 	session: {
 		strategy: "jwt",
 		updateAge: 60 * 60 * 24, // 24 hours

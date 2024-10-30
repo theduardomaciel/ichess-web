@@ -69,7 +69,7 @@ export default function MutateEventForm({ projectId, event }: Props) {
 		const dateFromWithTime = new Date(dateFrom);
 		setTimeOnDate(dateFromWithTime, timeFrom);
 
-		console.log("dateFromWithTime: ", dateFromWithTime);
+		// console.log("dateFromWithTime: ", dateFromWithTime);
 
 		const dateToWithTime = new Date(dateFrom);
 		setTimeOnDate(dateToWithTime, timeTo);
