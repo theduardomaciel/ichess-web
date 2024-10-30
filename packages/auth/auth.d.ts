@@ -1,6 +1,6 @@
 import type { Course, Period, Role } from "@ichess/drizzle/schema";
 import NextAuth, { type DefaultSession, type User as DefaultUser } from "next-auth";
-import { AdapterUser as AdapterUserBase } from "next-auth/adapters";
+import type { AdapterUser as AdapterUserBase } from "next-auth/adapters";
 import { JWT } from "next-auth/jwt";
 
 interface CustomUser {

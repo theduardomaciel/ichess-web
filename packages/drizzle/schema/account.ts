@@ -3,22 +3,6 @@ import { integer, pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 import { user } from ".";
 
-export type ProviderType =
-	| "oidc"
-	| "oauth"
-	| "email"
-	| "credentials"
-
-export type AdapterAccountType = Extract<
-	ProviderType,
-	"oauth" | "oidc" | "email" | "webauthn"
->
-
-interface AdapterAccount {
-	userId: string
-	type: AdapterAccountType
-}
-
 export const account = pgTable(
 	"accounts",
 	{
@@ -30,7 +14,7 @@ export const account = pgTable(
 				onUpdate: "cascade",
 			}),
 		//
-		type: text("type").$type<AdapterAccount["type"]>().notNull(),
+		type: text("type").notNull(),
 		provider: text("provider").notNull(),
 		providerAccountId: text("provider_account_id").notNull(),
 		refresh_token: text("refresh_token"),

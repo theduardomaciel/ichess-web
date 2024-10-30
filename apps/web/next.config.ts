@@ -11,6 +11,7 @@ const nextConfig = {
 			},
 		},
 	},
+	// biome-ignore lint: Webpack has not config type definitions
 	webpack: (config: any) => {
 		config.module.rules.push({
 			test: /\.svg$/i,

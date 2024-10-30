@@ -5,7 +5,7 @@ import { account, member, session, user } from "@ichess/drizzle/schema";
 import { and, eq, getTableColumns } from "@ichess/drizzle/orm";
 
 // Types
-import type { Adapter } from "@auth/core/adapters";
+import type { Adapter } from "next-auth/adapters";
 
 export const drizzleAuthAdapter: Adapter = {
 	async createUser(userToCreate) {
