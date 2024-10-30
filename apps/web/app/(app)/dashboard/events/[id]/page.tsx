@@ -30,25 +30,26 @@ const eventDetailsPageParams = z.object({
 
 type EventDetailsPageParams = z.infer<typeof eventDetailsPageParams>;
 
-export default async function EventPage({
-	params,
-	searchParams,
-}: {
-	params: EventDetailsPageParams;
-	searchParams: { search?: string };
-}) {
-	const { id } = eventDetailsPageParams.parse(params);
+export default async function EventPage(
+    props: {
+        params: Promise<EventDetailsPageParams>;
+        searchParams: Promise<{ search?: string }>;
+    }
+) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    const { id } = eventDetailsPageParams.parse(params);
 
-	const { event } = await serverClient.getEvent({
+    const { event } = await serverClient.getEvent({
 		eventId: id,
 		projectId: env.PROJECT_ID,
 	});
 
-	const dateString = getDateString(event);
-	const timeFrom = getTimeString(event.dateFrom);
-	const timeTo = getTimeString(event.dateTo);
+    const dateString = getDateString(event);
+    const timeFrom = getTimeString(event.dateFrom);
+    const timeTo = getTimeString(event.dateTo);
 
-	return (
+    return (
 		<main className="flex min-h-screen flex-col items-start justify-start gap-12 px-wrapper py-12">
 			<div className="flex w-full flex-col items-start justify-start gap-4">
 				<div className="flex w-full flex-row flex-wrap items-start justify-between gap-4">

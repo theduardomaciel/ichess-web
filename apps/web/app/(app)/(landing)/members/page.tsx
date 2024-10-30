@@ -36,18 +36,19 @@ const membersPageParams = getMembersParams.partial().extend({
 
 type MembersPageParams = z.infer<typeof membersPageParams>;
 
-export default async function LandingMembers({
-	searchParams,
-}: {
-	searchParams: MembersPageParams;
-}) {
-	const { page, pageSize, search, role, r } =
+export default async function LandingMembers(
+    props: {
+        searchParams: Promise<MembersPageParams>;
+    }
+) {
+    const searchParams = await props.searchParams;
+    const { page, pageSize, search, role, r } =
 		membersPageParams.parse(searchParams);
 
-	const session = await auth();
-	const isMember = session && !!session.member?.role;
+    const session = await auth();
+    const isMember = session && !!session.member?.role;
 
-	const { members, pageCount } = await serverClient.getMembers({
+    const { members, pageCount } = await serverClient.getMembers({
 		projectId: env.PROJECT_ID,
 		page,
 		pageSize,
@@ -55,9 +56,9 @@ export default async function LandingMembers({
 		role: role === "any" ? undefined : role,
 	});
 
-	const { periods } = await serverClient.getPeriods();
+    const { periods } = await serverClient.getPeriods();
 
-	return (
+    return (
 		<Fragment>
 			<Hero
 				title="Lista de Membros"

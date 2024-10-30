@@ -1,11 +1,17 @@
 import { MemberCard, MemberCardModal } from "@/components/members/MemberCard";
 
-export default function MemberModal({
-	params: { memberId },
-}: {
-	params: { memberId: string };
-}) {
-	return (
+export default async function MemberModal(
+    props: {
+        params: Promise<{ memberId: string }>;
+    }
+) {
+    const params = await props.params;
+
+    const {
+        memberId
+    } = params;
+
+    return (
 		<MemberCardModal>
 			<MemberCard id={memberId} />
 		</MemberCardModal>

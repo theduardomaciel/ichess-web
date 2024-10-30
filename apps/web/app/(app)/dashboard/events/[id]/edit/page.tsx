@@ -11,19 +11,20 @@ import MutateEventForm from "@/components/forms/MutateEventForm";
 import { env } from "@ichess/env";
 import { serverClient } from "@/lib/trpc/server";
 
-export default async function EditEventPage({
-	params,
-}: {
-	params: { id: string };
-}) {
-	const projectId = env.PROJECT_ID;
+export default async function EditEventPage(
+    props: {
+        params: Promise<{ id: string }>;
+    }
+) {
+    const params = await props.params;
+    const projectId = env.PROJECT_ID;
 
-	const { event } = await serverClient.getEvent({
+    const { event } = await serverClient.getEvent({
 		eventId: params.id,
 		projectId,
 	});
 
-	return (
+    return (
 		<main className="flex min-h-screen flex-col items-start justify-start gap-9 px-wrapper py-12 lg:pb-24">
 			<div className="flex flex-col items-start justify-start gap-1">
 				<Link href={`/dashboard/events/${params.id}`}>

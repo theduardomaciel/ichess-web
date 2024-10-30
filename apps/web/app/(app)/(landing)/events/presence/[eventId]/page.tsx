@@ -12,23 +12,29 @@ import { env } from "@ichess/env";
 import { auth } from "@ichess/auth";
 import { serverClient } from "@/lib/trpc/server";
 
-export default async function PresencePage({
-	params: { eventId },
-}: {
-	params: { eventId: string };
-}) {
-	const session = await auth();
+export default async function PresencePage(
+    props: {
+        params: Promise<{ eventId: string }>;
+    }
+) {
+    const params = await props.params;
 
-	const { event } = await serverClient.getEvent({
+    const {
+        eventId
+    } = params;
+
+    const session = await auth();
+
+    const { event } = await serverClient.getEvent({
 		projectId: env.PROJECT_ID,
 		eventId: eventId,
 	});
 
-	const dateString = getDateString(event);
-	const timeFrom = getTimeString(event.dateFrom);
-	const timeTo = getTimeString(event.dateTo);
+    const dateString = getDateString(event);
+    const timeFrom = getTimeString(event.dateFrom);
+    const timeTo = getTimeString(event.dateTo);
 
-	return (
+    return (
 		<>
 			<Hero
 				preTitle="Lista de Presença"

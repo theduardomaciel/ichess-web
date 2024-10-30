@@ -52,35 +52,37 @@ Uma dashboard para o controle da frequência dos membros do projeto de extensão
 Antes mesmo de clonar o código do projeto, é necessário instalar algumas dependências globalmente. Recomendamos o uso do `pnpm` por sua disponibilidade em todas as principais plataformas (Windows, Linux e Mac) e sua velocidade quando comparado ao `npm` tradicional.
 Caso o `pnpm` não esteja instalado, é possível [https://pnpm.io/installation](baixá-lo aqui).
 
-Para o correto funcionamento da aplicação, instale as seguintes dependências:
+1. Para o correto funcionamento da aplicação, instale as seguintes dependências:
 
 ```
 pnpm install --global turbo dotenv-cli
 ```
 
-Após instalar as dependências globais, clone o repositório e utilize `pnpm install` para instalar as dependências do projeto.
+2. Após instalar as dependências globais, clone o repositório e utilize `pnpm install` para instalar as dependências do projeto.
 
-Com tudo instalado, agora basta acessar o projeto por meio de um editor de texto ou IDE de preferência, como o VSCode:
+3. Com tudo instalado, basta acessar o projeto por meio de um editor de texto ou IDE de preferência, como o VSCode:
+  ```
+  cd ichess
+  code .
+  ```
 
-```
-cd ichess
-code .
-```
+  > [!WARNING]
+  > Após a instalação das dependências, certifique-se de reiniciar tudo que possa estar carregando o projeto no momento, como o VSCode ou terminais.
 
-> [!WARNING]
-> Após a instalação das dependências, certifique-se de reiniciar tudo que possa estar carregando o projeto no momento, como o VSCode ou terminais.
+4. Em seguida, adicione o arquivo `.env` com as variáveis de ambiente adequadas para todos os pacotes (`/packages`) e aplicações (`/apps`), com base nos arquivos de exemplo `.env.example`.  
+Esse passo é essencial para o correto funcionamento dos pacotes e aplicações do monorepo. 
 
-Para dar início ao servidor local de desenvolvimento, utilize `dotenv turbo dev`
+5. Para dar início ao servidor local de desenvolvimento, utilize `pnpm dev`
 
 <br />
 
 ## 🎲 Dados
 
-Para a migração de um novo esquema para o banco de dados, utilize `dotenv turbo db:generate` para a criação do arquivo `.sql` com a migração, e em seguida `dotenv turbo db:migrate` para enviar os dados para a rede.  
-Para a visualização do banco de dados, utilize `dotenv turbo db:studio`
+Para a migração de um novo esquema para o banco de dados, utilize `pnpm db:generate` para a criação do arquivo `.sql` com a migração, e em seguida `pnpm db:migrate` para enviar os dados para a rede.  
+Para a visualização do banco de dados, utilize `pnpm db:studio`
 
 > [!WARNING]
-> Execute esse comando sempre na raiz do projeto para evitar erros com o arquivo `.env`.
+> Execute esse comando sempre na raiz do projeto para evitar erros com variáveis de ambiente.
 
 <br />
 

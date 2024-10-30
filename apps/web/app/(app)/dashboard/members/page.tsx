@@ -35,15 +35,16 @@ const membersPageParams = getMembersParams.partial().extend({
 
 type MembersPageParams = z.infer<typeof membersPageParams>;
 
-export default async function DashboardMembersPage({
-	searchParams,
-}: {
-	searchParams: MembersPageParams;
-}) {
-	const { page, pageSize, search, sortBy, periods, role, r } =
+export default async function DashboardMembersPage(
+    props: {
+        searchParams: Promise<MembersPageParams>;
+    }
+) {
+    const searchParams = await props.searchParams;
+    const { page, pageSize, search, sortBy, periods, role, r } =
 		membersPageParams.parse(searchParams);
 
-	const { members, pageCount } = await serverClient.getMembers({
+    const { members, pageCount } = await serverClient.getMembers({
 		projectId: env.PROJECT_ID,
 		page,
 		pageSize,
@@ -53,10 +54,10 @@ export default async function DashboardMembersPage({
 		role: role === "any" ? undefined : role,
 	});
 
-	// O "r" equivale ao estado da barra de pesquisa quando o usuário clica em "Limpar filtros"
-	// Isso é feito por meio da mudança de key do componente SearchBar
+    // O "r" equivale ao estado da barra de pesquisa quando o usuário clica em "Limpar filtros"
+    // Isso é feito por meio da mudança de key do componente SearchBar
 
-	return (
+    return (
 		<main className="flex min-h-screen flex-col items-start justify-start gap-[var(--wrapper)] px-wrapper py-12 lg:flex-row lg:gap-12">
 			<div className="flex flex-1 flex-col items-start justify-center gap-4">
 				<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
