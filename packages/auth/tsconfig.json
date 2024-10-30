@@ -1,13 +1,7 @@
 {
 	"extends": "@ichess/typescript-config/lib.json",
-	"compilerOptions": {
-		"typeRoots": [
-			"./types/types.d.ts",
-		]
-	},
 	"include": [
-		"./types/types.d.ts",
-		"index.ts"
+		"auth.d.ts",
 	],
 	"exclude": [
 		"dist",
