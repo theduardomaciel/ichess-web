@@ -1,8 +1,23 @@
-import type { AdapterAccount } from "@auth/core/adapters";
 import { relations } from "drizzle-orm";
 import { integer, pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 import { user } from ".";
+
+export type ProviderType =
+	| "oidc"
+	| "oauth"
+	| "email"
+	| "credentials"
+
+export type AdapterAccountType = Extract<
+	ProviderType,
+	"oauth" | "oidc" | "email" | "webauthn"
+>
+
+interface AdapterAccount {
+	userId: string
+	type: AdapterAccountType
+}
 
 export const account = pgTable(
 	"accounts",

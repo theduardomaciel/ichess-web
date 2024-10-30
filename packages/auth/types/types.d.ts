@@ -1,7 +1,3 @@
-import type { AdapterUser as AdapterUserBase } from "@auth/core/adapters";
-import type { DefaultSession, User as DefaultUser } from "next-auth";
-import type { DefaultJWT } from "next-auth/jwt";
-
 import type { Course, Period, Role } from "@ichess/drizzle/schema";
 
 interface CustomUser {
@@ -16,12 +12,10 @@ interface Member {
 	username: string;
 }
 
-declare module "@auth/core/adapters" {
-	export interface AdapterUser extends AdapterUserBase, CustomUser { }
-}
+import NextAuth, { type DefaultSession } from "next-auth";
 
 declare module "next-auth" {
-	interface User extends DefaultUser, CustomUser { }
+	interface User extends DefaultSession['User'], CustomUser { }
 
 	export interface Session extends DefaultSession {
 		user: User;
@@ -30,8 +24,16 @@ declare module "next-auth" {
 	}
 }
 
+import type { AdapterUser as AdapterUserBase } from "next-auth/adapters";
+
+declare module "next-auth/adapters" {
+	interface AdapterUser extends AdapterUserBase, CustomUser { }
+}
+
+import { JWT } from "next-auth/jwt"
+
 declare module "next-auth/jwt" {
-	interface JWT extends DefaultJWT {
+	interface JWT {
 		member?: Member;
 	}
 }

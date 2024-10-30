@@ -13,7 +13,6 @@
 		"lint": "pnpm biome lint ."
 	},
 	"dependencies": {
-		"@auth/core": "^0.25.0",
 		"@faker-js/faker": "^8.4.1",
 		"@ichess/env": "workspace:*",
 		"@neondatabase/serverless": "^0.9.0",

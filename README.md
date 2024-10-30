@@ -84,6 +84,12 @@ Para a visualização do banco de dados, utilize `pnpm db:studio`
 > [!WARNING]
 > Execute esse comando sempre na raiz do projeto para evitar erros com variáveis de ambiente.
 
+## 🧹 Limpeza de dependências
+
+```bash
+pnpm dlx rimraf --glob **/node_modules
+```
+
 <br />
 
 ## 📝 Licença

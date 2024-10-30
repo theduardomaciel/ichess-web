@@ -4,7 +4,7 @@ import { drizzleAuthAdapter } from "./drizzle-auth-adapter";
 import { googleProvider } from "./google-provider";
 
 // Types
-import type { NextAuthConfig, Session } from "next-auth";
+import type { Session, NextAuthConfig } from "next-auth";
 import type { GoogleProfile } from "next-auth/providers/google";
 import { db } from "@ichess/drizzle";
 
@@ -17,7 +17,7 @@ export const authConfig = {
 		signIn: "/auth/sign-in",
 		error: "/auth/error",
 	},
-	debug: true,
+	// debug: true,
 	session: {
 		strategy: "jwt",
 		updateAge: 60 * 60 * 24, // 24 hours
@@ -34,10 +34,36 @@ export const authConfig = {
 
 			return false;
 		},
+		redirect({ url, baseUrl }) {
+			// Previne que usuários não administrados não vejam a mensagem de erro, por exemplo
+			// Sem isso, o callbackUrl embutido em todas as URLs redirecionaria para a página de login novamente
+
+			const isRelativeUrl = url.startsWith("/");
+			if (isRelativeUrl) {
+				return `${baseUrl}${url}`;
+			}
+
+			const isSameOriginUrl = new URL(url).origin === baseUrl;
+			const alreadyRedirected = url.includes('callbackUrl=')
+			if (isSameOriginUrl && alreadyRedirected) {
+				const originalCallbackUrl = decodeURIComponent(url.split('callbackUrl=')[1]);
+
+				return originalCallbackUrl;
+			}
+
+			if (isSameOriginUrl) {
+				return url;
+			} else {
+				return baseUrl;
+			}
+		},
 		async jwt({ token, user, session, trigger }) {
 			if (user) {
 				const member = await db.query.member.findFirst({
-					where: (dbMember, { eq }) => eq(dbMember.userId, user.id as string),
+					where: (dbMember, { eq, and }) => and(
+						eq(dbMember.userId, user.id as string),
+						eq(dbMember.projectId, env.PROJECT_ID),
+					),
 				});
 
 				// console.log("member", member);
@@ -65,7 +91,6 @@ export const authConfig = {
 		session({ session, ...params }) {
 			if ("token" in params && session.user) {
 				session.user.id = params.token.sub as string;
-				session.projectId = env.PROJECT_ID;
 
 				if (params.token.member) {
 					session.member = params.token.member;
@@ -133,6 +158,7 @@ export const authConfig = {
 					);
 				}
 
+				// Não está autenticado
 				return false;
 			}
 
