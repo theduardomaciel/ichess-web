@@ -3,8 +3,12 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./*"],
-			"@server/*": ["./server/*"]
+			"@/*": [
+				"./*"
+			],
+			"@server/*": [
+				"./server/*"
+			]
 		}
 	},
 	"include": [
@@ -13,9 +17,12 @@
 		"./**/*.tsx",
 		".next/types",
 		".next/types/**/*.ts",
+		"node_modules/@ichess/auth/types/types.d.ts",
 		// Middleware (na raiz do projeto)
 		"./middleware/**/*.ts",
 		"./middleware/**/*.tsx"
 	],
-	"exclude": ["node_modules"]
+	/* "exclude": [
+		"node_modules"
+	] */
 }

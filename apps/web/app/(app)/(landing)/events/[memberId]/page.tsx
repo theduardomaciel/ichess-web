@@ -41,26 +41,26 @@ const eventsPageParams = getEventsParams.extend({
 export type EventsPageParams = z.infer<typeof eventsPageParams>;
 
 export default async function MemberEventsPage(
-    props: {
-        params: Promise<{
-            memberId: string;
-        }>;
-        searchParams: Promise<EventsPageParams>;
-    }
+	props: {
+		params: Promise<{
+			memberId: string;
+		}>;
+		searchParams: Promise<EventsPageParams>;
+	}
 ) {
-    const searchParams = await props.searchParams;
-    const params = await props.params;
+	const searchParams = await props.searchParams;
+	const params = await props.params;
 
-    const {
-        memberId
-    } = params;
+	const {
+		memberId
+	} = params;
 
-    const session = await auth();
+	const session = await auth();
 
-    const { page, pageSize, search, sortBy, periods, aces, moderators, r } =
+	const { page, pageSize, search, sortBy, periods, aces, moderators, r } =
 		eventsPageParams.parse(searchParams);
 
-    const { events, pageCount } = await serverClient.getEvents({
+	const { events, pageCount } = await serverClient.getEvents({
 		projectId: env.PROJECT_ID,
 		page,
 		pageSize,
@@ -72,12 +72,12 @@ export default async function MemberEventsPage(
 		memberId,
 	});
 
-    const isMyEvents = session?.member?.id === memberId;
+	const isMyEvents = session?.member?.id === memberId;
 
-    // O "r" equivale ao estado da barra de pesquisa quando o usuário clica em "Limpar filtros"
-    // Isso é feito por meio da mudança de key do componente SearchBar
+	// O "r" equivale ao estado da barra de pesquisa quando o usuário clica em "Limpar filtros"
+	// Isso é feito por meio da mudança de key do componente SearchBar
 
-    return (
+	return (
 		<>
 			<Hero
 				title={
@@ -92,11 +92,11 @@ export default async function MemberEventsPage(
 				buttonProps={
 					isMyEvents
 						? {
-								href: "/events",
-								title: "Voltar",
-								icon: ArrowRight,
-								iconClassName: "-scale-x-100",
-							}
+							href: "/events",
+							title: "Voltar",
+							icon: ArrowRight,
+							iconClassName: "-scale-x-100",
+						}
 						: undefined
 				}
 			/>
