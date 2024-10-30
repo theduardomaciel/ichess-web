@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Manrope as FontSans, Inknut_Antiqua } from "next/font/google";
 
 import "./globals.css";
-import "@dotlottie/react-player/dist/index.css";
 
 import { cn } from "@/lib/utils";
 

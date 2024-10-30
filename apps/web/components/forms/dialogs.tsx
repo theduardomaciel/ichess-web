@@ -2,7 +2,7 @@
 
 import type React from "react";
 import Link from "next/link";
-import { DotLottiePlayer } from "@dotlottie/react-player";
+import { DotLottiePlayer } from "@lottiefiles/dotlottie-react";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,7 @@ interface Props {
 	description?: React.ReactNode;
 }
 
-interface LoadingDialogProps extends Props {}
+interface LoadingDialogProps extends Props { }
 
 export function LoadingDialog({
 	isOpen,

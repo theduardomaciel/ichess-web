@@ -17,11 +17,11 @@ interface Member {
 }
 
 declare module "@auth/core/adapters" {
-	export interface AdapterUser extends AdapterUserBase, CustomUser {}
+	export interface AdapterUser extends AdapterUserBase, CustomUser { }
 }
 
 declare module "next-auth" {
-	interface User extends DefaultUser, CustomUser {}
+	interface User extends DefaultUser, CustomUser { }
 
 	export interface Session extends DefaultSession {
 		user: User;

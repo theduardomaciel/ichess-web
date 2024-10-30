@@ -11,6 +11,7 @@ import { NotLogged } from "@/components/auth/LoginStatus";
 import { SearchBar } from "@/components/dashboard/SearchBar";
 import { PagesDisplay } from "@/components/Pagination";
 import { MemberGuestPreview } from "@/components/members/MemberPreview";
+import { Filter } from "@/components/dashboard/filters/Filter";
 
 // API
 import { env } from "@ichess/env";
@@ -22,7 +23,6 @@ import { serverClient } from "@/lib/trpc/server";
 import { z } from "zod";
 import { getMembersParams } from "@ichess/api/routers/members";
 import { memberRoles } from "@ichess/drizzle/schema";
-import { Filter } from "@/components/dashboard/filters/Filter";
 
 export const metadata: Metadata = {
 	title: "Membros",
@@ -66,11 +66,11 @@ export default async function LandingMembers({
 				buttonProps={
 					isMember
 						? {
-								href: `/members/${session?.member?.id}`,
-								title: "Ver meu perfil",
-								icon: AccountIcon,
-								scroll: false,
-							}
+							href: `/members/${session?.member?.id}`,
+							title: "Ver meu perfil",
+							icon: AccountIcon,
+							scroll: false,
+						}
 						: undefined
 				}
 			/>
