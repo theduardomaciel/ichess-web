@@ -68,7 +68,7 @@ export default function JoinForm({ user }: { user?: User }) {
 				registrationId: "123456",
 				period: "1",
 				experience: "advanced",
-				username: user.name || "",
+				username: user.email || "",
 			});
 		} catch (error) {
 			console.error(error);
