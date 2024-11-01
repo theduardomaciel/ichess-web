@@ -340,8 +340,8 @@ export const eventsRouter = createTRPCRouter({
 										role: event.member.role,
 										username: event.member.username,
 										user: {
-											name: event.user.name as string,
-											image: event.user.image as string,
+											name: event.user?.name as string,
+											image: event.user?.image as string,
 										},
 									},
 								]
@@ -349,12 +349,12 @@ export const eventsRouter = createTRPCRouter({
 						});
 					} else {
 						existingEvent.members.push({
-							id: event.member.id,
-							role: event.member.role,
-							username: event.member.username,
+							id: event.member?.id || "",
+							role: event.member?.role || "",
+							username: event.member?.username || "",
 							user: {
-								name: event.user.name as string,
-								image: event.user.image as string,
+								name: event.user?.name as string,
+								image: event.user?.image as string,
 							},
 						});
 					}
