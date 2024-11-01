@@ -53,6 +53,7 @@ export const usersRouter = createTRPCRouter({
 					userId,
 					username,
 					experience,
+					role: "admin",
 					projectId: env.PROJECT_ID,
 				})
 				.returning({

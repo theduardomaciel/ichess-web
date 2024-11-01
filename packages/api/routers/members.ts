@@ -240,41 +240,37 @@ export const membersRouter = createTRPCRouter({
 
 			try {
 				const fetch_data = await fetch("https://secomp.pythonanywhere.com/subscribe/participant");
-				const users = await fetch_data.json();
+				const database_subscribed = await fetch_data.json();
 
 				const data: (typeof user.$inferInsert)[] = [];
 				const memberData: (typeof member.$inferInsert)[] = [];
 
-				for (const user_data of users) {
-					const email = user_data["email"];
-
-					const randomExperience =
-						memberExperiences[Math.floor(Math.random() * memberExperiences.length)];
-
+				for (const user_data of database_subscribed) {
 					data.push({
 						id: user_data["id"],
 						name: user_data["nome"],
-						email,
+						email: user_data["email"],
 						emailVerified: new Date(user_data['created_at']),
 						image: "https://i.imgur.com/y3xUR5B.png",
 						course: "cc",
 						registrationId: user_data["id"],
 						period: "1",
 					});
-
-					memberData.push({
-						userId: user_data["id"],
-						projectId: projectId,
-						username: user_data["email"],
-						role: memberRoles["0"],
-						experience: randomExperience,
-						joinedAt: new Date(user_data['created_at']),
-					});
 				}
 
 				console.log("🌱 Semeando o banco de dados...");
 
-				await db.insert(user).values(data).onConflictDoNothing();
+				const users = await db.insert(user).values(data).onConflictDoNothing().returning({ id: user.id, email: user.email });
+
+				for (const user of users) {
+					memberData.push({
+						userId: user.id,
+						username: user.email,
+						experience: "beginner",
+						projectId,
+					});
+				}
+
 				await db.insert(member).values(memberData).onConflictDoNothing();
 
 				console.log("✅ Banco de dados semeado com novos membros!");
