@@ -34,6 +34,7 @@ interface AddParticipantProps {
 	eventId: string;
 	alreadyAddedMembers: string[];
 	search?: string;
+	eventName: string;
 }
 
 export function MemberAdd({
@@ -41,6 +42,7 @@ export function MemberAdd({
 	eventId,
 	alreadyAddedMembers,
 	search,
+	eventName,
 }: AddParticipantProps) {
 	const router = useRouter();
 	const { toast } = useToast();
@@ -56,7 +58,7 @@ export function MemberAdd({
 	const mutations = trpc.updateEventMembers.useMutation();
 	const { data, isFetching } = trpc.getMembers.useQuery({
 		projectId,
-		pageSize: 100,
+		pageSize: 1000,
 	});
 
 	const members = data?.members.filter(
@@ -65,10 +67,10 @@ export function MemberAdd({
 
 	const filteredMembers = search
 		? members?.filter(
-				(member) =>
-					member.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
-					member.username.toLowerCase().includes(search.toLowerCase()),
-			)
+			(member) =>
+				member.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+				member.username.toLowerCase().includes(search.toLowerCase()),
+		)
 		: members;
 
 	async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -90,24 +92,45 @@ export function MemberAdd({
 			return;
 		}
 
-		try {
-			startTransition(async () => {
+		startTransition(async () => {
+			try {
+				const promise = await Promise.all(
+					selectedMembers.map(async (memberId) => {
+						const userId = members?.find((member) => member.id === memberId)?.userId as string
+						console.log(userId, eventName)
+						const response = await fetch("https://secomp.pythonanywhere.com/subscribe/confirm/", {
+							method: 'POST',
+							body: JSON.stringify({
+								participant_id: userId,
+								day: eventName
+							}),
+						})
+						const data = await response.json()
+						console.log(data)
+					}
+					),
+				)
+
+				await Promise.all(promise)
+
 				await mutations.mutateAsync({
 					eventId,
 					membersIdsToMutate: selectedMembers,
 				});
+
 				setAddedUsersAmount(selectedMembers.length);
-				router.refresh();
-			});
-		} catch (error) {
-			console.error(error);
-			toast({
-				title: "Erro ao adicionar participante",
-				description:
-					"Ocorreu um erro ao adicionar o participante. Tente novamente mais tarde.",
-				variant: "error",
-			});
-		}
+			} catch (error) {
+				console.error(error);
+				toast({
+					title: "Erro ao carregar para nuvem!",
+					description:
+						"Ocorreu um erro ao adicionar o participante. Tente novamente mais tarde.",
+					variant: "error",
+				});
+			}
+
+			router.refresh();
+		});
 	}
 
 	useEffect(() => {
@@ -185,8 +208,8 @@ export function MemberAdd({
 											</div>
 											<div className="flex flex-row items-center justify-end gap-4">
 												{member.user?.name && (
-													<span className="hidden text-xs font-semibold leading-none text-neutral opacity-50 md:flex">
-														@{member.username}
+													<span className="hidden text-xs font-semibold leading-none text-neutral opacity-50 md:flex lowercase">
+														{member.username}
 													</span>
 												)}
 												<Checkbox

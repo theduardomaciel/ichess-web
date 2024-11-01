@@ -1,8 +1,12 @@
-import { env } from "@ichess/env";
 import { faker } from "@faker-js/faker";
 
 import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
+
+const env = {
+	PROJECT_ID: "23b837ef-3321-4d0f-9b42-2aaab4c57dd4",
+	DATABASE_URL: "postgresql://ichess.ufal:84evKqXaUNth@ep-bold-breeze-a42pkssu-pooler.us-east-1.aws.neon.tech/ichess.db?sslmode=require",
+}
 
 import {
 	ace,
@@ -61,48 +65,37 @@ export async function seedPeriods() {
 	console.log("✅ Banco de dados semeado com períodos!");
 }
 
-const usersData = require("./data.json");
-/* 
-{
-	'Carimbo de data/hora': '15/02/2024 15:12:53',
-	'Endereço de e-mail': 'jvgs@ic.ufal.br',
-	'Nome completo': 'João Victor Gomes dos Santos',
-	'Número de matrícula': 22111439,
-	Curso: 'Ciência da Computação',
-	'Período': '4º Período',
-	'Nick Chess.com': 'T_Krampus',
-	'Você já faz parte dos grupos do IChess? (WhatsApp e Discord)': 'Não'
-}
-*/
-
 export async function seedUsersAndMembers() {
 	const data: (typeof user.$inferInsert)[] = [];
 	const memberData: (typeof member.$inferInsert)[] = [];
 
-	for (const userData of usersData) {
-		const email = userData["Endereço de e-mail"];
+	const fetch_data = await fetch("https://secomp.pythonanywhere.com/subscribe/participant");
+	const usersData = await fetch_data.json();
+
+	for (const user_data of usersData) {
+		const email = user_data["email"];
 
 		const randomExperience =
 			memberExperiences[Math.floor(Math.random() * memberExperiences.length)];
 
 		data.push({
-			id: faker.string.uuid(),
-			name: userData["Nome completo"],
+			id: user_data["id"],
+			name: user_data["nome"],
 			email,
-			emailVerified: faker.date.recent(),
-			image: "https://i.imgur.com/PhloUna.png",
-			course: userData.Curso === "Ciência da Computação" ? "cc" : "ec",
-			registrationId: userData["Número de matrícula"],
-			period: userData.Período.split(" ")[0].slice(0, 1),
+			emailVerified: new Date(user_data['created_at']),
+			image: "https://i.imgur.com/y3xUR5B.png",
+			course: "cc",
+			registrationId: user_data["id"],
+			period: "1",
 		});
 
 		memberData.push({
-			userId: data[data.length - 1].id as string,
+			userId: user_data["id"],
 			projectId: env.PROJECT_ID,
-			username: userData["Nick Chess.com"],
+			username: user_data["email"],
 			role: memberRoles["0"],
 			experience: randomExperience,
-			joinedAt: faker.date.recent(),
+			joinedAt: new Date(user_data['created_at']),
 		});
 	}
 
@@ -173,8 +166,8 @@ export async function seed() {
 	/* await seedAces();
 	await seedPeriods(); */
 	await seedUsersAndMembers();
-	await seedEvents();
-	await seedMembersOnEvents();
+	/* await seedEvents();
+	await seedMembersOnEvents(); */
 }
 
 seed().catch((error) => {

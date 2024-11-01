@@ -13,6 +13,7 @@ interface Member {
 	id: string;
 	role: Role;
 	username: string;
+	projectId: string;
 }
 
 export interface User extends DefaultUser, CustomUser { }
@@ -20,7 +21,6 @@ export interface User extends DefaultUser, CustomUser { }
 export interface Session extends DefaultSession {
 	user: User;
 	member?: Member;
-	projectId: string;
 }
 
 // Extensões para AdapterUser

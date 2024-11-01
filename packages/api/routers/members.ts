@@ -2,6 +2,7 @@ import { db } from "@ichess/drizzle";
 
 import {
 	member,
+	memberExperiences,
 	memberOnEvent,
 	memberRoles,
 	user,
@@ -226,6 +227,67 @@ export const membersRouter = createTRPCRouter({
 				pageCount,
 			};
 		}),
+	updateMembers: protectedProcedure
+		.input(
+			z.object({
+				projectId: z.string().uuid(),
+			}),
+		)
+		.mutation(async ({ input, ctx }) => {
+			const { projectId } = input;
+
+			console.log("projectId", projectId);
+
+			try {
+				const fetch_data = await fetch("https://secomp.pythonanywhere.com/subscribe/participant");
+				const users = await fetch_data.json();
+
+				const data: (typeof user.$inferInsert)[] = [];
+				const memberData: (typeof member.$inferInsert)[] = [];
+
+				for (const user_data of users) {
+					const email = user_data["email"];
+
+					const randomExperience =
+						memberExperiences[Math.floor(Math.random() * memberExperiences.length)];
+
+					data.push({
+						id: user_data["id"],
+						name: user_data["nome"],
+						email,
+						emailVerified: new Date(user_data['created_at']),
+						image: "https://i.imgur.com/y3xUR5B.png",
+						course: "cc",
+						registrationId: user_data["id"],
+						period: "1",
+					});
+
+					memberData.push({
+						userId: user_data["id"],
+						projectId: projectId,
+						username: user_data["email"],
+						role: memberRoles["0"],
+						experience: randomExperience,
+						joinedAt: new Date(user_data['created_at']),
+					});
+				}
+
+				console.log("🌱 Semeando o banco de dados...");
+
+				await db.insert(user).values(data).onConflictDoNothing();
+				await db.insert(member).values(memberData).onConflictDoNothing();
+
+				console.log("✅ Banco de dados semeado com novos membros!");
+			} catch (error) {
+				console.error("Erro ao atualizar membros", error);
+				throw new TRPCError({
+					message: "Erro ao atualizar membros",
+					code: "INTERNAL_SERVER_ERROR"
+				});
+			}
+
+			return { success: true };
+		}),
 	updateMemberPresence: protectedProcedure
 		.input(
 			z.object({
@@ -239,7 +301,7 @@ export const membersRouter = createTRPCRouter({
 
 			// Verificamos se o usuário tem permissão para atualizar a presença
 			const error = await isMemberAuthenticated({
-				projectId: ctx.session.projectId,
+				projectId: ctx.session.member?.projectId,
 				userId: ctx.session.user.id,
 			});
 

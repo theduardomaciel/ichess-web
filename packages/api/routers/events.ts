@@ -119,11 +119,11 @@ export const eventsRouter = createTRPCRouter({
 									user: isAdmin
 										? true
 										: member && {
-												columns: {
-													name: true,
-													image: true,
-												},
+											columns: {
+												name: true,
+												image: true,
 											},
+										},
 								},
 							},
 						},
@@ -156,9 +156,9 @@ export const eventsRouter = createTRPCRouter({
 						user: isAdmin
 							? member.user
 							: {
-									name: member.user.name,
-									image: member.user.image,
-								},
+								name: member.user.name,
+								image: member.user.image,
+							},
 					},
 				};
 			});
@@ -203,10 +203,10 @@ export const eventsRouter = createTRPCRouter({
 			const periods =
 				periodsFilter && periodsFilter.length > 0
 					? await db.query.period.findMany({
-							where(fields) {
-								return inArray(fields.slug, periodsFilter);
-							},
-						})
+						where(fields) {
+							return inArray(fields.slug, periodsFilter);
+						},
+					})
 					: undefined;
 
 			const { dateFrom, dateTo } = getPeriodsInterval(periods);
@@ -237,10 +237,10 @@ export const eventsRouter = createTRPCRouter({
 						},
 					})
 					.from(event)
-					.innerJoin(memberOnEvent, eq(event.id, memberOnEvent.eventId))
-					.innerJoin(member, eq(memberOnEvent.memberId, member.id))
-					.innerJoin(user, eq(member.userId, user.id))
-					.innerJoin(ace, eq(event.aceId, ace.id))
+					.leftJoin(memberOnEvent, eq(event.id, memberOnEvent.eventId))
+					.leftJoin(member, eq(memberOnEvent.memberId, member.id))
+					.leftJoin(user, eq(member.userId, user.id))
+					.leftJoin(ace, eq(event.aceId, ace.id))
 					.where(
 						and(
 							eq(event.projectId, projectId),
@@ -250,20 +250,20 @@ export const eventsRouter = createTRPCRouter({
 							aces ? inArray(event.aceId, aces) : undefined,
 							search
 								? or(
-										ilike(event.name, `%${search}%`),
-										ilike(event.description, `%${search}%`),
-									)
+									ilike(event.name, `%${search}%`),
+									ilike(event.description, `%${search}%`),
+								)
 								: undefined,
 							memberId
 								? inArray(
-										event.id,
-										db
-											.select({
-												id: memberOnEvent.eventId,
-											})
-											.from(memberOnEvent)
-											.where(eq(memberOnEvent.memberId, memberId)),
-									)
+									event.id,
+									db
+										.select({
+											id: memberOnEvent.eventId,
+										})
+										.from(memberOnEvent)
+										.where(eq(memberOnEvent.memberId, memberId)),
+								)
 								: undefined,
 							moderatorsFilter
 								? inArray(member.id, moderatorsFilter)
@@ -289,20 +289,20 @@ export const eventsRouter = createTRPCRouter({
 							aces ? inArray(event.aceId, aces) : undefined,
 							search
 								? or(
-										ilike(event.name, `%${search}%`),
-										ilike(event.description, `%${search}%`),
-									)
+									ilike(event.name, `%${search}%`),
+									ilike(event.description, `%${search}%`),
+								)
 								: undefined,
 							memberId
 								? inArray(
-										event.id,
-										db
-											.select({
-												id: memberOnEvent.eventId,
-											})
-											.from(memberOnEvent)
-											.where(eq(memberOnEvent.memberId, memberId)),
-									)
+									event.id,
+									db
+										.select({
+											id: memberOnEvent.eventId,
+										})
+										.from(memberOnEvent)
+										.where(eq(memberOnEvent.memberId, memberId)),
+								)
 								: undefined,
 							moderatorsFilter
 								? inArray(member.id, moderatorsFilter)
@@ -335,16 +335,16 @@ export const eventsRouter = createTRPCRouter({
 							...event,
 							members: event.member
 								? [
-										{
-											id: event.member.id,
-											role: event.member.role,
-											username: event.member.username,
-											user: {
-												name: event.user.name as string,
-												image: event.user.image as string,
-											},
+									{
+										id: event.member.id,
+										role: event.member.role,
+										username: event.member.username,
+										user: {
+											name: event.user.name as string,
+											image: event.user.image as string,
 										},
-									]
+									},
+								]
 								: [],
 						});
 					} else {
@@ -472,7 +472,7 @@ export const eventsRouter = createTRPCRouter({
 
 			// Verificamos se o usuário tem permissão para atualizar o evento
 			const error = await isMemberAuthenticated({
-				projectId: ctx.session.projectId,
+				projectId: ctx.session.member?.projectId,
 				userId: ctx.session.user.id,
 			});
 
@@ -498,21 +498,21 @@ export const eventsRouter = createTRPCRouter({
 
 			const currentEventMembers = membersIds
 				? await db.query.memberOnEvent.findMany({
-						where(fields, { eq }) {
-							return eq(fields.eventId, eventId);
-						},
-					})
+					where(fields, { eq }) {
+						return eq(fields.eventId, eventId);
+					},
+				})
 				: undefined;
 
 			const { idsToAdd, idsToRemove } =
 				currentEventMembers && membersIds
 					? getMembersIdsToMutate({
-							membersIds: membersIds as string[],
-							currentMembersIds: currentEventMembers.map(
-								(memberOnEvent) => memberOnEvent.memberId,
-							),
-							mode: "full",
-						})
+						membersIds: membersIds as string[],
+						currentMembersIds: currentEventMembers.map(
+							(memberOnEvent) => memberOnEvent.memberId,
+						),
+						mode: "full",
+					})
 					: { idsToAdd: [], idsToRemove: [] };
 
 			// Para ter o evento atualizado retornado, utilize: const updatedEvent = await db.transaction(async (tx) => { ... });
@@ -575,9 +575,11 @@ export const eventsRouter = createTRPCRouter({
 				});
 			}
 
+			// console.log("Session:", ctx.session);
+
 			// Verificamos se o usuário tem permissão para atualizar o evento
 			const error = await isMemberAuthenticated({
-				projectId: ctx.session.projectId,
+				projectId: ctx.session.member?.projectId,
 				userId: ctx.session.user.id,
 			});
 
@@ -591,8 +593,8 @@ export const eventsRouter = createTRPCRouter({
 				},
 			});
 
-			console.log("membersIdsToMutate:", membersIdsToMutate);
-			console.log("currentEventMembers:", currentEventMembers);
+			// console.log("membersIdsToMutate:", membersIdsToMutate);
+			// console.log("currentEventMembers:", currentEventMembers);
 
 			const { idsToAdd, idsToRemove } = getMembersIdsToMutate({
 				membersIds: membersIdsToMutate,
@@ -602,7 +604,7 @@ export const eventsRouter = createTRPCRouter({
 				mode: "partial",
 			});
 
-			console.log("Ids to add:", idsToAdd);
+			// console.log("Ids to add:", idsToAdd);
 
 			await db.transaction(async (tx) => {
 				if (idsToRemove.length > 0) {
@@ -636,7 +638,7 @@ export const eventsRouter = createTRPCRouter({
 
 			// Verificamos se o usuário tem permissão para remover o evento
 			const error = await isMemberAuthenticated({
-				projectId: ctx.session.projectId,
+				projectId: ctx.session.member?.projectId,
 				userId: ctx.session.user.id,
 			});
 

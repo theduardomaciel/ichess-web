@@ -66,15 +66,13 @@ export const authConfig = {
 					),
 				});
 
-				// console.log("member", member);
 				// console.log("userId", user.id);
 
 				if (member) {
 					console.log("JWT Member found");
+					console.log("member", member);
 					token.member = member;
 				}
-
-				console.log("JWT User found", user);
 			}
 
 			function isSessionAvailable(session: unknown): session is Session {
@@ -82,7 +80,7 @@ export const authConfig = {
 			}
 
 			if (trigger === "update" && isSessionAvailable(session)) {
-				token.name = session.user.name;
+				token.name = session.user?.name;
 				token.member = session.member;
 			}
 

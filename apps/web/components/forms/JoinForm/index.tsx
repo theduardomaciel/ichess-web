@@ -14,9 +14,6 @@ import {
 
 // Sections
 import JoinForm0 from "./Section0";
-import JoinForm1 from "./Section1";
-import JoinForm2 from "./Section2";
-import JoinForm3 from "./Section3";
 
 // Validation
 import {
@@ -24,7 +21,6 @@ import {
 	JoinFormTypeEnum,
 	joinFormSchema,
 } from "@/lib/validations/JoinForm";
-import { scrollToNextSection } from "@/lib/validations";
 
 // Types
 import type { User } from "@ichess/auth";
@@ -47,30 +43,10 @@ export default function JoinForm({ user }: { user?: User }) {
 			formType: JoinFormTypeEnum.Section0,
 			section0: {
 				email: user?.email || "",
-			},
-			section1: {
 				name: user?.name || "",
-				course: undefined,
-				registrationId: "",
-				period: undefined,
-			},
-			section2: {
-				experience: undefined,
-				username: "",
-			},
-			section3: {
-				reason: undefined,
-				discovery: undefined,
-				discoveryOther: "",
 			},
 		},
-	});
-
-	const formType = form.watch("formType");
-
-	function setFormType(formType: JoinFormTypeEnum) {
-		form.setValue("formType", formType);
-	}
+	})
 
 	async function submitData() {
 		setCurrentState("submitting");
@@ -84,34 +60,15 @@ export default function JoinForm({ user }: { user?: User }) {
 		// ✅ This will be type-safe and validated.
 		const values = form.getValues();
 
-		// Send the research data to Google Sheets.
-		try {
-			const response = await fetch("/api/research/members", {
-				method: "POST",
-				body: JSON.stringify({
-					data: {
-						...values.section3,
-						registrationId: values.section1.registrationId,
-					},
-				}),
-			});
-
-			if (response.status !== 200) {
-				console.error("Error: Invalid data.");
-			}
-		} catch (error) {
-			console.error(error);
-		}
-
 		// Send the data to the server.
 		try {
 			await mutation.mutateAsync({
-				name: values.section1.name,
-				course: values.section1.course,
-				registrationId: values.section1.registrationId,
-				period: values.section1.period,
-				experience: values.section2.experience,
-				username: values.section2.username,
+				name: values.section0.name,
+				course: "cc",
+				registrationId: "123456",
+				period: "1",
+				experience: "advanced",
+				username: user.name || "",
 			});
 		} catch (error) {
 			console.error(error);
@@ -124,24 +81,7 @@ export default function JoinForm({ user }: { user?: User }) {
 
 	// 2. Define a submit handler.
 	async function handleNextFormType() {
-		// Switch between form sections.
-		switch (formType) {
-			case "section0":
-				setFormType(JoinFormTypeEnum.Section1);
-				scrollToNextSection(1);
-				break;
-			case "section1":
-				setFormType(JoinFormTypeEnum.Section2);
-				scrollToNextSection(2);
-				break;
-			case "section2":
-				setFormType(JoinFormTypeEnum.Section3);
-				scrollToNextSection(3);
-				break;
-			case "section3":
-				submitData();
-				break;
-		}
+		submitData();
 	}
 
 	return (
@@ -152,9 +92,6 @@ export default function JoinForm({ user }: { user?: User }) {
 						form={form as unknown as GenericForm}
 						email={user?.email}
 					/>
-					<JoinForm1 form={form as unknown as GenericForm} />
-					<JoinForm2 form={form as unknown as GenericForm} />
-					<JoinForm3 form={form as unknown as GenericForm} />
 				</form>
 			</FormWrapper>
 			<LoadingDialog
@@ -165,9 +102,9 @@ export default function JoinForm({ user }: { user?: User }) {
 				isOpen={currentState === "submitted"}
 				description={
 					<>
-						Seu cadastro já foi enviado e está em análise.
+						Seu cadastro foi realizado com sucesso! 🎉
 						<br />
-						Uma resposta será enviada ao seu e-mail institucional em breve!
+						Avise um moderador para que você possa ser promovido a administrador.
 					</>
 				}
 			/>

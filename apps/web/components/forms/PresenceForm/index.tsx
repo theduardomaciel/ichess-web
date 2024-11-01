@@ -124,6 +124,8 @@ export default function PresenceForm({
 						}),
 					});
 
+					console.log("Response:", response);
+
 					if (response.status !== 200) {
 						console.error("Error: Invalid data.");
 					}

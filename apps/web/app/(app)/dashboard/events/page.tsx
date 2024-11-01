@@ -38,15 +38,15 @@ const eventsPageParams = getEventsParams.extend({
 export type EventsPageParams = z.infer<typeof eventsPageParams>;
 
 export default async function DashboardEventsPage(
-    props: {
-        searchParams: Promise<EventsPageParams>;
-    }
+	props: {
+		searchParams: Promise<EventsPageParams>;
+	}
 ) {
-    const searchParams = await props.searchParams;
-    const { page, pageSize, search, sortBy, periods, aces, moderators, r } =
+	const searchParams = await props.searchParams;
+	const { page, pageSize, search, sortBy, periods, aces, moderators, r } =
 		eventsPageParams.parse(searchParams);
 
-    const { events, pageCount } = await serverClient.getEvents({
+	const { events, pageCount } = await serverClient.getEvents({
 		projectId: env.PROJECT_ID,
 		page,
 		pageSize,
@@ -57,10 +57,10 @@ export default async function DashboardEventsPage(
 		moderators,
 	});
 
-    // O "r" equivale ao estado da barra de pesquisa quando o usuário clica em "Limpar filtros"
-    // Isso é feito por meio da mudança de key do componente SearchBar
+	// O "r" equivale ao estado da barra de pesquisa quando o usuário clica em "Limpar filtros"
+	// Isso é feito por meio da mudança de key do componente SearchBar
 
-    return (
+	return (
 		<main className="flex min-h-screen flex-col items-start justify-start gap-[var(--wrapper)] px-wrapper py-12 lg:flex-row lg:gap-12">
 			<div className="flex flex-1 flex-col items-start justify-center gap-4">
 				<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
@@ -94,8 +94,6 @@ export default async function DashboardEventsPage(
 				)}
 			</div>
 			<Filters>
-				<PeriodFilter />
-				<AceFilter />
 				<ModeratorFilter projectId={env.PROJECT_ID} />
 			</Filters>
 		</main>

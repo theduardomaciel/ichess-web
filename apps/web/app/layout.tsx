@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope as FontSans, Inknut_Antiqua } from "next/font/google";
+import { Rajdhani as FontSans, MuseoModerno } from "next/font/google";
 
 import "./globals.css";
 
@@ -11,10 +11,11 @@ import { Providers } from "./providers";
 
 export const fontSans = FontSans({
 	subsets: ["latin"],
+	weight: "500",
 	variable: "--font-sans",
 });
 
-export const titleFont = Inknut_Antiqua({
+export const titleFont = MuseoModerno({
 	subsets: ["latin"],
 	weight: ["400", "700", "900"],
 	variable: "--title-font",

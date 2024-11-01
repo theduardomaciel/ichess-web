@@ -1,4 +1,4 @@
-import { env } from "@ichess/env";
+import { drizzle_env as env } from "@ichess/env/drizzle_env";
 import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { migrate } from "drizzle-orm/neon-http/migrator";

@@ -6,6 +6,7 @@
 	.font-outline-1 {
 		-webkit-text-stroke: 1px hsl(var(--neutral) / 0.1);
 	}
+
 	.font-outline-2 {
 		-webkit-text-stroke: 1px hsl(var(--neutral) / 0.05);
 	}
@@ -18,11 +19,11 @@
 		--neutral: 0 0% 0%;
 		--foreground: 0 0% 30.49%;
 
-		--primary-100: 90 39% 51%;
-		--primary-200: 90 30% 42%;
+		--primary-100: 168 70% 44%;
+		--primary-200: 266 79% 40%;
 
-		--secondary-100: 38 79% 58%;
-		--secondary-200: 38 68% 49%;
+		--secondary-100: 266 79% 40%;
+		--secondary-200: 168 70% 44%;
 
 		--tertiary-100: 19 58% 52%;
 		--tertiary-200: 19 64% 43%;
@@ -40,10 +41,13 @@
 		--wrapper: 1.44rem;
 		--radius: 0.5rem;
 
-		--board-square-dark: 230, 230, 230;
-		--board-square-light: 108, 140, 75;
+		--board-square-dark: 91, 21, 181;
+		--board-square-light: 30, 4, 9;
 		--board-square: 7.5rem;
 		--board-opacity: 0.1;
+
+		--logo: 168 70% 44%;
+		--logo-2: 266 79% 40%;
 	}
 
 	.dark {
@@ -57,7 +61,10 @@
 		--gray-500: 30 3% 11%;
 		--gray-600: 30 4% 9%;
 
-		--board-square-dark: 58, 54, 46;
+		--logo: 168 70% 44%;
+		--logo-2: 100 0% 100%;
+
+		--board-square-dark: 91, 21, 181;
 		--board-opacity: 0.1;
 	}
 }
@@ -73,38 +80,30 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .bg-board {
-	background-image: linear-gradient(
-			45deg,
+	background-image: linear-gradient(45deg,
 			rgba(var(--board-square-dark), var(--board-opacity)) 25%,
 			transparent 25%,
 			transparent 75%,
 			rgba(var(--board-square-dark), var(--board-opacity)) 75%,
-			rgba(var(--board-square-dark), var(--board-opacity))
-		),
-		linear-gradient(
-			45deg,
+			rgba(var(--board-square-dark), var(--board-opacity))),
+		linear-gradient(45deg,
 			rgba(var(--board-square-dark), var(--board-opacity)) 25%,
 			transparent 25%,
 			transparent 75%,
 			rgba(var(--board-square-dark), var(--board-opacity)) 75%,
-			rgba(var(--board-square-dark), var(--board-opacity))
-		),
-		linear-gradient(
-			45deg,
+			rgba(var(--board-square-dark), var(--board-opacity))),
+		linear-gradient(45deg,
 			rgba(var(--board-square-light), var(--board-opacity)) 25%,
 			transparent 25%,
 			transparent 75%,
 			rgba(var(--board-square-light), var(--board-opacity)) 75%,
-			rgba(var(--board-square-light), var(--board-opacity))
-		),
-		linear-gradient(
-			45deg,
+			rgba(var(--board-square-light), var(--board-opacity))),
+		linear-gradient(45deg,
 			rgba(var(--board-square-light), var(--board-opacity)) 25%,
 			transparent 25%,
 			transparent 75%,
 			rgba(var(--board-square-light), var(--board-opacity)) 75%,
-			rgba(var(--board-square-light), var(--board-opacity))
-		);
+			rgba(var(--board-square-light), var(--board-opacity)));
 	background-position: 0 0,
 		calc(var(--board-square) / 2) calc(var(--board-square) / 2),
 		calc(var(--board-square) / 2) 0, 0 calc(var(--board-square) / 2);
@@ -150,6 +149,7 @@ input[type="number"]::-webkit-outer-spin-button {
 	* {
 		@apply border-border;
 	}
+
 	body {
 		@apply bg-gray-600 text-neutral text-base;
 		font-feature-settings: "rlig" 1, "calt" 1;

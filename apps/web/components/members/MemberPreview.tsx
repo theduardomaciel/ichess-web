@@ -67,19 +67,19 @@ export function MemberPreview({
 							{member.role === "admin"
 								? "Moderador"
 								: `Marcou presença às ${event?.memberJoinedAt.toLocaleTimeString(
-										"pt-BR",
-										{
-											hour: "2-digit",
-											minute: "2-digit",
-										},
-									)}`}
+									"pt-BR",
+									{
+										hour: "2-digit",
+										minute: "2-digit",
+									},
+								)}`}
 						</p>
 					</div>
 				) : (
 					<div className="flex flex-row items-center justify-start gap-3 text-left text-sm font-medium leading-tight">
 						{member.role === "admin" ? "Moderador" : "Membro"}
 						<div className="h-1 w-1 rounded-full bg-neutral" />
-						<span>@{member.username}</span>
+						<span className="lowercase">{member.username}</span>
 					</div>
 				)}
 				<div className="flex flex-row items-center justify-end gap-2 md:gap-4">
@@ -91,7 +91,7 @@ export function MemberPreview({
 						<AccountIcon className="h-6 w-6" />
 					</Link>
 
-					{event?.id && (
+					{/* {event?.id && (
 						<MemberRemove
 							member={{
 								id: member.id,
@@ -100,7 +100,7 @@ export function MemberPreview({
 							}}
 							eventId={event.id}
 						/>
-					)}
+					)} */}
 				</div>
 			</div>
 		</li>
@@ -162,13 +162,6 @@ export function MemberGuestPreview({
 						) : (
 							<Skeleton className="h-4 w-28" />
 						)}
-					</div>
-				</div>
-				<div className="flex flex-row items-center justify-end gap-3 max-lg:w-full max-[320px]:justify-start max-lg:mt-4">
-					<span className="flex text-sm lg:hidden">Visitar perfil no</span>
-					<div className="flex flex-row items-center justify-end gap-2">
-						<ChessIcon />
-						<ExternalLinkIcon width={14} height={14} />
 					</div>
 				</div>
 			</li>

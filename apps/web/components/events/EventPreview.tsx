@@ -42,21 +42,17 @@ export function EventPreview({
 					#{event.id.split("-")[0]}
 				</p>
 			</div>
-			<p className="text-left text-sm font-medium text-muted lg:text-base">
-				{event.description || "[nenhuma descrição provida]"}
-			</p>
 			<div className="mt-auto flex w-full flex-row flex-wrap items-center justify-between gap-4">
-				{event.ace && <AceLabel ace={event.ace} />}
-				<div className="flex flex-row items-center justify-between">
-					<DateDisplay
-						dateString={event.dateFrom.toLocaleDateString("pt-BR", {
-							year: "numeric",
-							month: "2-digit",
-							day: "numeric",
-						})}
-					/>
-					{/* <span className="text-sm font-medium">{event.timeFrom}</span> */}
-				</div>
+				<p className="text-left text-sm font-medium text-muted lg:text-base">
+					{event.description || "[nenhuma descrição provida]"}
+				</p>
+				<DateDisplay
+					dateString={event.dateFrom.toLocaleDateString("pt-BR", {
+						year: "numeric",
+						month: "2-digit",
+						day: "numeric",
+					})}
+				/>
 			</div>
 			{showModerators && moderators.length > 0 && (
 				<div className="flex w-full flex-row flex-wrap items-center justify-between gap-4 border-t border-t-gray-100 pt-4">

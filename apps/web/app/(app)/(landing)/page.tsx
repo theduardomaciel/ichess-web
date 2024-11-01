@@ -44,7 +44,6 @@ export default async function Home() {
 						</Link>
 					)}
 				</Button>
-				<div className="bg-board absolute top-0 left-0 w-full h-full opacity-40 z-10" />
 			</div>
 		</main>
 	);
