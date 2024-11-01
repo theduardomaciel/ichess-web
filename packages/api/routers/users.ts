@@ -72,6 +72,7 @@ export const usersRouter = createTRPCRouter({
 					member: {
 						id: createdMember[0].id,
 						username,
+						projectId: env.PROJECT_ID,
 						role: createdMember[0].role,
 					},
 				});
