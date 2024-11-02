@@ -29,7 +29,7 @@ export const authConfig = {
 			if (account?.provider === "google") {
 				const googleProfile = profile as GoogleProfile;
 
-				return googleProfile.email.endsWith(icDomain);
+				return true;
 			}
 
 			return false;
