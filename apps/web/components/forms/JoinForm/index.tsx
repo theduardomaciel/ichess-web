@@ -107,7 +107,7 @@ export default function JoinForm({ user }: { user?: User }) {
 					<>
 						Seu cadastro foi realizado com sucesso! 🎉
 						<br />
-						Avise um moderador para que você possa ser promovido a administrador.
+						Caso seu cargo de moderador não esteja ativo, deslogue e logue novamente!
 					</>
 				}
 			/>

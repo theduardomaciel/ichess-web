@@ -56,7 +56,7 @@ export default function Header() {
 			<Link href={"/"}>
 				<Logo />
 			</Link>
-			<ul className="hidden sm:flex flex-row items-center justify-between sm:justify-end gap-12">
+			{/* <ul className="hidden sm:flex flex-row items-center justify-between sm:justify-end gap-12">
 				<Sections
 					pathname={pathname}
 					hrefIsOneOfSections={hrefIsOneOfSections}
@@ -69,7 +69,10 @@ export default function Header() {
 						hrefIsOneOfSections={hrefIsOneOfSections}
 					/>
 				</ul>
-			</MobileMenu>
+			</MobileMenu> */}
+			<Link href={`/dashboard/events`}>
+				Dashboard
+			</Link>
 		</header>
 	);
 }
