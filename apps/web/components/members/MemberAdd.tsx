@@ -58,6 +58,7 @@ export function MemberAdd({
 	const mutations = trpc.updateEventMembers.useMutation();
 	const { data, isFetching } = trpc.getMembers.useQuery({
 		projectId,
+		role: "member",
 		pageSize: 1000,
 	});
 
