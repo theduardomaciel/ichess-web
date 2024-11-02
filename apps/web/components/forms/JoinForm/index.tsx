@@ -33,6 +33,7 @@ export default function JoinForm({ user }: { user?: User }) {
 	const [currentState, setCurrentState] = useState<
 		false | "submitting" | "error" | "submitted"
 	>(false);
+	const [error, setError] = useState<string | null>(null);
 
 	const mutation = trpc.updateUser.useMutation();
 
@@ -49,6 +50,7 @@ export default function JoinForm({ user }: { user?: User }) {
 	})
 
 	async function submitData() {
+		setError(null);
 		setCurrentState("submitting");
 
 		if (!user) {
@@ -70,8 +72,9 @@ export default function JoinForm({ user }: { user?: User }) {
 				experience: "advanced",
 				username: user.email || "",
 			});
-		} catch (error) {
+		} catch (error: any) {
 			console.error(error);
+			setError(error.message as string);
 			setCurrentState("error");
 			return;
 		}
@@ -112,7 +115,7 @@ export default function JoinForm({ user }: { user?: User }) {
 				isOpen={currentState === "error"}
 				title="Erro ao enviar o formulário"
 				onClose={() => setCurrentState(false)}
-				description="Por favor, tente novamente mais tarde. Se o erro persistir, entre em contato com o suporte."
+				description={`Por favor, tente novamente mais tarde. Se o erro persistir, entre em contato com o suporte.\n\n${error}`}
 			/>
 		</Form>
 	);
