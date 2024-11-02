@@ -67,7 +67,7 @@ export default function JoinForm({ user }: { user?: User }) {
 			await mutation.mutateAsync({
 				name: values.section0.name,
 				course: "cc",
-				registrationId: "123456",
+				registrationId: values.section0.email,
 				period: "1",
 				experience: "advanced",
 				username: user.email || "",
