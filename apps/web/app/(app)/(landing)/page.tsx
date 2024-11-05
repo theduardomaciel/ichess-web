@@ -39,8 +39,7 @@ export default async function Home() {
 						</Link>
 					) : (
 						<Link href="/join">
-							Quero participar
-							<PiecesIcon />
+							Registrar como admin
 						</Link>
 					)}
 				</Button>

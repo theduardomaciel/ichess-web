@@ -5,10 +5,7 @@ import { googleProvider } from "./google-provider";
 
 // Types
 import type { Session, NextAuthConfig } from "next-auth";
-import type { GoogleProfile } from "next-auth/providers/google";
 import { db } from "@ichess/drizzle";
-
-const icDomain = "@ic.ufal.br";
 
 export const authConfig = {
 	adapter: drizzleAuthAdapter,
@@ -20,15 +17,11 @@ export const authConfig = {
 	// debug: true,
 	session: {
 		strategy: "jwt",
-		updateAge: 60 * 60 * 24, // 24 hours
+		updateAge: 60 * 60 * 24 * 3, // 3 dias
 	},
 	callbacks: {
 		async signIn({ account, profile }) {
-			// console.log("Sign in", { account, profile });
-
 			if (account?.provider === "google") {
-				const googleProfile = profile as GoogleProfile;
-
 				return true;
 			}
 
