@@ -17,7 +17,7 @@ interface Props {
 	pageCount: number;
 }
 
-const MAX_PAGINATION_PAGES = 5;
+const MAX_PAGINATION_PAGES = 2;
 
 export function PagesDisplay({ currentPage, pageCount }: Props) {
 	const { toUrl } = useQueryString();

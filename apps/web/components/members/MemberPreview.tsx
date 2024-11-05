@@ -82,26 +82,6 @@ export function MemberPreview({
 						<span className="lowercase">{member.username}</span>
 					</div>
 				)}
-				<div className="flex flex-row items-center justify-end gap-2 md:gap-4">
-					<Link
-						title="Exibir cartão da conta do membro"
-						href={memberCardHref}
-						scroll={false}
-					>
-						<AccountIcon className="h-6 w-6" />
-					</Link>
-
-					{/* {event?.id && (
-						<MemberRemove
-							member={{
-								id: member.id,
-								name: member.user?.name ?? member.username,
-								role: member.role,
-							}}
-							eventId={event.id}
-						/>
-					)} */}
-				</div>
 			</div>
 		</li>
 	);

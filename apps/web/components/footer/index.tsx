@@ -74,11 +74,6 @@ export default function Footer() {
 					title="Mais"
 					items={[
 						{
-							label: "Política de Horas",
-							href: "https://drive.google.com/file/d/1lcP4scEH7wrscuBN98DmDGVsytYv2rr-/view?usp=drive_link",
-							target: "_blank",
-						},
-						{
 							label: "Dashboard",
 							href: "/dashboard/events",
 						},

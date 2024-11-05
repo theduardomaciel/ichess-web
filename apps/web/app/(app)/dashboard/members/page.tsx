@@ -61,7 +61,7 @@ export default async function DashboardMembersPage(
 
 	return (
 		<main className="flex min-h-screen flex-col items-start justify-start gap-[var(--wrapper)] px-wrapper py-12 lg:flex-row lg:gap-12">
-			<div className="flex flex-1 flex-col items-start justify-center gap-4">
+			<div className="flex flex-1 flex-col items-start justify-center gap-4 w-full">
 				<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
 					<SearchBar key={r} placeholder="Pesquisar membros" />
 					<div className="flex flex-row items-center justify-between gap-4 max-sm:w-full sm:justify-end">
