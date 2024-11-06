@@ -45,7 +45,7 @@ export default function DashboardHeader() {
 			)}
 		>
 			<div className="flex flex-row items-center justify-between w-full md:w-[25%] h-14">
-				<Link href={"/dashboard/events"}>
+				<Link href={"/"}>
 					<Logo />
 				</Link>
 				<button

@@ -578,14 +578,14 @@ export const eventsRouter = createTRPCRouter({
 			// console.log("Session:", ctx.session);
 
 			// Verificamos se o usuário tem permissão para atualizar o evento
-			const error = await isMemberAuthenticated({
+			/* const error = await isMemberAuthenticated({
 				projectId: ctx.session.member?.projectId,
 				userId: ctx.session.user.id,
 			});
 
 			if (error) {
 				throw new TRPCError(error);
-			}
+			} */
 
 			const currentEventMembers = await db.query.memberOnEvent.findMany({
 				where(fields, { eq }) {

@@ -295,16 +295,6 @@ export const membersRouter = createTRPCRouter({
 			const { eventId, verificationCode } = input;
 			const memberId = ctx.session.member?.id;
 
-			// Verificamos se o usuário tem permissão para atualizar a presença
-			const error = await isMemberAuthenticated({
-				projectId: ctx.session.member?.projectId,
-				userId: ctx.session.user.id,
-			});
-
-			if (error) {
-				throw new TRPCError(error);
-			}
-
 			if (!memberId) {
 				throw new TRPCError({
 					message: "Member not found.",

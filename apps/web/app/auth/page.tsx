@@ -30,18 +30,15 @@ export default async function AuthenticatedPage() {
 				<div className="text-sm font-medium leading-tight text-muted">
 					{isAuthenticated ? (
 						<>
-							Você já pode visualizar seus dados pessoais, marcar presença em
-							eventos e realizar todas as atividades de um membro do IChess!{" "}
+							Caso seu cargo não tenha sido atribuído, deslogue e logue novamente.
 							<br />
 							<br />
 							Você está logado com: {session?.user.email}
 						</>
 					) : (
 						<>
-							Você já criou sua conta e está pronto para ingressar no IChess!{" "}
+							Caso seu cargo não tenha sido atribuído, deslogue e logue novamente.
 							<br />
-							Agora, basta apenas realizar seu cadastro para participar de todas
-							as atividades do grupo. <br />
 							<br />
 							Você está logado com: {session?.user.email}
 						</>
@@ -49,13 +46,6 @@ export default async function AuthenticatedPage() {
 				</div>
 				<div className="inline-flex items-center justify-end gap-2.5 self-stretch">
 					<Button variant={"outline"}>Deslogar</Button>
-					<Button asChild>
-						{isAuthenticated ? (
-							<a href={`/members/${session?.member?.id}`}>Ver meu perfil</a>
-						) : (
-							<Link href="/join">Continuar cadastro</Link>
-						)}
-					</Button>
 				</div>
 			</div>
 		</form>

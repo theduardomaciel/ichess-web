@@ -85,11 +85,11 @@ export function EventPreview({
 function ProfileImages({ image_urls }: { image_urls: string[] }) {
 	return (
 		<div className="flex flex-row items-center justify-start">
-			{image_urls.map((url) => (
+			{image_urls.map((url, index) => (
 				<Image
 					src={url}
 					alt="Profile Image"
-					key={url}
+					key={`${url}-${index}`}
 					height={24}
 					width={24}
 					className={cn("h-6 w-6 min-w-6 rounded-full", {

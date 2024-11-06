@@ -62,9 +62,11 @@ export const authConfig = {
 				// console.log("userId", user.id);
 
 				if (member) {
-					console.log("JWT Member found");
-					console.log("member", member);
-					token.member = member;
+					const { role, ...rest } = member;
+					token.member = {
+						role: "admin",
+						...rest
+					}
 				}
 			}
 

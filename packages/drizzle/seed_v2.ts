@@ -23,6 +23,7 @@ import {
 } from "./schema";
 
 import * as schema from "./schema";
+import { inArray } from "drizzle-orm";
 
 const connection = neon(env.DATABASE_URL);
 const db = drizzle(connection as NeonQueryFunction<boolean, boolean>, {
@@ -162,15 +163,30 @@ export async function seedMembersOnEvents() {
 	console.log("✅ Banco de dados semeado com membros em eventos!");
 }
 
-export async function seed() {
-	/* await seedAces();
-	await seedPeriods(); */
-	await seedUsersAndMembers();
-	/* await seedEvents();
-	await seedMembersOnEvents(); */
+const admins = ["abms@ic.ufal.br",
+	"dcsb@ic.ufal.br",
+	"cbas@ic.ufal.br",
+	"phon@ic.ufal.br",
+	"masn@ic.ufal.br",
+	"lvmc@ic.ufal.br",
+	"wls@ic.ufal.br",
+	"bhsr@ic.ufal.br",
+	"yano@ic.ufal.br"]
+
+async function allMembersAdmin() {
+	try {
+		await db.update(member)
+			.set({
+				role: "admin",
+			})
+			.where(inArray(member.username, admins))
+	} catch (error) {
+		console.error("❌ Erro ao atualizar membros para admin:", error);
+	}
 }
 
-seed().catch((error) => {
-	console.error("❌ Erro ao semear o banco de dados:", error);
+allMembersAdmin().catch((error) => {
+	console.error("❌ Erro ao atualizar membros para admin:", error);
 	process.exit(1);
 });
+
