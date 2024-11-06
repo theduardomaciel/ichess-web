@@ -62,11 +62,9 @@ export const authConfig = {
 				// console.log("userId", user.id);
 
 				if (member) {
-					const { role, ...rest } = member;
-					token.member = {
-						role: "admin",
-						...rest
-					}
+					console.log("JWT Member found");
+					console.log("member", member);
+					token.member = member;
 				}
 			}
 
@@ -76,13 +74,7 @@ export const authConfig = {
 
 			if (trigger === "update" && isSessionAvailable(session)) {
 				token.name = session.user?.name;
-				if (session.member) {
-					const { role, ...rest } = session.member;
-					token.member = {
-						role: "admin",
-						...rest
-					}
-				}
+				token.member = session.member;
 			}
 
 			return token;
@@ -92,11 +84,7 @@ export const authConfig = {
 				session.user.id = params.token.sub as string;
 
 				if (params.token.member) {
-					const { role, ...rest } = params.token.member;
-					session.member = {
-						role: "admin",
-						...rest
-					}
+					session.member = params.token.member;
 				}
 			}
 

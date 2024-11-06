@@ -56,10 +56,7 @@ export const usersRouter = createTRPCRouter({
 					role: "admin",
 					projectId: env.PROJECT_ID,
 				})
-				.returning({
-					id: member.id,
-					role: member.role,
-				});
+				.returning();
 
 			if (createdMember[0]) {
 				await unstable_update({
@@ -72,10 +69,10 @@ export const usersRouter = createTRPCRouter({
 					},
 					member: {
 						id: createdMember[0].id,
-						username,
-						projectId: env.PROJECT_ID,
-						role: "admin",
-					},
+						role: createdMember[0].role,
+						username: createdMember[0].username,
+						projectId: createdMember[0].projectId,
+					}
 				});
 			}
 		}),
