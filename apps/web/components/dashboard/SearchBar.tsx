@@ -18,10 +18,12 @@ import { useDebounce } from "@/hooks/use-debounce";
 
 interface SearchBarProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	tag?: string;
+	word?: string;
 }
 
 export function SearchBar({
 	className,
+	word = "search",
 	onChange,
 	tag,
 	...props
@@ -31,7 +33,7 @@ export function SearchBar({
 
 	const [isPendingSearchTransition, startTransition] = useTransition();
 
-	const [value, setValue] = useState(query.get("search") || "");
+	const [value, setValue] = useState(query.get(word) || "");
 	const debouncedValue = useDebounce(value, 250);
 
 	useEffect(() => {
@@ -39,8 +41,8 @@ export function SearchBar({
 			router.push(
 				toUrl(
 					debouncedValue
-						? { search: debouncedValue, page: undefined }
-						: { search: undefined },
+						? { [word]: debouncedValue, page: undefined }
+						: { [word]: undefined },
 				),
 				{
 					scroll: false,
@@ -76,7 +78,7 @@ export function SearchBar({
 						className="h-4 w-4 cursor-pointer text-muted"
 						onClick={() => {
 							setValue("");
-							router.push(toUrl({ search: undefined }));
+							router.push(toUrl({ [word]: undefined }));
 						}}
 					/>
 				) : null}

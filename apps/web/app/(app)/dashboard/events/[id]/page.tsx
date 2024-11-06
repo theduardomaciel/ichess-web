@@ -35,6 +35,7 @@ const eventDetailsPageSearchParams = z.object({
 	page: z.coerce.number().default(0),
 	pageSize: z.coerce.number().default(5),
 	search: z.string().optional(),
+	general_search: z.string().optional(),
 	sortBy: z.enum(["recent", "oldest"]).optional(),
 	r: z.string().optional(),
 });
@@ -52,13 +53,13 @@ export default async function EventPage(
 	const searchParams = await props.searchParams;
 
 	const { id } = eventDetailsPageParams.parse(params);
-	const { page, pageSize, search, r, sortBy } = eventDetailsPageSearchParams.parse(searchParams);
+	const { page, pageSize, search, general_search, r, sortBy } = eventDetailsPageSearchParams.parse(searchParams);
 
 	const { event, members, pageCount } = await serverClient.getEvent({
 		eventId: id,
 		page: page || 1,
 		pageSize: pageSize || 5,
-		search: search,
+		search: general_search,
 		projectId: env.PROJECT_ID,
 		sortBy: sortBy,
 	});
@@ -91,7 +92,7 @@ export default async function EventPage(
 			</div>
 			<div className="flex w-full flex-col items-center justify-start gap-4 md:flex-row">
 				<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
-					<SearchBar key={r} placeholder="Pesquisar membros credenciados" />
+					<SearchBar word={"general_search"} key={r} placeholder="Pesquisar membros credenciados" />
 					<div className="flex flex-row items-center justify-between gap-4 max-sm:w-full sm:justify-end">
 						<span className="text-nowrap text-sm font-medium">Ordenar por</span>
 						<SortBy sortBy={sortBy} />

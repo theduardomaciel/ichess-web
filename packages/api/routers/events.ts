@@ -25,6 +25,7 @@ import {
 	getTableColumns,
 	countDistinct,
 	like,
+	count,
 } from "@ichess/drizzle/orm";
 import { z } from "zod";
 
@@ -165,7 +166,7 @@ export const eventsRouter = createTRPCRouter({
 				orderBy: sortBy === "recent" ? asc(memberOnEvent.joinedAt) : desc(memberOnEvent.joinedAt),
 			}) */
 
-			const allMembers = await db.select({
+			const [members, [{ amount }]] = await Promise.all([db.select({
 				...getTableColumns(memberOnEvent),
 				member: {
 					...getTableColumns(member),
@@ -193,9 +194,27 @@ export const eventsRouter = createTRPCRouter({
 					sortBy === "recent" ? asc(memberOnEvent.joinedAt) : desc(memberOnEvent.joinedAt),
 				)
 				.limit(pageSize)
-				.offset(pageIndex ? (pageIndex - 1) * pageSize : 0);
+				.offset(pageIndex ? (pageIndex - 1) * pageSize : 0),
+			db.select({
+				amount: count(),
+			})
+				.from(memberOnEvent)
+				.innerJoin(member, and(
+					eq(memberOnEvent.memberId, member.id),
+				))
+				.innerJoin(user, eq(member.userId, user.id))
+				.where(and(
+					eq(memberOnEvent.eventId, eventId),
+					search
+						? or(
+							ilike(member.username, `%${search}%`),
+							ilike(user.name, `%${search}%`),
+						)
+						: undefined,
+				)),
+			]);
 
-			const putUsersInsideMembers = allMembers.map((t) => {
+			const putUsersInsideMembers = members.map((t) => {
 				const { member, user, ...rest } = t;
 
 				return {
@@ -209,7 +228,7 @@ export const eventsRouter = createTRPCRouter({
 				};
 			});
 
-			const pageCount = Math.ceil(selectedEvent.membersOnEvent.length / pageSize);
+			const pageCount = Math.ceil(amount / pageSize);
 
 			return {
 				event: selectedEvent,
