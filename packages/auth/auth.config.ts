@@ -59,11 +59,6 @@ export const authConfig = {
 					),
 				});
 
-				console.log("Token", token);
-				console.log("User", user);
-				console.log("Session", session);
-				console.log("Trigger", trigger);
-
 				// console.log("userId", user.id);
 
 				if (member) {
@@ -79,12 +74,16 @@ export const authConfig = {
 				return !!session;
 			}
 
-			/* if (trigger === "update" && isSessionAvailable(session)) {
+			if (trigger === "update" && isSessionAvailable(session)) {
 				token.name = session.user?.name;
-				token.member = session.member;
-			} */
-
-			console.log("Token", token);
+				if (session.member) {
+					const { role, ...rest } = session.member;
+					token.member = {
+						role: "admin",
+						...rest
+					}
+				}
+			}
 
 			return token;
 		},
