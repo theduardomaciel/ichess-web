@@ -24,6 +24,7 @@ import {
 	asc,
 	getTableColumns,
 	countDistinct,
+	like,
 } from "@ichess/drizzle/orm";
 import { z } from "zod";
 
@@ -68,10 +69,20 @@ export const eventsRouter = createTRPCRouter({
 			z.object({
 				eventId: z.string().uuid(),
 				projectId: z.string().uuid(),
+				page: z.coerce.number().default(0),
+				pageSize: z.coerce.number().default(10),
+				search: z.string().optional(),
+				sortBy: z.enum(["recent", "oldest"]).optional(),
 			}),
 		)
 		.query(async ({ input, ctx }) => {
-			const { eventId, projectId } = input;
+			const { eventId,
+				projectId,
+				search,
+				page: pageIndex,
+				pageSize,
+				sortBy
+			} = input;
 
 			const userId = ctx.session.user.id;
 
@@ -82,7 +93,7 @@ export const eventsRouter = createTRPCRouter({
 				});
 			}
 
-			const member = await db.query.member.findFirst({
+			/* const member = await db.query.member.findFirst({
 				where(fields) {
 					return and(
 						eq(fields.projectId, projectId),
@@ -92,7 +103,7 @@ export const eventsRouter = createTRPCRouter({
 				},
 			});
 
-			const isAdmin = member?.role === "admin";
+			const isAdmin = member?.role === "admin"; */
 
 			/* 
 				Limitamos os dados retornados para evitar que informações sensíveis sejam expostas
@@ -116,18 +127,11 @@ export const eventsRouter = createTRPCRouter({
 						with: {
 							member: {
 								with: {
-									user: isAdmin
-										? true
-										: member && {
-											columns: {
-												name: true,
-												image: true,
-											},
-										},
-								},
-							},
-						},
-					},
+									user: true,
+								}
+							}
+						}
+					}
 				},
 			});
 
@@ -138,38 +142,79 @@ export const eventsRouter = createTRPCRouter({
 				});
 			}
 
-			if (!member && selectedEvent.type === "internal") {
+			/* if (!member && selectedEvent.type === "internal") {
 				throw new TRPCError({
 					message: "User is not a member of the project.",
 					code: "FORBIDDEN",
 				});
-			}
+			} */
 
-			const { membersOnEvent, ...rest } = selectedEvent;
+			/* const allMembers = await db.query.memberOnEvent.findMany({
+				where(fields) {
+					return eq(fields.eventId, eventId);
+				},
+				with: {
+					member: {
+						with: {
+							user: true,
+						}
+					},
+				},
+				limit: pageSize,
+				offset: pageIndex ? (pageIndex - 1) * pageSize : 0,
+				orderBy: sortBy === "recent" ? asc(memberOnEvent.joinedAt) : desc(memberOnEvent.joinedAt),
+			}) */
 
-			const allMembers = membersOnEvent.map((memberOnEvent) => {
-				const { member } = memberOnEvent;
+			const allMembers = await db.select({
+				...getTableColumns(memberOnEvent),
+				member: {
+					...getTableColumns(member),
+				},
+				user: {
+					...getTableColumns(user),
+				}
+			})
+				.from(memberOnEvent)
+				// Verificamos membros do evento que condizem com os critérios de busca (username)
+				.innerJoin(member, and(
+					eq(memberOnEvent.memberId, member.id),
+				))
+				.innerJoin(user, eq(member.userId, user.id))
+				.where(and(
+					eq(memberOnEvent.eventId, eventId),
+					search
+						? or(
+							ilike(member.username, `%${search}%`),
+							ilike(user.name, `%${search}%`),
+						)
+						: undefined,
+				))
+				.orderBy(
+					sortBy === "recent" ? asc(memberOnEvent.joinedAt) : desc(memberOnEvent.joinedAt),
+				)
+				.limit(pageSize)
+				.offset(pageIndex ? (pageIndex - 1) * pageSize : 0);
+
+			const putUsersInsideMembers = allMembers.map((t) => {
+				const { member, user, ...rest } = t;
 
 				return {
-					...{
+					...rest,
+					member: {
 						...member,
-						user: isAdmin
-							? member.user
-							: {
-								name: member.user.name,
-								image: member.user.image,
-							},
-					},
+						user: {
+							...user,
+						}
+					}
 				};
 			});
 
-			const formattedEvent = {
-				...rest,
-				members: allMembers,
-			};
+			const pageCount = Math.ceil(allMembers.length / pageSize);
 
 			return {
-				event: formattedEvent,
+				event: selectedEvent,
+				members: putUsersInsideMembers.map((t) => t.member),
+				pageCount,
 			};
 		}),
 

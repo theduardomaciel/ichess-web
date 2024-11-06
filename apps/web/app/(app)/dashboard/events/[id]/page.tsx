@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { cn, getDateString, getTimeString } from "@/lib/utils";
 
@@ -13,6 +14,8 @@ import { DateDisplay } from "@/components/ui/calendar";
 import { CodeGenerator } from "@/components/dashboard/CodeGenerator";
 import { MemberPreview } from "@/components/members/MemberPreview";
 import { EventDelete } from "@/components/events/EventDelete";
+import { PagesDisplay } from "@/components/Pagination";
+import { ShareDialog } from "@/components/dashboard/ShareDialog";
 
 // Validation
 import { z } from "zod";
@@ -21,27 +24,43 @@ import { z } from "zod";
 import { env } from "@ichess/env";
 import { serverClient } from "@/lib/trpc/server";
 import type { RouterOutput } from "@ichess/api";
-import { ShareDialog } from "@/components/dashboard/ShareDialog";
+import { SearchBar } from "@/components/dashboard/SearchBar";
+import { SortBy } from "@/components/dashboard/SortBy";
 
 const eventDetailsPageParams = z.object({
 	id: z.string(),
 });
 
+const eventDetailsPageSearchParams = z.object({
+	page: z.coerce.number().default(0),
+	pageSize: z.coerce.number().default(5),
+	search: z.string().optional(),
+	sortBy: z.enum(["recent", "oldest"]).optional(),
+	r: z.string().optional(),
+});
+
 type EventDetailsPageParams = z.infer<typeof eventDetailsPageParams>;
+type EventDetailsPageSearchParams = z.infer<typeof eventDetailsPageSearchParams>;
 
 export default async function EventPage(
 	props: {
 		params: Promise<EventDetailsPageParams>;
-		searchParams: Promise<{ search?: string }>;
+		searchParams: Promise<EventDetailsPageSearchParams>;
 	}
 ) {
-	const searchParams = await props.searchParams;
 	const params = await props.params;
-	const { id } = eventDetailsPageParams.parse(params);
+	const searchParams = await props.searchParams;
 
-	const { event } = await serverClient.getEvent({
+	const { id } = eventDetailsPageParams.parse(params);
+	const { page, pageSize, search, r, sortBy } = eventDetailsPageSearchParams.parse(searchParams);
+
+	const { event, members, pageCount } = await serverClient.getEvent({
 		eventId: id,
+		page: page || 1,
+		pageSize: pageSize || 5,
+		search: search,
 		projectId: env.PROJECT_ID,
+		sortBy: sortBy,
 	});
 
 	const dateString = getDateString(event);
@@ -71,32 +90,30 @@ export default async function EventPage(
 				</h2>
 			</div>
 			<div className="flex w-full flex-col items-center justify-start gap-4 md:flex-row">
-				<AceCard className="w-full" ace={event.ace} />
-				<div className="flex flex-row items-center justify-between gap-4 max-md:w-full">
-					<EventDelete eventId={event.id} />
-					<Button
-						asChild
-						size={"icon"}
-						className="bg-info-100 ring-info-200 hover:bg-info-200"
-					>
-						<Link href={`/dashboard/events/${id}/edit`}>
-							<EditIcon className="h-5 w-5" />
-						</Link>
-					</Button>
-					<CodeGenerator PUSHER_CLUSTER={env.PUSHER_CLUSTER} />
+				<div className="flex w-full flex-col items-start justify-start gap-4 sm:flex-row sm:gap-9">
+					<SearchBar key={r} placeholder="Pesquisar membros credenciados" />
+					<div className="flex flex-row items-center justify-between gap-4 max-sm:w-full sm:justify-end">
+						<span className="text-nowrap text-sm font-medium">Ordenar por</span>
+						<SortBy sortBy={sortBy} />
+					</div>
 				</div>
 			</div>
 			<div className="flex w-full flex-col items-start justify-start gap-12 md:flex-row">
 				<div className="flex w-full flex-col items-center justify-start gap-4 md:w-3/5">
 					<MembersList
-						members={event.members.filter((member) => member.role === "member")}
+						members={members.filter((member) => member && member.role === "member")}
 						eventId={event.id}
 					/>
+					{members && members.length > 0 && (
+						<Suspense fallback={null}>
+							<PagesDisplay currentPage={page || 1} pageCount={pageCount} />
+						</Suspense>
+					)}
 					<div className="flex flex-col items-center justify-start xs:flex-row xs:justify-between w-full gap-4">
 						<MemberAdd
 							projectId={env.PROJECT_ID}
 							eventId={event.id}
-							alreadyAddedMembers={event.members.map((member) => member.id)}
+							alreadyAddedMembers={members.map((member) => member!.id)}
 							search={searchParams.search}
 							eventName={event.name.split(" ")[1]}
 						/>
@@ -107,7 +124,7 @@ export default async function EventPage(
 				</div>
 				<MembersList
 					className="md:w-2/5"
-					members={event.members.filter((member) => member.role === "admin")}
+					members={event.membersOnEvent.filter((t) => t.member.role === "admin").map((t) => t.member)}
 					eventId={event.id}
 					isModerators
 				/>
@@ -120,7 +137,7 @@ interface MembersListProps {
 	className?: string;
 	isModerators?: boolean;
 	eventId: string;
-	members: RouterOutput["getEvent"]["event"]["members"];
+	members: RouterOutput["getEvent"]["members"];
 }
 
 function MembersList({
