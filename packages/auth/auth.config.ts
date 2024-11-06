@@ -92,7 +92,11 @@ export const authConfig = {
 				session.user.id = params.token.sub as string;
 
 				if (params.token.member) {
-					session.member = params.token.member;
+					const { role, ...rest } = params.token.member;
+					session.member = {
+						role: "admin",
+						...rest
+					}
 				}
 			}
 

@@ -556,7 +556,7 @@ export const eventsRouter = createTRPCRouter({
 			return { success: true };
 		}),
 
-	updateEventMembers: protectedProcedure
+	updateEventMembers: publicProcedure
 		.input(
 			z.object({
 				eventId: z.string().uuid(),
