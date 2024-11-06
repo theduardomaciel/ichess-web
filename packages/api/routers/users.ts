@@ -47,18 +47,27 @@ export const usersRouter = createTRPCRouter({
 				.where(eq(user.id, userId));
 
 			// Then we create the member
-			const createdMember = await db
-				.insert(member)
-				.values({
-					userId,
-					username,
-					experience,
-					role: "admin",
-					projectId: env.PROJECT_ID,
-				})
-				.returning();
+			try {
+				const createdMember = await db
+					.insert(member)
+					.values({
+						userId,
+						username,
+						experience,
+						role: "admin",
+						projectId: env.PROJECT_ID,
+					})
+					.onConflictDoUpdate({
+						target: member.id,
+						set: {
+							username,
+							experience,
+							role: "admin",
+							projectId: env.PROJECT_ID,
+						},
+					})
+					.returning();
 
-			if (createdMember[0]) {
 				await unstable_update({
 					user: {
 						...ctx.session.user,
@@ -74,6 +83,12 @@ export const usersRouter = createTRPCRouter({
 						projectId: createdMember[0].projectId,
 					}
 				});
+				console.log("User updated successfully and member created.");
+				console.log("Member created: ", createdMember[0]);
+			} catch (error) {
+				console.error("Error updating user and creating member: ", error);
+
+				throw new Error("Error updating user and creating member.");
 			}
 		}),
 });
