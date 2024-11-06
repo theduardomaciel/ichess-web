@@ -44,7 +44,7 @@ export default function MutateEventForm({ projectId, event }: Props) {
 		defaultValues: {
 			name: event?.name || "",
 			description: event?.description || "",
-			members: event?.members?.map((member) => member.id) || [],
+			members: event?.membersOnEvent?.map((t) => t.member.id) || [],
 			dateFrom: new Date(),
 			timeFrom: event ? dateToTimeString(event.dateFrom) : undefined,
 			timeTo: event ? dateToTimeString(event.dateTo) : undefined,
