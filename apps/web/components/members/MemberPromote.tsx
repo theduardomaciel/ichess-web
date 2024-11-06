@@ -27,7 +27,7 @@ import { trpc } from "@/lib/trpc/react";
 
 // Types
 import type { RouterOutput } from "@ichess/api";
-type Member = RouterOutput["getEvent"]["event"]["members"][number];
+type Member = RouterOutput["getEvent"]["members"][number];
 
 interface Props {
 	member: {
