@@ -59,11 +59,10 @@ export const authConfig = {
 					),
 				});
 
+				console.log("Member found", member);
 				// console.log("userId", user.id);
 
 				if (member) {
-					console.log("JWT Member found");
-					console.log("member", member);
 					token.member = member;
 				}
 			}

@@ -347,4 +347,20 @@ export const membersRouter = createTRPCRouter({
 
 			return { success: true };
 		}),
+	updateMemberRole: protectedProcedure
+		.input(
+			z.object({
+				memberId: z.string().uuid(),
+				role: z.enum(memberRoles),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			const { memberId, role } = input;
+
+			const updatedMember = await db.update(member).set({
+				role,
+			}).where(eq(member.id, memberId));
+
+			return { member: updatedMember };
+		}),
 });

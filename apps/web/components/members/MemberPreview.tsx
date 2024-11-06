@@ -3,19 +3,15 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
-// Icons
-import SinceIcon from "@/public/icons/since.svg";
-import AccountIcon from "@/public/icons/account.svg";
-import PersonCheckIcon from "@/public/icons/person_check.svg";
+import { MemberPromote } from "./MemberPromote";
+import { Skeleton } from "../ui/skeleton";
 
 // Icons
-import ChessIcon from "@/public/logos/chess.svg";
-import ExternalLinkIcon from "@/public/icons/external_link.svg";
+import SinceIcon from "@/public/icons/since.svg";
+import PersonCheckIcon from "@/public/icons/person_check.svg";
 
 // API
 import type { RouterOutput } from "@ichess/api";
-import { MemberRemove } from "./MemberRemove";
-import { Skeleton } from "../ui/skeleton";
 
 interface Props {
 	className?: string;
@@ -82,6 +78,17 @@ export function MemberPreview({
 						<span className="lowercase">{member.username}</span>
 					</div>
 				)}
+				<div className="flex flex-row items-center justify-end gap-2 md:gap-4">
+					{member.role === "member" && (
+						<MemberPromote
+							member={{
+								id: member.id,
+								name: member.user?.name ?? member.username,
+								role: member.role,
+							}}
+						/>
+					)}
+				</div>
 			</div>
 		</li>
 	);

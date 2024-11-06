@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 // Icons
-import BlockIcon from "@/public/icons/block.svg";
+import AccountIcon from "@/public/icons/account.svg";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -35,10 +35,9 @@ interface Props {
 		name: Member["user"]["name"];
 		role: Member["role"];
 	};
-	eventId: string;
 }
 
-export function MemberRemove({ member, eventId }: Props) {
+export function MemberPromote({ member }: Props) {
 	const router = useRouter();
 	const { toast } = useToast();
 
@@ -47,14 +46,14 @@ export function MemberRemove({ member, eventId }: Props) {
 	const [hasStartedMutation, setHasStartedMutation] = useState(false);
 	const [isMutating, startTransition] = useTransition();
 
-	const mutate = trpc.updateEventMembers.useMutation();
+	const mutate = trpc.updateMemberRole.useMutation();
 
 	async function removeMember() {
 		try {
 			startTransition(async () => {
 				await mutate.mutateAsync({
-					eventId,
-					membersIdsToMutate: [member.id],
+					memberId: member.id,
+					role: "admin",
 				});
 				setHasStartedMutation(true);
 				router.refresh();
@@ -62,8 +61,8 @@ export function MemberRemove({ member, eventId }: Props) {
 		} catch (error) {
 			console.error(error);
 			toast({
-				title: "Erro ao remover membro",
-				description: "Não foi possível remover o membro do evento.",
+				title: "Erro ao promover membro",
+				description: "Não foi possível promover o membro para moderador.",
 				variant: "error",
 			});
 		}
@@ -76,8 +75,8 @@ export function MemberRemove({ member, eventId }: Props) {
 			setIsOpen(false);
 
 			toast({
-				title: `${isAdmin ? "Moderador" : "Membro"} removido!`,
-				description: `A presença de ${member.name} foi removida do evento.`,
+				title: `Membro promovido`,
+				description: `O cargo de ${member.name} foi promovido a moderador.`,
 				variant: "success",
 			});
 		}
@@ -86,8 +85,8 @@ export function MemberRemove({ member, eventId }: Props) {
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
-				<button type="button" title="Remover presença do membro">
-					<BlockIcon className="h-6 w-6" />
+				<button type="button" title="Promover membro">
+					<AccountIcon className="h-6 w-6" />
 				</button>
 			</DialogTrigger>
 			<DialogContent
@@ -103,17 +102,14 @@ export function MemberRemove({ member, eventId }: Props) {
 			>
 				<DialogHeader>
 					<DialogTitle>
-						Remover {isAdmin ? "moderador" : "participante"}
+						Promover {isAdmin ? "moderador" : "participante"}
 					</DialogTitle>
 					<DialogDescription>
-						Você tem certeza que deseja remover{" "}
-						{!isAdmin ? "a presença de " : ""}
+						Você tem certeza que deseja promover{" "}
+						{!isAdmin ? "o cargo de " : ""}
 						<strong className="scale-105 text-nowrap text-neutral">
 							{member.name}
-						</strong>{" "}
-						{isAdmin && "da moderação"}
-						do evento? <br />
-						{!isAdmin && "As horas atribuídas a ele serão removidas."}
+						</strong>?
 					</DialogDescription>
 				</DialogHeader>
 				<DialogFooter className="w-full gap-2 sm:justify-start">
@@ -131,13 +127,13 @@ export function MemberRemove({ member, eventId }: Props) {
 					<Button
 						className="w-full"
 						size={"default"}
-						variant={"destructive"}
+						variant={"default"}
 						type="button"
 						isLoading={isMutating}
 						onClick={removeMember}
 					>
-						<BlockIcon className="h-6 w-6" />
-						Remover
+						<AccountIcon className="h-6 w-6" />
+						Promover
 					</Button>
 				</DialogFooter>
 			</DialogContent>

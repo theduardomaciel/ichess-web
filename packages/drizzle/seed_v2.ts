@@ -23,7 +23,7 @@ import {
 } from "./schema";
 
 import * as schema from "./schema";
-import { inArray } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 
 const connection = neon(env.DATABASE_URL);
 const db = drizzle(connection as NeonQueryFunction<boolean, boolean>, {
@@ -163,30 +163,42 @@ export async function seedMembersOnEvents() {
 	console.log("✅ Banco de dados semeado com membros em eventos!");
 }
 
-const admins = ["abms@ic.ufal.br",
-	"dcsb@ic.ufal.br",
-	"cbas@ic.ufal.br",
-	"phon@ic.ufal.br",
-	"masn@ic.ufal.br",
-	"lvmc@ic.ufal.br",
-	"wls@ic.ufal.br",
-	"bhsr@ic.ufal.br",
-	"yano@ic.ufal.br"]
-
-async function allMembersAdmin() {
+async function updateAdmins() {
 	try {
+		const admins = await db.query.account.findMany({
+			with: {
+				user: true,
+			}
+		});
+
+		const adminEmails = admins.map(admin => admin.user.email);
+		console.log(adminEmails);
+
 		await db.update(member)
 			.set({
 				role: "admin",
 			})
-			.where(inArray(member.username, admins))
+			.where(inArray(member.username, adminEmails))
 	} catch (error) {
 		console.error("❌ Erro ao atualizar membros para admin:", error);
 	}
 }
 
-allMembersAdmin().catch((error) => {
+/* updateAdmins().catch((error) => {
 	console.error("❌ Erro ao atualizar membros para admin:", error);
 	process.exit(1);
-});
+}); */
 
+async function resetMembersOnEvent() {
+	try {
+		await db
+			.delete(memberOnEvent);
+	} catch (error) {
+		console.error("Erro")
+	}
+}
+
+resetMembersOnEvent().catch((error) => {
+	console.error("❌ Erro ao atualizar remover tests", error);
+	process.exit(1);
+});
