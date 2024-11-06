@@ -209,7 +209,7 @@ export const eventsRouter = createTRPCRouter({
 				};
 			});
 
-			const pageCount = Math.ceil(allMembers.length / pageSize);
+			const pageCount = Math.ceil(selectedEvent.membersOnEvent.length / pageSize);
 
 			return {
 				event: selectedEvent,
