@@ -37,6 +37,12 @@ interface AddParticipantProps {
 	eventName: string;
 }
 
+function normalizeString(text: string) {
+	return text
+		.normalize("NFD") // Normaliza a string para decompor caracteres acentuados
+		.replace(/[\u0300-\u036f]/g, ""); // Remove marcas diacríticas (acentos)
+}
+
 export function MemberAdd({
 	projectId,
 	eventId,
@@ -65,11 +71,12 @@ export function MemberAdd({
 		(member) => !alreadyAddedMembers.includes(member.id),
 	);
 
+	const normalizedSearch = search ? normalizeString(search).toLowerCase() : "";
 	const filteredMembers = search
 		? members?.filter(
 			(member) =>
-				member.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
-				member.username.toLowerCase().includes(search.toLowerCase()),
+				normalizeString(member.user?.name || "").toLowerCase().includes(normalizedSearch) ||
+				normalizeString(member.username).toLowerCase().includes(normalizedSearch),
 		)
 		: members;
 
