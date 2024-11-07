@@ -202,9 +202,16 @@ export function MemberAdd({
 													className="rounded-full"
 													alt="Member profile picture"
 												/>
-												<span className="text-left text-base font-semibold leading-tight text-neutral">
-													{member.user?.name ?? `@${member.username}`}
-												</span>
+												<div className="flex flex-col items-start justify-start pr-4">
+													<span className="text-left text-base font-semibold leading-tight text-neutral">
+														{member.user?.name ?? `@${member.username}`}
+													</span>
+													{member.user?.name && (
+														<span className="flex text-xs font-semibold leading-none text-neutral opacity-50 md:hidden lowercase">
+															{member.username}
+														</span>
+													)}
+												</div>
 											</div>
 											<div className="flex flex-row items-center justify-end gap-4">
 												{member.user?.name && (

@@ -59,17 +59,17 @@ export function MemberPreview({
 						{member.role === "member" && (
 							<PersonCheckIcon className="h-4 min-h-4 w-4 min-w-4 md:min-h-4 md:min-w-4" />
 						)}
-						<p className="text-left text-sm font-medium leading-tight">
-							{member.role === "admin"
-								? "Moderador"
-								: `Marcou presença às ${event?.memberJoinedAt.toLocaleTimeString(
+						{member.role === "member" &&
+							<p className="text-left text-sm font-medium leading-tight">
+								Marcou presença às {event?.memberJoinedAt.toLocaleTimeString(
 									"pt-BR",
 									{
 										hour: "2-digit",
 										minute: "2-digit",
 									},
-								)}`}
-						</p>
+								)}
+							</p>
+						}
 					</div>
 				) : (
 					<div className="flex flex-row items-center justify-start gap-3 text-left text-sm font-medium leading-tight">

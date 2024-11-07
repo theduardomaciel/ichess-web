@@ -23,7 +23,8 @@ export function EventPreview({
 	const moderators = event.members.filter((m) => m.role === "admin");
 	const moderatorsImages = moderators
 		.filter((m) => m.user.image)
-		.map((m) => m.user.image);
+		.map((m) => m.user.image)
+		.slice(0, 3);
 
 	const lastModerator = moderators.length > 1 ? moderators.pop() : null;
 
@@ -57,11 +58,11 @@ export function EventPreview({
 			{showModerators && moderators.length > 0 && (
 				<div className="flex w-full flex-row flex-wrap items-center justify-between gap-4 border-t border-t-gray-100 pt-4">
 					<div className="flex flex-row items-center justify-start gap-2 max-sm:w-full">
-						<ProfileImages image_urls={moderatorsImages} />
+						<ProfileImages image_urls={moderatorsImages} extraLength={moderators.length - 2} />
 						<span className="text-left text-sm font-semibold text-neutral">
 							Organizado por{" "}
-							{moderators.map((mod) => mod?.user.name).join(", ")}{" "}
-							{lastModerator && "e"} {lastModerator?.user.name}
+							{moderators.slice(0, 3).map((mod) => mod?.user.name).join(", ")}{" "}
+							{lastModerator && "e"} {moderators.length > 3 ? `outros ${moderators.length - 2}` : lastModerator?.user.name}
 						</span>
 					</div>
 					<p className="text-right text-sm font-semibold text-neutral">
@@ -82,7 +83,7 @@ export function EventPreview({
 	);
 }
 
-function ProfileImages({ image_urls }: { image_urls: string[] }) {
+function ProfileImages({ image_urls, extraLength }: { image_urls: string[], extraLength: number }) {
 	return (
 		<div className="flex flex-row items-center justify-start">
 			{image_urls.map((url, index) => (
@@ -93,10 +94,19 @@ function ProfileImages({ image_urls }: { image_urls: string[] }) {
 					height={24}
 					width={24}
 					className={cn("h-6 w-6 min-w-6 rounded-full", {
-						"-ml-2.5": image_urls.indexOf(url) > 0,
+						"-ml-1": index > 0,
 					})}
 				/>
 			))}
+			{
+				extraLength > 0 && (
+					<div className="w-6 h-6 rounded-full bg-gray-200 -ml-1 flex items-center justify-center border border-gray-100">
+						<p className="text-xs font-semibold leading-none text-neutral opacity-50">
+							+{extraLength}
+						</p>
+					</div>
+				)
+			}
 		</div>
 	);
 }
